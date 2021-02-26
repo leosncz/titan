@@ -2,11 +2,92 @@
 //
 
 #include <iostream>
+#include "display/display.h"
+#include "prefab/plane/plane.h"
+#include "light/light.h"
+#include "scene/scene.h"
+using namespace std;
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    display mainDisplay = display();
+    mainDisplay.init(1024, 768, 4);
+
+    scene myscene = scene();
+    myscene.setupDisplay(&mainDisplay, CAMERA_FPS);
+
+
+    float colors[] = { 1.0,1.0,1.0,   1.0,1.0,1.0,     1.0,1.0,1.0,
+                      1.0,1.0,1.0,    1.0,1.0,1.0,    1.0,1.0,1.0,
+                    1.0,1.0,1.0,      1.0,1.0,1.0,     1.0,1.0,1.0,
+                    1.0,1.0,1.0,       1.0,1.0,1.0,   1.0,1.0,1.0,
+                    1.0,1.0,1.0,      1.0,1.0,1.0,     1.0,1.0,1.0,
+                    1.0,1.0,1.0,       1.0,1.0,1.0,   1.0,1.0,1.0,
+                    1.0,1.0,1.0,      1.0,1.0,1.0,     1.0,1.0,1.0,
+                    1.0,1.0,1.0,       1.0,1.0,1.0,   1.0,1.0,1.0,
+                    1.0,1.0,1.0,      1.0,1.0,1.0,     1.0,1.0,1.0,
+                    1.0,1.0,1.0,       1.0,1.0,1.0,   1.0,1.0,1.0,
+                    1.0,1.0,1.0,      1.0,1.0,1.0,     1.0,1.0,1.0,
+                    1.0,1.0,1.0,       1.0,1.0,1.0,   1.0,1.0,1.0 };
+
+
+
+    plane triangle = plane();
+    triangle.initPrefab(colors);
+    myscene.addDrawableObject(&triangle);
+    triangle.moveObject(glm::vec3(0, 0, -2));
+    triangle.rotateObject(20.0f, glm::vec3(1, 0, 0));
+
+    // triangle.setAmbiantStrenght(0.5);
+
+    plane myplane = plane();
+    myplane.initPrefab(colors);
+    myscene.addDrawableObject(&myplane);
+    myplane.moveObject(glm::vec3(0, -1, -2));
+    myplane.scaleObject(glm::vec3(10, 10, 10));
+   /* myplane.addTexture("texture.jpg");
+    myplane.addTexture("texture2.jpg");
+    myplane.setNumberOfTextureToDraw(1);*/
+   // float texcoord[] = { 0,0,    0,1,      1,1,      1,1,     1,0,    0,0 };
+    //myplane.setTextureResolution(10, texcoord);
+
+    light mylight2 = light();
+    mylight2.setData(glm::vec3(0, 0, 0), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, -1, -1), 1000.0f);
+    mylight2.type = DIRECTIONNAL_LIGHT;
+    myscene.addLight(&mylight2);
+
+    light mylight3 = light();
+    mylight3.setData(glm::vec3(-3, 1, 1), glm::vec3(0.0, 0.0, 1.0), glm::vec3(0, 0, -1), 1000.0f);
+    mylight3.type = POINT_LIGHT;
+    myscene.addLight(&mylight3);
+    mylight3.quadratic = 0.09;
+    mylight3.linear = 0.032;
+
+    light mylight4 = light();
+    mylight4.setData(glm::vec3(0, 1, 1), glm::vec3(1.0, 0.0, 0.0), glm::vec3(0, 0, -1), 1000.0f);
+    mylight4.type = POINT_LIGHT;
+    myscene.addLight(&mylight4);
+    mylight4.quadratic = 0.09;
+    mylight4.linear = 0.032;
+
+    light mylight5 = light();
+    mylight5.setData(glm::vec3(3, 1, 1), glm::vec3(0.0, 1.0, 0.0), glm::vec3(0, 0, -1), 1000.0f);
+    mylight5.type = POINT_LIGHT;
+    myscene.addLight(&mylight5);
+    mylight5.quadratic = 0.09;
+    mylight5.linear = 0.032;
+
+
+    while (!mainDisplay.shouldExit()) {
+        mainDisplay.clearWindow();
+        myscene.updateFPSCamera();
+        myscene.renderScene();
+        mainDisplay.refreshWindow();
+    }
+
+    return 0;
 }
+
 
 // Exécuter le programme : Ctrl+F5 ou menu Déboguer > Exécuter sans débogage
 // Déboguer le programme : F5 ou menu Déboguer > Démarrer le débogage
