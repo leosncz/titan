@@ -58,9 +58,11 @@ Piece of code that boots up the engine and draw the demo in the capture file :
 ## Actual supported features:
 - Runs on Windows, Mac & Linux
 - Support up to 7 seven lights at the same time
+- Directionnal and point light supported
 - Ambiant, diffuse and specular shading
-- Easily customizable material properties editor
-- Up to 4 textures on a single object
+- For point light, dynamic linear, constant and quadratic parameters are customizable.
+- Diffuse Map (up to 4 textures on a single object)
+- Shadow map
 
 ## Build
 In order to use & build the project with this library, you must install the following libraries :
@@ -68,5 +70,3 @@ In order to use & build the project with this library, you must install the foll
 - OpenGL
 - GLEW
 - GLM.
-
-You can refer to the **compiler_config** screenshot.

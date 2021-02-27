@@ -75,12 +75,30 @@ public:
                glActiveTexture(GL_TEXTURE0 + 4);
                glBindTexture(GL_TEXTURE_2D,texture4);
             }
+            if (hasSpecularMap)
+            {
+                glUniform1i(specularTextureID, 5);
+                glActiveTexture(GL_TEXTURE0 + 5);
+                glBindTexture(GL_TEXTURE_2D, specularTexture);
+
+                glUniform1i(useSpecularMapID, 1);
+            }
+            else { glUniform1i(useSpecularMapID, 0);}
 
             m_shader.registerLightToRender(sceneLights,numberOfLight); // MUST BE CALLED if you want lighting to work
 
             glDrawArrays(GL_TRIANGLES,0,m_nbOfPointToDraw);
     }
-
+    void removeSpecularTexture()
+    {
+        glDeleteTextures(1, &specularTexture);
+        hasSpecularMap = false;
+    }
+    void setSpecularTexture(const char* path)
+    {
+        setTexture(&specularTexture, path);
+        hasSpecularMap = true;
+    }
     void setNumberOfTextureToDraw(int howMany){ // Set how many texture should be reserved for drawing
         m_nbOfTextureToDraw = howMany;
     }
@@ -144,6 +162,7 @@ public:
         glDeleteTextures(1,&texture2);
         glDeleteTextures(1,&texture3);
         glDeleteTextures(1,&texture4);
+        glDeleteTextures(1, &specularTexture);
         glDeleteBuffers(1,&vbo);
         glDeleteBuffers(1,&vbo_colors);
         glDeleteBuffers(1,&vbo_texCoords);
@@ -187,16 +206,21 @@ protected:
     GLuint viewPosID;
     GLuint projectionID;
     GLuint howManyTexID;
+    GLuint useSpecularMapID;
     GLuint textureDepthMapID;
     GLuint texture1ID;
     GLuint texture2ID;
     GLuint texture3ID;
     GLuint texture4ID;
+    GLuint specularTextureID;
+
+    bool hasSpecularMap;
 
     GLuint texture1;
     GLuint texture2;
     GLuint texture3;
     GLuint texture4;
+    GLuint specularTexture;
 
 
     void init(float* vertices, float* colors, float* normals, float* texCoord)
@@ -204,6 +228,7 @@ protected:
         modelMatrix = glm::mat4(1.0);
         m_nbOfTexture = 0;
         m_nbOfTextureToDraw = 0;
+        hasSpecularMap = false;
 
             m_shader.compileDefaultShader();
 
@@ -250,8 +275,10 @@ protected:
             texture2ID = glGetUniformLocation(m_shader.getShaderID(),"texture2");
             texture3ID = glGetUniformLocation(m_shader.getShaderID(),"texture3");
             texture4ID = glGetUniformLocation(m_shader.getShaderID(),"texture4");
+            specularTextureID = glGetUniformLocation(m_shader.getShaderID(), "specularMap");
             textureDepthMapID = glGetUniformLocation(m_shader.getShaderID(),"textureDepthMap");
             howManyTexID = glGetUniformLocation(m_shader.getShaderID(),"howManyTex");
+            useSpecularMapID = glGetUniformLocation(m_shader.getShaderID(), "useSpecularMap");
     }
 
     void setTexture(GLuint *texture, const char* path)

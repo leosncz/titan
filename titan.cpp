@@ -38,6 +38,8 @@ int main()
     triangle.moveObject(glm::vec3(0, 0, -1));
     triangle.rotateObject(20.0f, glm::vec3(1, 0, 0));
     triangle.setSpecularStrenght(1.0);
+    triangle.setSpecularTexture("specularmap.jpg");
+    triangle.removeSpecularTexture();
 
     // triangle.setAmbiantStrenght(0.5);
 
@@ -49,7 +51,7 @@ int main()
     myplane.addTexture("texture.jpg");
     myplane.setNumberOfTextureToDraw(1);
     float texcoord[] = { 0,0,    0,1,      1,1,      1,1,     1,0,    0,0 };
-    myplane.setTextureResolution(30, texcoord);
+    myplane.setTextureResolution(20, texcoord);
 
     light mylight2 = light();
     mylight2.setData(glm::vec3(0, 0, 0), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, -1, -1), 1000.0f);
