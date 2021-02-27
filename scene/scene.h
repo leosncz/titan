@@ -11,26 +11,17 @@ Handles everything related to scenes and object rendering loop in scenes
 
 #include "../display/display.h"
 #include "../renderObject/renderObject.h"
+#include "../cameraFPS/cameraFPS.h"
 
-#define CAMERA_FPS 0
 
 class scene
 {
 public:
-    void setupDisplay(display* customDisplay, int cameraType=CAMERA_FPS) // Set the display that will be used to render the scene
+    void setupDisplay(display* customDisplay) // Set the display that will be used to render the scene
     {
         m_display = customDisplay;
         m_nbOfObjects = 0;
         m_nbOfLight = 0;
-
-        if(cameraType == CAMERA_FPS)
-        {
-            cameraPos = glm::vec3(0.0f, 0.0f,  0.0f);
-            cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-            cameraUp =  glm::vec3(0.0f, 1.0f,  0.0f);
-            cameraSpeed = 0.1f;
-            view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-        }
 
         // Setup ogl matrix
         projection = glm::perspective(glm::radians(45.0f), (float)((float)customDisplay->getDisWidth() / (float)customDisplay->getDisHeight()), 0.01f, 200.0f);
@@ -39,15 +30,16 @@ public:
 
         id = rand();
 
+        m_actualCamera.init(m_display);
+
         std::cout << "--> Creating new scene ID=" << id << std::endl;
-        std::cout << "---> Scene ID=" << id << " camera is " << cameraType << std::endl;
     }
 
     void renderScene()
     {
         for(int i = 0; i<m_nbOfObjects;i++)
         {
-            m_objectHolder[i]->render(&projection, &view, &model, cameraPos, lights,m_nbOfLight);
+            m_objectHolder[i]->render(&projection, &view, &model, m_actualCamera.getCameraPos(), lights,m_nbOfLight);
         }
     }
 
@@ -58,40 +50,15 @@ public:
         m_nbOfObjects++;
     }
 
-    void moveScene(glm::vec3 position)
-    {
-        cameraPos = position;
-        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-    }
-
-    void rotateScene(float angle, glm::vec3 factors)
-    {
-        view= glm::rotate(view,angle,factors);
-    }
-
     void addLight(light* thelight)
     {
         lights[m_nbOfLight] = thelight;
         m_nbOfLight++;
     }
 
-    void updateFPSCamera(bool isAzerty=true)
+    void updateCamera(bool isAzerty=true)
     {
-        if(isAzerty)
-        {
-            if(glfwGetKey(m_display->getGLFWWindow(), GLFW_KEY_W ) == GLFW_PRESS){ cameraPos += cameraSpeed * cameraFront;}
-            else if(glfwGetKey(m_display->getGLFWWindow(), GLFW_KEY_A ) == GLFW_PRESS){cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;}
-            else if(glfwGetKey(m_display->getGLFWWindow(), GLFW_KEY_S ) == GLFW_PRESS){cameraPos -= cameraSpeed * cameraFront;}
-            else if(glfwGetKey(m_display->getGLFWWindow(), GLFW_KEY_D ) == GLFW_PRESS){cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;}
-        }
-        else
-        {
-            if(glfwGetKey(m_display->getGLFWWindow(), GLFW_KEY_Z ) == GLFW_PRESS){ cameraPos += cameraSpeed * cameraFront;}
-            else if(glfwGetKey(m_display->getGLFWWindow(), GLFW_KEY_Q ) == GLFW_PRESS){cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;}
-            else if(glfwGetKey(m_display->getGLFWWindow(), GLFW_KEY_S ) == GLFW_PRESS){cameraPos -= cameraSpeed * cameraFront;}
-            else if(glfwGetKey(m_display->getGLFWWindow(), GLFW_KEY_D ) == GLFW_PRESS){cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;}
-        }
-        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+        m_actualCamera.update(m_display, &view, isAzerty);
     }
 
     int getNbOfLight(){return m_nbOfLight;}
@@ -105,11 +72,6 @@ private:
 
     int id;
 
-    glm::vec3 cameraPos;
-    glm::vec3 cameraFront;
-    glm::vec3 cameraUp;
-    float cameraSpeed;
-
     display* m_display;
     renderObject* m_objectHolder[1000]; // Max 1000 objects drawable
     int m_nbOfObjects;
@@ -118,6 +80,9 @@ private:
 
     light* lights[7]; // 7 lights max
     int m_nbOfLight;
+
+    cameraFPS m_actualCamera;
+
 };
 
 #endif // SCENE_H_INCLUDED

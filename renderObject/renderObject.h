@@ -103,7 +103,7 @@ public:
         glBufferSubData(GL_ARRAY_BUFFER, 0, 2 * m_nbOfPointToDraw * sizeof(float), texCoords);
     }
 
-    void addTexture(char* pathToTexture) // Not all texture must be used for drawing onto the node (for example we can use it for depth test)
+    void addTexture(const char* pathToTexture) // Not all texture must be used for drawing onto the node (for example we can use it for depth test)
     {
         if(m_nbOfTexture == 0)
         {
@@ -254,7 +254,7 @@ protected:
             howManyTexID = glGetUniformLocation(m_shader.getShaderID(),"howManyTex");
     }
 
-    void setTexture(GLuint *texture, char* path)
+    void setTexture(GLuint *texture, const char* path)
     {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);

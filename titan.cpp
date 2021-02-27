@@ -14,7 +14,7 @@ int main()
     mainDisplay.init(1024, 768, 4);
 
     scene myscene = scene();
-    myscene.setupDisplay(&mainDisplay, CAMERA_FPS);
+    myscene.setupDisplay(&mainDisplay);
 
 
     float colors[] = { 1.0,1.0,1.0,   1.0,1.0,1.0,     1.0,1.0,1.0,
@@ -35,8 +35,9 @@ int main()
     plane triangle = plane();
     triangle.initPrefab(colors);
     myscene.addDrawableObject(&triangle);
-    triangle.moveObject(glm::vec3(0, 0, -2));
+    triangle.moveObject(glm::vec3(0, 0, -1));
     triangle.rotateObject(20.0f, glm::vec3(1, 0, 0));
+    triangle.setSpecularStrenght(1.0);
 
     // triangle.setAmbiantStrenght(0.5);
 
@@ -45,19 +46,18 @@ int main()
     myscene.addDrawableObject(&myplane);
     myplane.moveObject(glm::vec3(0, -1, -2));
     myplane.scaleObject(glm::vec3(10, 10, 10));
-   /* myplane.addTexture("texture.jpg");
-    myplane.addTexture("texture2.jpg");
-    myplane.setNumberOfTextureToDraw(1);*/
-   // float texcoord[] = { 0,0,    0,1,      1,1,      1,1,     1,0,    0,0 };
-    //myplane.setTextureResolution(10, texcoord);
+    myplane.addTexture("texture.jpg");
+    myplane.setNumberOfTextureToDraw(1);
+    float texcoord[] = { 0,0,    0,1,      1,1,      1,1,     1,0,    0,0 };
+    myplane.setTextureResolution(30, texcoord);
 
     light mylight2 = light();
     mylight2.setData(glm::vec3(0, 0, 0), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, -1, -1), 1000.0f);
     mylight2.type = DIRECTIONNAL_LIGHT;
-    myscene.addLight(&mylight2);
+   // myscene.addLight(&mylight2);
 
     light mylight3 = light();
-    mylight3.setData(glm::vec3(-3, 1, 1), glm::vec3(0.0, 0.0, 1.0), glm::vec3(0, 0, -1), 1000.0f);
+    mylight3.setData(glm::vec3(-2, 1, 1), glm::vec3(0.0, 0.0, 1.0), glm::vec3(0, 0, -1), 1000.0f);
     mylight3.type = POINT_LIGHT;
     myscene.addLight(&mylight3);
     mylight3.quadratic = 0.09;
@@ -71,7 +71,7 @@ int main()
     mylight4.linear = 0.032;
 
     light mylight5 = light();
-    mylight5.setData(glm::vec3(3, 1, 1), glm::vec3(0.0, 1.0, 0.0), glm::vec3(0, 0, -1), 1000.0f);
+    mylight5.setData(glm::vec3(2, 1, 1), glm::vec3(0.0, 1.0, 0.0), glm::vec3(0, 0, -1), 1000.0f);
     mylight5.type = POINT_LIGHT;
     myscene.addLight(&mylight5);
     mylight5.quadratic = 0.09;
@@ -80,7 +80,7 @@ int main()
 
     while (!mainDisplay.shouldExit()) {
         mainDisplay.clearWindow();
-        myscene.updateFPSCamera();
+        myscene.updateCamera();
         myscene.renderScene();
         mainDisplay.refreshWindow();
     }

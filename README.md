@@ -4,6 +4,7 @@
 
 ## Example
 You can see the **example.png** capture to see the current state of the engine.
+![Example](example.png "Example of actual titan rendering")
 Piece of code that boots up the engine and draw the demo in the capture file :
 	
 	int main()
