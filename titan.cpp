@@ -4,6 +4,7 @@
 #include <iostream>
 #include "display/display.h"
 #include "prefab/plane/plane.h"
+#include "prefab/cube/cube.h"
 #include "light/light.h"
 #include "scene/scene.h"
 using namespace std;
@@ -32,25 +33,28 @@ int main()
 
 
 
-    plane triangle = plane();
+    cube triangle = cube();
     triangle.initPrefab(colors);
     myscene.addDrawableObject(&triangle);
-    triangle.moveObject(glm::vec3(0, 0, -1));
-    triangle.rotateObject(20.0f, glm::vec3(1, 0, 0));
+    triangle.moveObject(glm::vec3(0, 0.3, -1));
+    //triangle.rotateObject(20.0f, glm::vec3(1, 0, 0));
     triangle.setSpecularStrenght(1.0);
     triangle.setSpecularTexture("specularmap.jpg");
-    triangle.removeSpecularTexture();
+    //triangle.removeSpecularTexture();
+    triangle.addTexture("texture.jpg");
+    triangle.setNumberOfTextureToDraw(1);
 
     // triangle.setAmbiantStrenght(0.5);
 
     plane myplane = plane();
     myplane.initPrefab(colors);
+    myplane.setSpecularTexture("specularmap.jpg");
     myscene.addDrawableObject(&myplane);
-    myplane.moveObject(glm::vec3(0, -1, -2));
-    myplane.scaleObject(glm::vec3(10, 10, 10));
+    myplane.moveObject(glm::vec3(0, -0.5, -2));
+    myplane.scaleObject(glm::vec3(10, 1, 10));
     myplane.addTexture("texture.jpg");
     myplane.setNumberOfTextureToDraw(1);
-    float texcoord[] = { 0,0,    0,1,      1,1,      1,1,     1,0,    0,0 };
+    float texcoord[] = { 0,0,    1,0,   1,1,  1,1,  0,1, 0,0 };
     myplane.setTextureResolution(20, texcoord);
 
     light mylight2 = light();

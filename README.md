@@ -61,8 +61,8 @@ Piece of code that boots up the engine and draw the demo in the capture file :
 - Directionnal and point light supported
 - Ambiant, diffuse and specular shading
 - For point light, dynamic linear, constant and quadratic parameters are customizable.
-- Diffuse Map (up to 4 textures on a single object)
-- Shadow map
+- Diffuse map (up to 4 textures on a single object)
+- Specular map
 
 ## Build
 In order to use & build the project with this library, you must install the following libraries :
