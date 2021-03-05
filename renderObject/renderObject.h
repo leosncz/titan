@@ -11,8 +11,7 @@ Handles everything related to drawable nodes
 #include "../stb_image/stb_image.h"
 #include <iostream>
 #include <string>
-//List all shader implemented
-#define SHADER_DEFAULT "default"
+#include <assimp/BaseImporter.h>
 
 class renderObject
 {

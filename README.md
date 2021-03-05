@@ -57,7 +57,7 @@ Piece of code that boots up the engine and draw the demo in the capture file :
 }
 
 ## Actual supported features:
-- Runs on Windows, Mac & Linux
+- Runs on Windows, Mac & Linux (32-64 bits)
 - Support up to 7 seven lights at the same time
 - Directionnal, spot and point light supported
 - Ambiant, diffuse and specular shading
@@ -70,4 +70,6 @@ In order to use & build the project with this library, you must install the foll
 - GLFW
 - OpenGL
 - GLEW
-- GLM.
+- GLM
+- Assimp (precompiled lib for vc19 in assimp directory)
+If you use the sln solution, keep in mind that everything is 64-bit oriented.
