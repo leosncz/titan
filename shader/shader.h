@@ -39,6 +39,8 @@ public:
         lightLinear0ID = glGetUniformLocation(m_shaderID, "lightLinear0");
         lightQuadratic0ID = glGetUniformLocation(m_shaderID, "lightQuadratic0");
 
+        lightCutOff0ID = glGetUniformLocation(m_shaderID, "lightCutOff0");
+
         //Light 1
         lightColor1ID = glGetUniformLocation(m_shaderID,"lightColor1");
         lightPos1ID = glGetUniformLocation(m_shaderID,"lightPos1");
@@ -49,6 +51,8 @@ public:
         lightConstant1ID = glGetUniformLocation(m_shaderID, "lightConstant1");
         lightLinear1ID = glGetUniformLocation(m_shaderID, "lightLinear1");
         lightQuadratic1ID = glGetUniformLocation(m_shaderID, "lightQuadratic1");
+
+        lightCutOff1ID = glGetUniformLocation(m_shaderID, "lightCutOff1");
         //Light 2
         lightColor2ID = glGetUniformLocation(m_shaderID,"lightColor2");
         lightPos2ID = glGetUniformLocation(m_shaderID,"lightPos2");
@@ -59,6 +63,8 @@ public:
         lightConstant2ID = glGetUniformLocation(m_shaderID, "lightConstant2");
         lightLinear2ID = glGetUniformLocation(m_shaderID, "lightLinear2");
         lightQuadratic2ID = glGetUniformLocation(m_shaderID, "lightQuadratic2");
+
+        lightCutOff2ID = glGetUniformLocation(m_shaderID, "lightCutOff2");
         //Light 3
         lightColor3ID = glGetUniformLocation(m_shaderID,"lightColor3");
         lightPos3ID = glGetUniformLocation(m_shaderID,"lightPos3");
@@ -69,6 +75,8 @@ public:
         lightConstant3ID = glGetUniformLocation(m_shaderID, "lightConstant3");
         lightLinear3ID = glGetUniformLocation(m_shaderID, "lightLinear3");
         lightQuadratic3ID = glGetUniformLocation(m_shaderID, "lightQuadratic3");
+
+        lightCutOff3ID = glGetUniformLocation(m_shaderID, "lightCutOff3");
         //Light 4
         lightColor4ID = glGetUniformLocation(m_shaderID,"lightColor4");
         lightPos4ID = glGetUniformLocation(m_shaderID,"lightPos4");
@@ -79,6 +87,8 @@ public:
         lightConstant4ID = glGetUniformLocation(m_shaderID, "lightConstant4");
         lightLinear4ID = glGetUniformLocation(m_shaderID, "lightLinear4");
         lightQuadratic4ID = glGetUniformLocation(m_shaderID, "lightQuadratic4");
+
+        lightCutOff4ID = glGetUniformLocation(m_shaderID, "lightCutOff4");
         //Light 5
         lightColor5ID = glGetUniformLocation(m_shaderID,"lightColor5");
         lightPos5ID = glGetUniformLocation(m_shaderID,"lightPos5");
@@ -89,6 +99,8 @@ public:
         lightConstant5ID = glGetUniformLocation(m_shaderID, "lightConstant5");
         lightLinear5ID = glGetUniformLocation(m_shaderID, "lightLinear5");
         lightQuadratic5ID = glGetUniformLocation(m_shaderID, "lightQuadratic5");
+
+        lightCutOff5ID = glGetUniformLocation(m_shaderID, "lightCutOff5");
         //Light 6
         lightColor6ID = glGetUniformLocation(m_shaderID,"lightColor6");
         lightPos6ID = glGetUniformLocation(m_shaderID,"lightPos6");
@@ -99,6 +111,8 @@ public:
         lightConstant6ID = glGetUniformLocation(m_shaderID, "lightConstant6");
         lightLinear6ID = glGetUniformLocation(m_shaderID, "lightLinear6");
         lightQuadratic6ID = glGetUniformLocation(m_shaderID, "lightQuadratic6");
+
+        lightCutOff6ID = glGetUniformLocation(m_shaderID, "lightCutOff6");
 
         numberOfLightID = glGetUniformLocation(m_shaderID,"numberOfLight");
 
@@ -127,6 +141,7 @@ public:
                 glUniform1f(lightLinear0ID,sceneLights[0]->linear);
                 glUniform1f(lightQuadratic0ID,sceneLights[0]->quadratic);
                 glUniform1i(lightType0ID,sceneLights[0]->type);
+                glUniform1f(lightCutOff0ID, sceneLights[0]->cutOff);
 
                 if(numberOfLight >= 2)
                 {
@@ -138,6 +153,7 @@ public:
                     glUniform1f(lightConstant1ID,sceneLights[1]->constant);
                     glUniform1f(lightLinear1ID,sceneLights[1]->linear);
                     glUniform1f(lightQuadratic1ID,sceneLights[1]->quadratic);
+                    glUniform1f(lightCutOff1ID, sceneLights[1]->cutOff);
                 }
                 if(numberOfLight >= 3)
                 {
@@ -149,6 +165,7 @@ public:
                     glUniform1f(lightConstant2ID,sceneLights[2]->constant);
                     glUniform1f(lightLinear2ID,sceneLights[2]->linear);
                     glUniform1f(lightQuadratic2ID,sceneLights[2]->quadratic);
+                    glUniform1f(lightCutOff2ID, sceneLights[2]->cutOff);
                 }
                 if(numberOfLight >= 4)
                 {
@@ -160,6 +177,7 @@ public:
                     glUniform1f(lightConstant3ID,sceneLights[3]->constant);
                     glUniform1f(lightLinear3ID,sceneLights[3]->linear);
                     glUniform1f(lightQuadratic3ID,sceneLights[3]->quadratic);
+                    glUniform1f(lightCutOff3ID, sceneLights[3]->cutOff);
                 }
                 if(numberOfLight >= 5)
                 {
@@ -171,6 +189,7 @@ public:
                     glUniform1f(lightConstant4ID,sceneLights[4]->constant);
                     glUniform1f(lightLinear4ID,sceneLights[4]->linear);
                     glUniform1f(lightQuadratic4ID,sceneLights[4]->quadratic);
+                    glUniform1f(lightCutOff4ID, sceneLights[4]->cutOff);
                 }
                 if(numberOfLight >= 6)
                 {
@@ -182,6 +201,7 @@ public:
                     glUniform1f(lightConstant5ID,sceneLights[5]->constant);
                     glUniform1f(lightLinear5ID,sceneLights[5]->linear);
                     glUniform1f(lightQuadratic5ID,sceneLights[5]->quadratic);
+                    glUniform1f(lightCutOff5ID, sceneLights[5]->cutOff);
                 }
                 if(numberOfLight >= 7)
                 {
@@ -193,13 +213,14 @@ public:
                     glUniform1f(lightConstant6ID,sceneLights[6]->constant);
                     glUniform1f(lightLinear6ID,sceneLights[6]->linear);
                     glUniform1f(lightQuadratic6ID,sceneLights[6]->quadratic);
+                    glUniform1f(lightCutOff6ID, sceneLights[6]->cutOff);
                 }
             }
     }
 
-    void compileDefaultShader() //For now handles directionnal and point lights
+    void compileDefaultShader() //For now handles directionnal, spot and point lights
     {
-        std::cout << "---> Compiling lightBasicShader (directionnal, point light supported) for shader ID=" << id << std::endl;
+        std::cout << "---> Compiling lightBasicShader for shader ID=" << id << std::endl;
 
          const char* vertex_shader =
         "#version 330\n"
@@ -236,6 +257,7 @@ public:
         "uniform float lightConstant0;"
         "uniform float lightLinear0;"
         "uniform float lightQuadratic0;"
+        "uniform float lightCutOff0;"
         //Light 1
         "uniform vec3 lightColor1;"
         "uniform vec3 lightPos1;"
@@ -244,6 +266,7 @@ public:
         "uniform float lightConstant1;"
         "uniform float lightLinear1;"
         "uniform float lightQuadratic1;"
+        "uniform float lightCutOff1;"
         //light 2
         "uniform vec3 lightColor2;"
         "uniform vec3 lightPos2;"
@@ -252,6 +275,7 @@ public:
         "uniform float lightConstant2;"
         "uniform float lightLinear2;"
         "uniform float lightQuadratic2;"
+        "uniform float lightCutOff2;"
         //light 3
         "uniform vec3 lightColor3;"
         "uniform vec3 lightPos3;"
@@ -260,6 +284,7 @@ public:
         "uniform float lightConstant3;"
         "uniform float lightLinear3;"
         "uniform float lightQuadratic3;"
+        "uniform float lightCutOff3;"
         //light 4
         "uniform vec3 lightColor4;"
         "uniform vec3 lightPos4;"
@@ -268,6 +293,7 @@ public:
         "uniform float lightConstant4;"
         "uniform float lightLinear4;"
         "uniform float lightQuadratic4;"
+        "uniform float lightCutOff4;"
         //light 5
         "uniform vec3 lightColor5;"
         "uniform vec3 lightPos5;"
@@ -276,6 +302,7 @@ public:
         "uniform float lightConstant5;"
         "uniform float lightLinear5;"
         "uniform float lightQuadratic5;"
+        "uniform float lightCutOff5;"
         //light 6
         "uniform vec3 lightColor6;"
         "uniform vec3 lightPos6;"
@@ -284,6 +311,7 @@ public:
         "uniform float lightConstant6;"
         "uniform float lightLinear6;"
         "uniform float lightQuadratic6;"
+        "uniform float lightCutOff6;"
         //number of lights
         "uniform int numberOfLight;"
         // next important render matrixes
@@ -308,10 +336,22 @@ public:
         "  vec3 lightDir;"
         "  float attenuation = 1.0;"
         "  if(lightType0 == 1){" //directionnal
-        "    lightDir = normalize(-lightDir0);}"
-        "  else if(lightType0 == 0){lightDir = normalize(lightPos0 - fragPos);" //point light
+        "    lightDir = normalize(-lightDir0);"
+        "  }"
+        "  else if(lightType0 == 0){"
+        "    lightDir = normalize(lightPos0 - fragPos);" //point light
         "    float distance    = length(lightPos0 - fragPos);"
         "    attenuation = 1.0 / (lightConstant0 + lightLinear0 * distance + lightQuadratic0 * (distance * distance));"
+        "  }"
+        "  else if(lightType0 == 2){" // spotlight
+        "    lightDir = normalize(lightPos0 - fragPos);"
+        "    float theta = dot(normalize(lightPos0 - fragPos), normalize(-lightDir0));"
+        "    if(theta > lightCutOff0) {"
+        "      float distance = length(lightPos0 - fragPos);"
+        "      attenuation = 1.0 / (lightConstant0 + lightLinear0 * distance + lightQuadratic0 * (distance * distance));"
+        "    }else{"
+        "       attenuation = 0.1;"
+        "    }"
         "  }"
         "  float diff = max(dot(norm, lightDir), 0.0);"
         "  vec3 diffuse = diff * lightColor0;"
@@ -339,6 +379,16 @@ public:
         "    float distance    = length(lightPos1 - fragPos);"
         "    attenuation = 1.0 / (lightConstant1 + lightLinear1 * distance + lightQuadratic1 * (distance * distance));"
         "  }"
+        "  else if(lightType1 == 2){" // spotlight
+        "    lightDir = normalize(lightPos1 - fragPos);"
+        "    float theta = dot(normalize(lightPos1 - fragPos), normalize(-lightDir1));"
+        "    if(theta > lightCutOff1) {"
+        "      float distance = length(lightPos1 - fragPos);"
+        "      attenuation = 1.0 / (lightConstant1 + lightLinear1 * distance + lightQuadratic1 * (distance * distance));"
+        "    }else{"
+        "       attenuation = 0.1;"
+        "    }"
+        "  }"
         "  float diff = max(dot(norm, lightDir), 0.0);"
         "  vec3 diffuse = diff * lightColor1;"
         "  float ambiantStrength = ambStrenght;"
@@ -364,6 +414,16 @@ public:
         "  else if(lightType2 == 0){lightDir = normalize(lightPos2 - fragPos);" //point light
         "    float distance    = length(lightPos2 - fragPos);"
         "    attenuation = 1.0 / (lightConstant2 + lightLinear2 * distance + lightQuadratic2 * (distance * distance));"
+        "  }"
+        "  else if(lightType2 == 2){" // spotlight
+        "    lightDir = normalize(lightPos2 - fragPos);"
+        "    float theta = dot(normalize(lightPos2 - fragPos), normalize(-lightDir2));"
+        "    if(theta > lightCutOff0) {"
+        "      float distance = length(lightPos2 - fragPos);"
+        "      attenuation = 1.0 / (lightConstant2 + lightLinear2 * distance + lightQuadratic2 * (distance * distance));"
+        "    }else{"
+        "       attenuation = 0.1;"
+        "    }"
         "  }"
         "  float diff = max(dot(norm, lightDir), 0.0);"
         "  vec3 diffuse = diff * lightColor2;"
@@ -391,6 +451,16 @@ public:
         "    float distance    = length(lightPos3 - fragPos);"
         "    attenuation = 1.0 / (lightConstant3 + lightLinear3 * distance + lightQuadratic3 * (distance * distance));"
         "  }"
+        "  else if(lightType3 == 2){" // spotlight
+        "    lightDir = normalize(lightPos3 - fragPos);"
+        "    float theta = dot(normalize(lightPos3 - fragPos), normalize(-lightDir3));"
+        "    if(theta > lightCutOff3) {"
+        "      float distance = length(lightPos3 - fragPos);"
+        "      attenuation = 1.0 / (lightConstant3 + lightLinear3 * distance + lightQuadratic3 * (distance * distance));"
+        "    }else{"
+        "       attenuation = 0.1;"
+        "    }"
+        "  }"
         "  float diff = max(dot(norm, lightDir), 0.0);"
         "  vec3 diffuse = diff * lightColor3;"
         "  float ambiantStrength = ambStrenght;"
@@ -416,6 +486,16 @@ public:
         "  else if(lightType4 == 0){lightDir = normalize(lightPos4 - fragPos);" //point light
         "    float distance    = length(lightPos4 - fragPos);"
         "    attenuation = 1.0 / (lightConstant4 + lightLinear4 * distance + lightQuadratic4 * (distance * distance));"
+        "  }"
+        "  else if(lightType4 == 2){" // spotlight
+        "    lightDir = normalize(lightPos4 - fragPos);"
+        "    float theta = dot(normalize(lightPos4 - fragPos), normalize(-lightDir4));"
+        "    if(theta > lightCutOff4) {"
+        "      float distance = length(lightPos4 - fragPos);"
+        "      attenuation = 1.0 / (lightConstant4 + lightLinear4 * distance + lightQuadratic4 * (distance * distance));"
+        "    }else{"
+        "       attenuation = 0.1;"
+        "    }"
         "  }"
         "  float diff = max(dot(norm, lightDir), 0.0);"
         "  vec3 diffuse = diff * lightColor4;"
@@ -443,6 +523,16 @@ public:
         "    float distance    = length(lightPos5 - fragPos);"
         "    attenuation = 1.0 / (lightConstant5 + lightLinear5 * distance + lightQuadratic5 * (distance * distance));"
         "  }"
+        "  else if(lightType5 == 2){" // spotlight
+        "    lightDir = normalize(lightPos5 - fragPos);"
+        "    float theta = dot(normalize(lightPos5 - fragPos), normalize(-lightDir5));"
+        "    if(theta > lightCutOff5) {"
+        "      float distance = length(lightPos5 - fragPos);"
+        "      attenuation = 1.0 / (lightConstant5 + lightLinear5 * distance + lightQuadratic5 * (distance * distance));"
+        "    }else{"
+        "       attenuation = 0.1;"
+        "    }"
+        "  }"
         "  float diff = max(dot(norm, lightDir), 0.0);"
         "  vec3 diffuse = diff * lightColor5;"
         "  float ambiantStrength = ambStrenght;"
@@ -468,6 +558,16 @@ public:
         "  else if(lightType6 == 0){lightDir = normalize(lightPos6 - fragPos);" //point light
         "    float distance    = length(lightPos6 - fragPos);"
         "    attenuation = 1.0 / (lightConstant6 + lightLinear6 * distance + lightQuadratic6 * (distance * distance));"
+        "  }"
+        "  else if(lightType6 == 2){" // spotlight
+        "    lightDir = normalize(lightPos6 - fragPos);"
+        "    float theta = dot(normalize(lightPos6 - fragPos), normalize(-lightDir6));"
+        "    if(theta > lightCutOff6) {"
+        "      float distance = length(lightPos6 - fragPos);"
+        "      attenuation = 1.0 / (lightConstant6 + lightLinear6 * distance + lightQuadratic6 * (distance * distance));"
+        "    }else{"
+        "       attenuation = 0.1;"
+        "    }"
         "  }"
         "  float diff = max(dot(norm, lightDir), 0.0);"
         "  vec3 diffuse = diff * lightColor6;"
@@ -584,6 +684,8 @@ private:
         GLuint lightLinear0ID;
         GLuint lightQuadratic0ID;
 
+        GLuint lightCutOff0ID;
+
         //light 1
         GLuint lightType1ID;
         GLuint lightColor1ID;
@@ -594,6 +696,8 @@ private:
         GLuint lightConstant1ID;
         GLuint lightLinear1ID;
         GLuint lightQuadratic1ID;
+
+        GLuint lightCutOff1ID;
 
         //light 2
         GLuint lightType2ID;
@@ -606,6 +710,8 @@ private:
         GLuint lightLinear2ID;
         GLuint lightQuadratic2ID;
 
+        GLuint lightCutOff2ID;
+
         //light 3
         GLuint lightType3ID;
         GLuint lightColor3ID;
@@ -616,6 +722,8 @@ private:
         GLuint lightConstant3ID;
         GLuint lightLinear3ID;
         GLuint lightQuadratic3ID;
+
+        GLuint lightCutOff3ID;
 
         //light 4
         GLuint lightType4ID;
@@ -628,6 +736,8 @@ private:
         GLuint lightLinear4ID;
         GLuint lightQuadratic4ID;
 
+        GLuint lightCutOff4ID;
+
         //light 5
         GLuint lightType5ID;
         GLuint lightColor5ID;
@@ -639,6 +749,8 @@ private:
         GLuint lightLinear5ID;
         GLuint lightQuadratic5ID;
 
+        GLuint lightCutOff5ID;
+
         //light 6
         GLuint lightType6ID;
         GLuint lightColor6ID;
@@ -649,6 +761,8 @@ private:
         GLuint lightConstant6ID;
         GLuint lightLinear6ID;
         GLuint lightQuadratic6ID;
+
+        GLuint lightCutOff6ID;
 
     GLuint numberOfLightID;
 

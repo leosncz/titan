@@ -43,6 +43,7 @@ int main()
     //triangle.removeSpecularTexture();
     triangle.addTexture("texture.jpg");
     triangle.setNumberOfTextureToDraw(1);
+    triangle.setSpecularStrenght(3.0);
 
     // triangle.setAmbiantStrenght(0.5);
 
@@ -51,23 +52,20 @@ int main()
     myplane.setSpecularTexture("specularmap.jpg");
     myscene.addDrawableObject(&myplane);
     myplane.moveObject(glm::vec3(0, -0.5, -2));
-    myplane.scaleObject(glm::vec3(10, 1, 10));
+    myplane.scaleObject(glm::vec3(100, 1, 100));
     myplane.addTexture("texture.jpg");
     myplane.setNumberOfTextureToDraw(1);
-    float texcoord[] = { 0,0,    1,0,   1,1,  1,1,  0,1, 0,0 };
-    myplane.setTextureResolution(20, texcoord);
-
-    light mylight2 = light();
-    mylight2.setData(glm::vec3(0, 0, 0), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, -1, -1), 1000.0f);
-    mylight2.type = DIRECTIONNAL_LIGHT;
-   // myscene.addLight(&mylight2);
+    float texcoord[] = { 0,0,    10,0,   10,10,  10,10,  0,10, 0,0 };
+    myplane.setTextureResolution(10, texcoord);
+    myplane.setSpecularStrenght(3.0);
 
     light mylight3 = light();
-    mylight3.setData(glm::vec3(-2, 1, 1), glm::vec3(0.0, 0.0, 1.0), glm::vec3(0, 0, -1), 1000.0f);
-    mylight3.type = POINT_LIGHT;
+    mylight3.setData(glm::vec3(0, 1, 3), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, -0.5, -1), 1000.0f);
+    mylight3.type = SPOT_LIGHT;
     myscene.addLight(&mylight3);
-    mylight3.quadratic = 0.09;
-    mylight3.linear = 0.032;
+    mylight3.quadratic = 0.019;
+    mylight3.linear = 0.022;
+    mylight3.constant = 1.0;
 
     light mylight4 = light();
     mylight4.setData(glm::vec3(0, 1, 1), glm::vec3(1.0, 0.0, 0.0), glm::vec3(0, 0, -1), 1000.0f);
@@ -82,6 +80,13 @@ int main()
     myscene.addLight(&mylight5);
     mylight5.quadratic = 0.09;
     mylight5.linear = 0.032;
+
+    light mylight6 = light();
+    mylight6.setData(glm::vec3(0, 1, -5), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, -1), 1000.0f);
+    mylight6.type = POINT_LIGHT;
+    myscene.addLight(&mylight6);
+    mylight6.quadratic = 0.09;
+    mylight6.linear = 0.032;
 
 
     while (!mainDisplay.shouldExit()) {

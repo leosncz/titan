@@ -3,8 +3,9 @@
 **Titan Engine** is a rendering engine (possibly also game engine in the future) which is small, lightweigth and easily customizable.
 
 ## Example
-You can see the **example.png** capture to see the current state of the engine.
 ![Example](example.png "Example of actual titan rendering")
+![Example](example2.png "Example of actual titan rendering")
+![Example](example3.png "Example of actual titan rendering")
 Piece of code that boots up the engine and draw the demo in the capture file :
 	
 	int main()
@@ -58,9 +59,9 @@ Piece of code that boots up the engine and draw the demo in the capture file :
 ## Actual supported features:
 - Runs on Windows, Mac & Linux
 - Support up to 7 seven lights at the same time
-- Directionnal and point light supported
+- Directionnal, spot and point light supported
 - Ambiant, diffuse and specular shading
-- For point light, dynamic linear, constant and quadratic parameters are customizable.
+- For point and spot light, linear, constant and quadratic parameters are customizable.
 - Diffuse map (up to 4 textures on a single object)
 - Specular map
 
