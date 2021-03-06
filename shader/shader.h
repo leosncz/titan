@@ -1,14 +1,13 @@
 /* Author: leosncz
 Handles everything related to shaders
 */
-#ifndef SHADER_H_INCLUDED
-#define SHADER_H_INCLUDED
+#pragma once
 #include <iostream>
 #include <string>
 #include <stdlib.h>
 #include "../light/light.h"
 #include "../renderObject/renderObject.h"
-
+#include <GL/glew.h>
 using namespace std;
 class shader
 {
@@ -21,7 +20,6 @@ public:
     shader()
     {
         id = rand();
-        std::cout << "--> Creating new shader ID=" << id << std::endl;
     }
 
     void init_light_system() // Shouldnt be called unless u know what ur doin
@@ -654,15 +652,16 @@ public:
 
         glDeleteShader(vs);
         glDeleteShader(fs);
-
-        init_light_system(); // MUST be called in order for the shader to work with light
     }
 
     GLuint getShaderID(){return m_shaderID;}
     ~shader()
     {
-        std::cout << "--> Destroying shader ID=" << id << std::endl;
-        glDeleteProgram(m_shaderID);
+        if (glIsProgram(m_shaderID))
+        {
+            std::cout << "--> Destroying shader ID=" << id << std::endl;
+            glDeleteProgram(m_shaderID);
+        }
     }
 private:
     GLuint m_shaderID;
@@ -767,4 +766,3 @@ private:
     GLuint numberOfLightID;
 
 };
-#endif // SHADER_H_INCLUDED

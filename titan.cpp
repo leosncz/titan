@@ -7,6 +7,7 @@
 #include "prefab/cube/cube.h"
 #include "light/light.h"
 #include "scene/scene.h"
+#include "renderObjectScene/renderObjectScene.h"
 using namespace std;
 
 int main()
@@ -55,8 +56,8 @@ int main()
     myplane.scaleObject(glm::vec3(100, 1, 100));
     myplane.addTexture("texture.jpg");
     myplane.setNumberOfTextureToDraw(1);
-    float texcoord[] = { 0,0,    10,0,   10,10,  10,10,  0,10, 0,0 };
-    myplane.setTextureResolution(10, texcoord);
+    //float texcoord[] = { 0,0,    10,0,   10,10,  10,10,  0,10, 0,0 };
+    myplane.setTextureResolution(100);
     myplane.setSpecularStrenght(3.0);
 
     light mylight3 = light();
@@ -82,12 +83,20 @@ int main()
     mylight5.linear = 0.032;
 
     light mylight6 = light();
-    mylight6.setData(glm::vec3(0, 1, -5), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, -1), 1000.0f);
+    mylight6.setData(glm::vec3(-3, 1, -5), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, -1), 1000.0f);
     mylight6.type = POINT_LIGHT;
     myscene.addLight(&mylight6);
     mylight6.quadratic = 0.09;
     mylight6.linear = 0.032;
 
+    renderObjectScene objScene = renderObjectScene(&myscene);
+    objScene.loadFromFile("art.obj");
+    objScene.getObject(0)->moveObject(glm::vec3(2, 0.5, -5));
+    objScene.getObject(0)->addTexture("texture.jpg");
+    objScene.getObject(0)->setNumberOfTextureToDraw(1);
+    objScene.getObject(0)->setSpecularTexture("specularmap.jpg");
+    objScene.getObject(0)->setSpecularStrenght(2.0);
+    objScene.getObject(0)->setTextureResolution(3);
 
     while (!mainDisplay.shouldExit()) {
         mainDisplay.clearWindow();

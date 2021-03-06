@@ -161,6 +161,7 @@
     <ClInclude Include="light\light.h" />
     <ClInclude Include="prefab\cube\cube.h" />
     <ClInclude Include="prefab\plane\plane.h" />
+    <ClInclude Include="renderObjectScene\renderObjectScene.h" />
     <ClInclude Include="renderObject\renderObject.h" />
     <ClInclude Include="scene\scene.h" />
     <ClInclude Include="shader\shader.h" />

@@ -11,20 +11,18 @@ Handles everything related to drawable nodes
 #include "../stb_image/stb_image.h"
 #include <iostream>
 #include <string>
-#include <assimp/BaseImporter.h>
 
 class renderObject
 {
 public:
-    void setData(float* vertices, float* colors, float* texCoords, int nbOfPointToDraw, float* normals=0)
+    renderObject() { isInitialized = false; }
+    void setData(float* vertices, float* colors, float* texCoords, int nbOfPointToDraw, float* normals=0) // Use this methode to define the mesh by hand
     {
-        // Init variables
+        //Initialize members
         id = rand();
         std::cout << "--> Creating new renderObject ID=" << id << std::endl;
-        //Initialize members
-        m_nbOfPointToDraw = nbOfPointToDraw;
-        modelMatrix = glm::mat4(1.0);
-        init(vertices,colors,normals,texCoords);
+        init(vertices,colors,normals,texCoords,nbOfPointToDraw);
+        isInitialized = true;
     }
 
     void render(glm::mat4 *projection, glm::mat4 *view, glm::mat4 *model, glm::vec3 viewPos, light* sceneLights[]=0, int numberOfLight=0, GLuint textureDepthMap=0)
@@ -108,8 +106,10 @@ public:
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferSubData(GL_ARRAY_BUFFER,0, 3 * m_nbOfPointToDraw * sizeof(float), vertices);
     }
-    void setTextureResolution(int res, float* texCoords=0)
+    void setTextureResolution(int res)
     {
+        //Get actual texcoords
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_texCoords);
 
         for(int i = 0;i<m_nbOfPointToDraw*2;i++)
         {
@@ -119,7 +119,7 @@ public:
         glBindBuffer(GL_ARRAY_BUFFER, vbo_texCoords);
         glBufferSubData(GL_ARRAY_BUFFER, 0, 2 * m_nbOfPointToDraw * sizeof(float), texCoords);
     }
-
+   
     void addTexture(const char* pathToTexture) // Not all texture must be used for drawing onto the node (for example we can use it for depth test)
     {
         if(m_nbOfTexture == 0)
@@ -156,17 +156,20 @@ public:
     }
     ~renderObject()
     {
-        std::cout << "--> Destroying renderObject ID=" << id << std::endl;
-        glDeleteTextures(1,&texture1);
-        glDeleteTextures(1,&texture2);
-        glDeleteTextures(1,&texture3);
-        glDeleteTextures(1,&texture4);
-        glDeleteTextures(1, &specularTexture);
-        glDeleteBuffers(1,&vbo);
-        glDeleteBuffers(1,&vbo_colors);
-        glDeleteBuffers(1,&vbo_texCoords);
-        glDeleteBuffers(1,&vbo_normals);
-        glDeleteVertexArrays(1,&vao);
+        if (isInitialized)
+        {
+            std::cout << "--> Destroying renderObject ID=" << id << std::endl;
+            glDeleteTextures(1, &texture1);
+            glDeleteTextures(1, &texture2);
+            glDeleteTextures(1, &texture3);
+            glDeleteTextures(1, &texture4);
+            glDeleteTextures(1, &specularTexture);
+            glDeleteBuffers(1, &vbo);
+            glDeleteBuffers(1, &vbo_colors);
+            glDeleteBuffers(1, &vbo_texCoords);
+            glDeleteBuffers(1, &vbo_normals);
+            glDeleteVertexArrays(1, &vao);
+        }
     }
 
     //Material properties edition
@@ -186,6 +189,8 @@ protected:
 
     int id;
 
+    bool isInitialized;
+
     glm::mat4 modelMatrix;
 
     int m_nbOfPointToDraw;
@@ -196,6 +201,8 @@ protected:
     GLuint vbo_colors;
     GLuint vbo_texCoords;
     GLuint vbo_normals;
+
+    float texCoords[500];
 
     GLuint vao;
     shader m_shader;
@@ -222,12 +229,15 @@ protected:
     GLuint specularTexture;
 
 
-    void init(float* vertices, float* colors, float* normals, float* texCoord)
+    void init(float* vertices, float* colors, float* normals, float* texCoord, int nbOfPointToDraw)
     {
+        m_nbOfPointToDraw = nbOfPointToDraw;
         modelMatrix = glm::mat4(1.0);
         m_nbOfTexture = 0;
         m_nbOfTextureToDraw = 0;
         hasSpecularMap = false;
+        //Set texcordds
+        if (texCoord != 0) { for (int i = 0; i < nbOfPointToDraw * 2; i++) { texCoords[i] = texCoord[i]; } }
 
             m_shader.compileDefaultShader();
 
@@ -241,7 +251,7 @@ protected:
 
             glGenBuffers(1, &vbo_texCoords);
             glBindBuffer(GL_ARRAY_BUFFER, vbo_texCoords);
-            glBufferData(GL_ARRAY_BUFFER, 2 * m_nbOfPointToDraw * sizeof(float), texCoord, GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, 2 * m_nbOfPointToDraw * sizeof(float), texCoords, GL_STATIC_DRAW);
 
             glGenBuffers(1, &vbo_normals);
             glBindBuffer(GL_ARRAY_BUFFER, vbo_normals);
