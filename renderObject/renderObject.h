@@ -11,6 +11,7 @@ Handles everything related to drawable nodes
 #include "../stb_image/stb_image.h"
 #include <iostream>
 #include <string>
+#include <vector>
 
 class renderObject
 {
@@ -22,7 +23,6 @@ public:
         id = rand();
         std::cout << "--> Creating new renderObject ID=" << id << std::endl;
         init(vertices,colors,normals,texCoords,nbOfPointToDraw);
-        isInitialized = true;
     }
 
     void render(glm::mat4 *projection, glm::mat4 *view, glm::mat4 *model, glm::vec3 viewPos, light* sceneLights[]=0, int numberOfLight=0, GLuint textureDepthMap=0)
@@ -117,28 +117,34 @@ public:
         }
 
         glBindBuffer(GL_ARRAY_BUFFER, vbo_texCoords);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, 2 * m_nbOfPointToDraw * sizeof(float), texCoords);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, 2 * m_nbOfPointToDraw * sizeof(float), &texCoords[0]);
     }
    
-    void addTexture(const char* pathToTexture) // Not all texture must be used for drawing onto the node (for example we can use it for depth test)
+    GLuint* addTexture(const char* pathToTexture) // Returns the created texture (max 4)
     {
+        GLuint* texture = 0;
         if(m_nbOfTexture == 0)
-        {
-            setTexture(&texture1,pathToTexture);
+        {  
+            setTexture(&texture1, pathToTexture);   
+            texture = &texture1;
         }
         else if(m_nbOfTexture == 1)
         {
             setTexture(&texture2,pathToTexture);
+            texture = &texture2;
         }
         else if(m_nbOfTexture == 2)
         {
             setTexture(&texture3,pathToTexture);
+            texture = &texture3;
         }
         else if(m_nbOfTexture == 3)
         {
             setTexture(&texture4,pathToTexture);
+            texture = &texture4;
         }
         m_nbOfTexture++;
+        return texture;
     }
 
     void moveObject(glm::vec3 position) // move from scene origin everytime
@@ -202,7 +208,7 @@ protected:
     GLuint vbo_texCoords;
     GLuint vbo_normals;
 
-    float texCoords[500];
+    vector<float> texCoords;
 
     GLuint vao;
     shader m_shader;
@@ -236,8 +242,9 @@ protected:
         m_nbOfTexture = 0;
         m_nbOfTextureToDraw = 0;
         hasSpecularMap = false;
+        isInitialized = true;
         //Set texcordds
-        if (texCoord != 0) { for (int i = 0; i < nbOfPointToDraw * 2; i++) { texCoords[i] = texCoord[i]; } }
+        if (texCoord != 0) { for (int i = 0; i < nbOfPointToDraw * 2; i++) { texCoords.push_back(texCoord[i]); } }
 
             m_shader.compileDefaultShader();
 
@@ -251,7 +258,7 @@ protected:
 
             glGenBuffers(1, &vbo_texCoords);
             glBindBuffer(GL_ARRAY_BUFFER, vbo_texCoords);
-            glBufferData(GL_ARRAY_BUFFER, 2 * m_nbOfPointToDraw * sizeof(float), texCoords, GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, 2 * m_nbOfPointToDraw * sizeof(float), &texCoords[0], GL_STATIC_DRAW);
 
             glGenBuffers(1, &vbo_normals);
             glBindBuffer(GL_ARRAY_BUFFER, vbo_normals);

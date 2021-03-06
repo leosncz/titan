@@ -29,6 +29,8 @@ int display::init(int x, int y, int aa)
     glEnable(GL_DEPTH_TEST); // enable depth-testing
     glEnable(GL_MULTISAMPLE);  // Ensure the AA is on
     glDepthFunc(GL_LESS);
+
+    //Comment this section to disable face-culling optimization (may broke model importation)
     glEnable(GL_CULL_FACE);
     glFrontFace(GL_CCW);
 

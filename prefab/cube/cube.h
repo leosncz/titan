@@ -9,11 +9,6 @@ public:
         std::cout << "--> Creating new cube prefab ID=" << id << std::endl;
     }
 
-    ~cube()
-    {
-        std::cout << "--> Deleting cube prefab ID=" << id << std::endl;
-    }
-
     void initPrefab(float* colors)
     {
         float cubeVertices[] = {

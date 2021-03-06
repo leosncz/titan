@@ -59,5 +59,8 @@
     <ClInclude Include="renderObjectScene\renderObjectScene.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="modelLoaders\objLoader\objLoader.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -64,13 +64,12 @@ Piece of code that boots up the engine and draw the demo in the capture file :
 - For point and spot light, linear, constant and quadratic parameters are customizable.
 - Diffuse map (up to 4 textures on a single object)
 - Specular map
-- Multiple 3d file loader (obj, fbx, ...)
+- OBJ Model loader
 
 ## Build
 In order to use & build the project with this library, you must install the following libraries :
 - GLFW
 - OpenGL
 - GLEW
-- GLM
-- Assimp (precompiled lib for vc19 in assimp directory) </br>
+- GLM </br>
 If you use the sln solution, keep in mind that everything is 64-bit oriented.

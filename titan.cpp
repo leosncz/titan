@@ -36,7 +36,7 @@ int main()
 
     cube triangle = cube();
     triangle.initPrefab(colors);
-    myscene.addDrawableObject(&triangle);
+    //myscene.addDrawableObject(&triangle);
     triangle.moveObject(glm::vec3(0, 0.3, -1));
     //triangle.rotateObject(20.0f, glm::vec3(1, 0, 0));
     triangle.setSpecularStrenght(1.0);
@@ -69,14 +69,14 @@ int main()
     mylight3.constant = 1.0;
 
     light mylight4 = light();
-    mylight4.setData(glm::vec3(0, 1, 1), glm::vec3(1.0, 0.0, 0.0), glm::vec3(0, 0, -1), 1000.0f);
+    mylight4.setData(glm::vec3(0, 1, 1), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, -1), 1000.0f);
     mylight4.type = POINT_LIGHT;
     myscene.addLight(&mylight4);
     mylight4.quadratic = 0.09;
     mylight4.linear = 0.032;
 
     light mylight5 = light();
-    mylight5.setData(glm::vec3(2, 1, 1), glm::vec3(0.0, 1.0, 0.0), glm::vec3(0, 0, -1), 1000.0f);
+    mylight5.setData(glm::vec3(2, 1, 1), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, -1), 1000.0f);
     mylight5.type = POINT_LIGHT;
     myscene.addLight(&mylight5);
     mylight5.quadratic = 0.09;
@@ -90,13 +90,8 @@ int main()
     mylight6.linear = 0.032;
 
     renderObjectScene objScene = renderObjectScene(&myscene);
-    objScene.loadFromFile("art.obj");
-    objScene.getObject(0)->moveObject(glm::vec3(2, 0.5, -5));
-    objScene.getObject(0)->addTexture("texture.jpg");
-    objScene.getObject(0)->setNumberOfTextureToDraw(1);
-    objScene.getObject(0)->setSpecularTexture("specularmap.jpg");
-    objScene.getObject(0)->setSpecularStrenght(2.0);
-    objScene.getObject(0)->setTextureResolution(3);
+    objScene.loadOBJFromFile("backpack.obj");
+    objScene.moveRenderObjectScene(glm::vec3(0, 2, -0.5));
 
     while (!mainDisplay.shouldExit()) {
         mainDisplay.clearWindow();

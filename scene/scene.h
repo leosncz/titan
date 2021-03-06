@@ -8,7 +8,7 @@ Handles everything related to scenes and object rendering loop in scenes
 #include <GLFW/glfw3.h>
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
-
+#include <vector>
 #include "../display/display.h"
 #include "../renderObject/renderObject.h"
 #include "../cameraFPS/cameraFPS.h"
@@ -20,7 +20,6 @@ public:
     void setupDisplay(display* customDisplay) // Set the display that will be used to render the scene
     {
         m_display = customDisplay;
-        m_nbOfObjects = 0;
         m_nbOfLight = 0;
 
         // Setup ogl matrix
@@ -37,7 +36,7 @@ public:
 
     void renderScene()
     {
-        for(int i = 0; i<m_nbOfObjects;i++)
+        for(int i = 0; i<m_objectHolder.size();i++)
         {
             m_objectHolder[i]->render(&projection, &view, &model, m_actualCamera.getCameraPos(), lights,m_nbOfLight);
         }
@@ -46,8 +45,7 @@ public:
     void addDrawableObject(renderObject* object)
     {
         std::cout << "---> Adding new renderObject (ID=" << object->getID() << ") to scene ID=" << id << std::endl;
-        m_objectHolder[m_nbOfObjects] = object;
-        m_nbOfObjects++;
+        m_objectHolder.push_back(object);
     }
 
     void addLight(light* thelight)
@@ -73,8 +71,7 @@ private:
     int id;
 
     display* m_display;
-    renderObject* m_objectHolder[1000]; // Max 1000 objects drawable
-    int m_nbOfObjects;
+    vector<renderObject*> m_objectHolder;
 
     glm::mat4 projection, view, model;
 
