@@ -9,7 +9,7 @@ public:
         std::cout << "--> Creating new cube prefab ID=" << id << std::endl;
     }
 
-    void initPrefab(float* colors)
+    void initPrefab(float* colors, texturePool* texturePool)
     {
         float cubeVertices[] = {
           -0.5,-0.5,0.5,    0.5,-0.5,0.5,    0.5,0.5,0.5,   0.5,0.5,0.5,  -0.5,0.5,0.5,    -0.5,-0.5,0.5,  //front
@@ -35,7 +35,7 @@ public:
                               0,0,   1,0,    1,1,  1,1,    0,1,    0,0,
                               0,0,   1,0,    1,1,  1,1,    0,1,    0,0};
 
-        setData(cubeVertices,colors,texCoords,36,cubeNormals);
+        setData(cubeVertices,colors,texCoords,36,cubeNormals,texturePool);
     }
 };
 #endif // CUBE_H_INCLUDED

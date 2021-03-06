@@ -62,5 +62,8 @@
     <ClInclude Include="modelLoaders\objLoader\objLoader.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="texturePool\texturePool.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

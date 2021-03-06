@@ -65,6 +65,7 @@ Piece of code that boots up the engine and draw the demo in the capture file :
 - Diffuse map (up to 4 textures on a single object)
 - Specular map
 - OBJ Model loader
+- Automatic texture cache
 
 ## Build
 In order to use & build the project with this library, you must install the following libraries :

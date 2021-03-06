@@ -35,21 +35,21 @@ int main()
 
 
     cube triangle = cube();
-    triangle.initPrefab(colors);
-    //myscene.addDrawableObject(&triangle);
-    triangle.moveObject(glm::vec3(0, 0.3, -1));
-    //triangle.rotateObject(20.0f, glm::vec3(1, 0, 0));
+    triangle.initPrefab(colors,myscene.getTexturePool());
+    myscene.addDrawableObject(&triangle);
+    triangle.moveObject(glm::vec3(0, 0.3, -3));
+   // triangle.rotateObject(20.0f, glm::vec3(1, 0, 0));
     triangle.setSpecularStrenght(1.0);
     triangle.setSpecularTexture("specularmap.jpg");
     //triangle.removeSpecularTexture();
-    triangle.addTexture("texture.jpg");
+    triangle.addTexture("texture2.jpg");
     triangle.setNumberOfTextureToDraw(1);
     triangle.setSpecularStrenght(3.0);
 
     // triangle.setAmbiantStrenght(0.5);
 
     plane myplane = plane();
-    myplane.initPrefab(colors);
+    myplane.initPrefab(colors, myscene.getTexturePool());
     myplane.setSpecularTexture("specularmap.jpg");
     myscene.addDrawableObject(&myplane);
     myplane.moveObject(glm::vec3(0, -0.5, -2));
@@ -69,14 +69,14 @@ int main()
     mylight3.constant = 1.0;
 
     light mylight4 = light();
-    mylight4.setData(glm::vec3(0, 1, 1), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, -1), 1000.0f);
+    mylight4.setData(glm::vec3(0, 1, -1), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, -1), 1000.0f);
     mylight4.type = POINT_LIGHT;
     myscene.addLight(&mylight4);
     mylight4.quadratic = 0.09;
     mylight4.linear = 0.032;
 
     light mylight5 = light();
-    mylight5.setData(glm::vec3(2, 1, 1), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, -1), 1000.0f);
+    mylight5.setData(glm::vec3(2, 1, -1), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, -1), 1000.0f);
     mylight5.type = POINT_LIGHT;
     myscene.addLight(&mylight5);
     mylight5.quadratic = 0.09;
@@ -89,9 +89,11 @@ int main()
     mylight6.quadratic = 0.09;
     mylight6.linear = 0.032;
 
-    renderObjectScene objScene = renderObjectScene(&myscene);
-    objScene.loadOBJFromFile("backpack.obj");
-    objScene.moveRenderObjectScene(glm::vec3(0, 2, -0.5));
+   /* renderObjectScene objScene = renderObjectScene(&myscene);
+    objScene.loadOBJFromFile("ironman.obj");
+    objScene.moveRenderObjectScene(glm::vec3(0, 0.1, -2));
+    objScene.scaleRenderObjectScene(glm::vec3(0.1, 0.1, 0.1));
+    objScene.setRenderObjectSpecularStrenght(2.0);*/
 
     while (!mainDisplay.shouldExit()) {
         mainDisplay.clearWindow();
@@ -102,15 +104,3 @@ int main()
 
     return 0;
 }
-
-
-// Exécuter le programme : Ctrl+F5 ou menu Déboguer > Exécuter sans débogage
-// Déboguer le programme : F5 ou menu Déboguer > Démarrer le débogage
-
-// Astuces pour bien démarrer : 
-//   1. Utilisez la fenêtre Explorateur de solutions pour ajouter des fichiers et les gérer.
-//   2. Utilisez la fenêtre Team Explorer pour vous connecter au contrôle de code source.
-//   3. Utilisez la fenêtre Sortie pour voir la sortie de la génération et d'autres messages.
-//   4. Utilisez la fenêtre Liste d'erreurs pour voir les erreurs.
-//   5. Accédez à Projet > Ajouter un nouvel élément pour créer des fichiers de code, ou à Projet > Ajouter un élément existant pour ajouter des fichiers de code existants au projet.
-//   6. Pour rouvrir ce projet plus tard, accédez à Fichier > Ouvrir > Projet et sélectionnez le fichier .sln.

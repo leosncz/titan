@@ -48,11 +48,11 @@ public:
                 
             }
             objects.push_back(new renderObject());
-            objects[objects.size() - 1]->setData(&vertices[0], &colors[0], &uv[0], curMesh.Vertices.size(), &normals[0]);
+            objects[objects.size() - 1]->setData(&vertices[0], &colors[0], &uv[0], curMesh.Vertices.size(), &normals[0],m_scene->getTexturePool());
             if (curMesh.MeshMaterial.map_Kd != "") // If there is a diffuse texture
             {
-                //objects[objects.size() - 1]->addTexture(curMesh.MeshMaterial.map_Kd.c_str());
-                //objects[objects.size() - 1]->setNumberOfTextureToDraw(1);
+                objects[objects.size() - 1]->addTexture(curMesh.MeshMaterial.map_Kd.c_str());
+                objects[objects.size() - 1]->setNumberOfTextureToDraw(1);
             }
             m_scene->addDrawableObject(objects[objects.size() - 1]);
         }
@@ -60,9 +60,38 @@ public:
     void moveRenderObjectScene(glm::vec3 transation) {
         if (objects.size() > 0)
         {
-            for (int i = 0; i < objects.size() - 1; i++)
+            for (int i = 0; i < objects.size(); i++)
             {
                 objects[i]->moveObject(transation);
+            }
+        }
+    }
+    void scaleRenderObjectScene(glm::vec3 scale) {
+        if (objects.size() > 0)
+        {
+            for (int i = 0; i < objects.size(); i++)
+            {
+                objects[i]->scaleObject(scale);
+            }
+        }
+    }
+    void setRenderObjectSpecularStrenght(int value)
+    {
+        if (objects.size() > 0)
+        {
+            for (int i = 0; i < objects.size(); i++)
+            {
+                objects[i]->setSpecularStrenght(value);
+            }
+        }
+    }
+    void setRenderObjectAmbiantStrenght(int value)
+    {
+        if (objects.size() > 0)
+        {
+            for (int i = 0; i < objects.size(); i++)
+            {
+                objects[i]->setAmbiantStrenght(value);
             }
         }
     }

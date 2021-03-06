@@ -167,6 +167,7 @@
     <ClInclude Include="scene\scene.h" />
     <ClInclude Include="shader\shader.h" />
     <ClInclude Include="stb_image\stb_image.h" />
+    <ClInclude Include="texturePool\texturePool.h" />
     <ClInclude Include="version\version.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

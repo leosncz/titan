@@ -12,19 +12,22 @@ Handles everything related to drawable nodes
 #include <iostream>
 #include <string>
 #include <vector>
-
+#include "../texturePool/texturePool.h"
 class renderObject
 {
 public:
     renderObject() { isInitialized = false; }
-    void setData(float* vertices, float* colors, float* texCoords, int nbOfPointToDraw, float* normals=0) // Use this methode to define the mesh by hand
+    void setData(float* vertices, float* colors, float* texCoords, int nbOfPointToDraw, float* normals=0, texturePool* texturePool=0) // Use this methode to define the mesh by hand
     {
         //Initialize members
         id = rand();
         std::cout << "--> Creating new renderObject ID=" << id << std::endl;
-        init(vertices,colors,normals,texCoords,nbOfPointToDraw);
+        init(vertices,colors,normals,texCoords,nbOfPointToDraw,texturePool);
     }
-
+    void setTexturePool(texturePool* texPool)
+    {
+        m_texturePool = texPool;
+    }
     void render(glm::mat4 *projection, glm::mat4 *view, glm::mat4 *model, glm::vec3 viewPos, light* sceneLights[]=0, int numberOfLight=0, GLuint textureDepthMap=0)
     {
         //Update actual model matrix
@@ -120,31 +123,25 @@ public:
         glBufferSubData(GL_ARRAY_BUFFER, 0, 2 * m_nbOfPointToDraw * sizeof(float), &texCoords[0]);
     }
    
-    GLuint* addTexture(const char* pathToTexture) // Returns the created texture (max 4)
+    void addTexture(const char* pathToTexture) // Returns the created texture (max 4)
     {
-        GLuint* texture = 0;
         if(m_nbOfTexture == 0)
         {  
-            setTexture(&texture1, pathToTexture);   
-            texture = &texture1;
+            setTexture(&texture1, pathToTexture); 
         }
         else if(m_nbOfTexture == 1)
         {
             setTexture(&texture2,pathToTexture);
-            texture = &texture2;
         }
         else if(m_nbOfTexture == 2)
         {
             setTexture(&texture3,pathToTexture);
-            texture = &texture3;
         }
         else if(m_nbOfTexture == 3)
         {
             setTexture(&texture4,pathToTexture);
-            texture = &texture4;
         }
         m_nbOfTexture++;
-        return texture;
     }
 
     void moveObject(glm::vec3 position) // move from scene origin everytime
@@ -210,6 +207,8 @@ protected:
 
     vector<float> texCoords;
 
+    texturePool* m_texturePool; //Associated texture pool that contains cached texture
+
     GLuint vao;
     shader m_shader;
 
@@ -235,7 +234,7 @@ protected:
     GLuint specularTexture;
 
 
-    void init(float* vertices, float* colors, float* normals, float* texCoord, int nbOfPointToDraw)
+    void init(float* vertices, float* colors, float* normals, float* texCoord, int nbOfPointToDraw, texturePool* texturePool)
     {
         m_nbOfPointToDraw = nbOfPointToDraw;
         modelMatrix = glm::mat4(1.0);
@@ -243,6 +242,7 @@ protected:
         m_nbOfTextureToDraw = 0;
         hasSpecularMap = false;
         isInitialized = true;
+        m_texturePool = texturePool;
         //Set texcordds
         if (texCoord != 0) { for (int i = 0; i < nbOfPointToDraw * 2; i++) { texCoords.push_back(texCoord[i]); } }
 
@@ -299,6 +299,13 @@ protected:
 
     void setTexture(GLuint *texture, const char* path)
     {
+        //Check if texture is cached
+        GLuint cacheValue = m_texturePool->getCacheTextureID(path);
+        if ( cacheValue != -1) // Texture is cached
+        {
+            *texture = cacheValue;
+            return;
+        }
         stbi_set_flip_vertically_on_load(true);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -325,6 +332,7 @@ protected:
             std::cout << "renderObject ID=" << id << " Error loading image at " << path << std::endl;
         }
         stbi_image_free(data);
+        m_texturePool->addTextureToCache(*texture, path);
     }
 
 };

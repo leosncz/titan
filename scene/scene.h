@@ -12,7 +12,7 @@ Handles everything related to scenes and object rendering loop in scenes
 #include "../display/display.h"
 #include "../renderObject/renderObject.h"
 #include "../cameraFPS/cameraFPS.h"
-
+#include "../texturePool/texturePool.h"
 
 class scene
 {
@@ -61,6 +61,8 @@ public:
 
     int getNbOfLight(){return m_nbOfLight;}
 
+    texturePool* getTexturePool(){ return &m_texturePool; }
+
     ~scene()
     {
         std::cout << "--> Destroying scene ID=" << id << std::endl;
@@ -79,6 +81,8 @@ private:
     int m_nbOfLight;
 
     cameraFPS m_actualCamera;
+
+    texturePool m_texturePool; // All scenes have their own texture pool (for now)
 
 };
 
