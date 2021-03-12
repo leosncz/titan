@@ -46,13 +46,13 @@ int main()
 
     plane myplane = plane();
     myplane.initPrefab(colors, myscene.getTexturePool());
-    //myplane.setSpecularTexture("specularmap.jpg");
+    myplane.setSpecularTexture("specularmap.jpg");
     myscene.addDrawableObject(&myplane);
     myplane.moveObject(glm::vec3(0, -0.5, -2));
     myplane.scaleObject(glm::vec3(10, 1, 10));
     myplane.addTexture("texture.jpg");
     myplane.setNumberOfTextureToDraw(1);
-    //myplane.setTextureResolution(100);
+    myplane.setTextureResolution(10);
     myplane.setSpecularStrenght(2.0);
     myplane.setAmbiantStrenght(0.3);
 
@@ -65,7 +65,7 @@ int main()
     mylight3.constant = 1.0;*/
 
     light mylight4 = light();
-    mylight4.setData(glm::vec3(0, 0.0, 0), glm::vec3(0.5,0.5,0.5), glm::vec3(0, -1, -1), 1000.0f);
+    mylight4.setData(glm::vec3(0, 0.0, 0), glm::vec3(0.3,0.3,0.3), glm::vec3(2, 0, 3), 1000.0f);
     mylight4.type = DIRECTIONNAL_LIGHT;
     myscene.addLight(&mylight4);
     //mylight4.quadratic = 0.09;
