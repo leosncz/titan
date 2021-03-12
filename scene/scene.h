@@ -42,7 +42,7 @@ public:
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
         float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
         glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 2024, 2024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
         glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
         glDrawBuffer(GL_NONE);
@@ -58,7 +58,8 @@ public:
         if (m_nbOfLight >= 1) {
             if (lights[0]->type == DIRECTIONNAL_LIGHT) // so if it is dir light compute shadows
             {
-                glViewport(0, 0, 1024, 1024);
+                glCullFace(GL_FRONT);
+                glViewport(0, 0, 2024, 2024);
                 glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
                 glClear(GL_DEPTH_BUFFER_BIT);
                 for (int i = 0; i < m_objectHolder.size(); i++)
@@ -66,6 +67,7 @@ public:
                     m_objectHolder[i]->renderDepth(&projection, &view, &model,lights[0]->lightPosition);
                 }
                 glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                glCullFace(GL_BACK);
             }
         }
         

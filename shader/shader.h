@@ -620,9 +620,10 @@ public:
             // get depth of current fragment from light's perspective
          "   float currentDepth = projCoords.z;"
             // check whether current frag pos is in shadow
-         "  float bias = 0.005;"
+         " float bias = 0.0011;"
          //"  float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;"
          "float shadow = 0.0;"
+
          "vec2 texelSize = 1.0 / textureSize(textureDepthMap, 0);"
          "for (int x = -1; x <= 1; ++x)"
          "{"
@@ -654,8 +655,8 @@ public:
         "  if(howManyTex >= 4){textureResult = textureResult * texture(texture4,texCoord);}"
         "  "
         "  if(lightType0 == 1){"
-        "  frag_colour = textureResult * lightSummary * (1-ShadowCalculation(fs_in.FragPosLightSpace));}else{frag_colour = textureResult * lightSummary;}"
-        //"  frag_colour = vec4(1-ShadowCalculation(fs_in.FragPosLightSpace),1-ShadowCalculation(fs_in.FragPosLightSpace),1-ShadowCalculation(fs_in.FragPosLightSpace),1); "
+        "    frag_colour = textureResult * lightSummary * ((1-ShadowCalculation(fs_in.FragPosLightSpace)*(1-ambStrenght)));"
+        "  }"
         "}";
 
         GLuint vs = glCreateShader(GL_VERTEX_SHADER);
