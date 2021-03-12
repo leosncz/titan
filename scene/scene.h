@@ -63,7 +63,7 @@ public:
                 glClear(GL_DEPTH_BUFFER_BIT);
                 for (int i = 0; i < m_objectHolder.size(); i++)
                 {
-                    m_objectHolder[i]->renderDepth(&projection, &view, &model,lights[0]->lightDirection);
+                    m_objectHolder[i]->renderDepth(&projection, &view, &model,lights[0]->lightPosition);
                 }
                 glBindFramebuffer(GL_FRAMEBUFFER, 0);
             }

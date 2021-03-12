@@ -67,7 +67,7 @@ public:
             glUniform1i(howManyTexID,m_nbOfTextureToDraw);
 
             glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f,50.0f);
-            glm::mat4 lightView = glm::lookAt(sceneLights[0]->lightDirection, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+            glm::mat4 lightView = glm::lookAt(sceneLights[0]->lightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
             glm::mat4 lightSpaceMatrix = lightProjection * lightView;
             glUniformMatrix4fv(glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
 

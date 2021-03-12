@@ -65,7 +65,7 @@ int main()
     mylight3.constant = 1.0;*/
 
     light mylight4 = light();
-    mylight4.setData(glm::vec3(0, 0.0, 0), glm::vec3(0.3,0.3,0.3), glm::vec3(2, 0, 3), 1000.0f);
+    mylight4.setData(glm::vec3(0, 1, 3), glm::vec3(1,1,1), glm::vec3(0, -1, -1), 1000.0f);
     mylight4.type = DIRECTIONNAL_LIGHT;
     myscene.addLight(&mylight4);
     //mylight4.quadratic = 0.09;
