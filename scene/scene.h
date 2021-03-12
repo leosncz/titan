@@ -31,14 +31,51 @@ public:
 
         m_actualCamera.init(m_display);
 
+        glGenFramebuffers(1, &depthMapFBO);
+        glGenTextures(1, &depthMap);
+        glBindTexture(GL_TEXTURE_2D, depthMap);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+        glDrawBuffer(GL_NONE);
+        glReadBuffer(GL_NONE);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindTexture(GL_TEXTURE_2D, 0);
         std::cout << "--> Creating new scene ID=" << id << std::endl;
     }
 
     void renderScene()
     {
+        //Check if first light is directionnal in order to compute shadows
+        if (m_nbOfLight >= 1) {
+            if (lights[0]->type == DIRECTIONNAL_LIGHT) // so if it is dir light compute shadows
+            {
+                glViewport(0, 0, 1024, 1024);
+                glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+                glClear(GL_DEPTH_BUFFER_BIT);
+                for (int i = 0; i < m_objectHolder.size(); i++)
+                {
+                    m_objectHolder[i]->renderDepth(&projection, &view, &model,glm::vec3(0,0,0),glm::vec3(2,0,-1),lights,m_nbOfLight);
+                }
+                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            }
+        }
+        
+        glViewport(0, 0, m_display->getDisWidth(), m_display->getDisHeight());
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glBindTexture(GL_TEXTURE_2D, depthMap);
+        //Render scene normally
         for(int i = 0; i<m_objectHolder.size();i++)
         {
-            m_objectHolder[i]->render(&projection, &view, &model, m_actualCamera.getCameraPos(), lights,m_nbOfLight);
+            m_objectHolder[i]->render(&projection, &view, &model, m_actualCamera.getCameraPos(), lights,m_nbOfLight,depthMap);
         }
     }
 
@@ -66,6 +103,8 @@ public:
     ~scene()
     {
         std::cout << "--> Destroying scene ID=" << id << std::endl;
+        glDeleteTextures(1, &depthMap);
+        glDeleteFramebuffers(1, &depthMapFBO);
     }
 
 private:
@@ -77,12 +116,14 @@ private:
 
     glm::mat4 projection, view, model;
 
-    light* lights[7]; // 7 lights max
+    light* lights[7]; // 7 lights max supported
     int m_nbOfLight;
 
     cameraFPS m_actualCamera;
 
     texturePool m_texturePool; // All scenes have their own texture pool (for now)
+
+    GLuint depthMap, depthMapFBO; // Shadow stuff
 
 };
 
