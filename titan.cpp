@@ -37,45 +37,40 @@ int main()
     cube triangle = cube();
     triangle.initPrefab(colors,myscene.getTexturePool());
     myscene.addDrawableObject(&triangle);
-    triangle.moveObject(glm::vec3(0, 0.3, -3));
-   // triangle.rotateObject(20.0f, glm::vec3(1, 0, 0));
-    triangle.setSpecularStrenght(1.0);
-    triangle.setSpecularTexture("specularmap.jpg");
-    //triangle.removeSpecularTexture();
+    triangle.moveObject(glm::vec3(0, 0.0, -1));
     triangle.addTexture("texture2.jpg");
     triangle.setNumberOfTextureToDraw(1);
-    triangle.setSpecularStrenght(3.0);
+    //triangle.setSpecularTexture("specularmap2.jpg");
+    triangle.setSpecularStrenght(1.0);
 
-    // triangle.setAmbiantStrenght(0.5);
 
     plane myplane = plane();
     myplane.initPrefab(colors, myscene.getTexturePool());
-    myplane.setSpecularTexture("specularmap.jpg");
+    //myplane.setSpecularTexture("specularmap.jpg");
     myscene.addDrawableObject(&myplane);
     myplane.moveObject(glm::vec3(0, -0.5, -2));
     myplane.scaleObject(glm::vec3(100, 1, 100));
     myplane.addTexture("texture.jpg");
     myplane.setNumberOfTextureToDraw(1);
-    //float texcoord[] = { 0,0,    10,0,   10,10,  10,10,  0,10, 0,0 };
     myplane.setTextureResolution(100);
-    myplane.setSpecularStrenght(3.0);
+    myplane.setSpecularStrenght(1.0);
 
-    light mylight3 = light();
+    /*light mylight3 = light();
     mylight3.setData(glm::vec3(0, 1, 3), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, -0.5, -1), 1000.0f);
     mylight3.type = SPOT_LIGHT;
     myscene.addLight(&mylight3);
     mylight3.quadratic = 0.019;
     mylight3.linear = 0.022;
-    mylight3.constant = 1.0;
+    mylight3.constant = 1.0;*/
 
     light mylight4 = light();
-    mylight4.setData(glm::vec3(0, 1, -1), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, -1), 1000.0f);
+    mylight4.setData(glm::vec3(0, 1, 1), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, -1), 1000.0f);
     mylight4.type = POINT_LIGHT;
     myscene.addLight(&mylight4);
-    mylight4.quadratic = 0.09;
-    mylight4.linear = 0.032;
+    //mylight4.quadratic = 0.09;
+    //mylight4.linear = 0.032;
 
-    light mylight5 = light();
+    /*light mylight5 = light();
     mylight5.setData(glm::vec3(2, 1, -1), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, -1), 1000.0f);
     mylight5.type = POINT_LIGHT;
     myscene.addLight(&mylight5);
@@ -87,7 +82,7 @@ int main()
     mylight6.type = POINT_LIGHT;
     myscene.addLight(&mylight6);
     mylight6.quadratic = 0.09;
-    mylight6.linear = 0.032;
+    mylight6.linear = 0.032;*/
 
    /* renderObjectScene objScene = renderObjectScene(&myscene);
     objScene.loadOBJFromFile("ironman.obj");

@@ -60,8 +60,7 @@ Piece of code that boots up the engine and draw the demo in the capture file :
 - Runs on Windows, Mac & Linux (32-64 bits)
 - Support up to 7 seven lights at the same time
 - Directionnal, spot and point light supported
-- Ambiant, diffuse and specular shading
-- For point and spot light, linear, constant and quadratic parameters are customizable.
+- Blinn-Phong shading
 - Diffuse map (up to 4 textures on a single object)
 - Specular map
 - OBJ Model loader

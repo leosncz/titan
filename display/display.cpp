@@ -31,8 +31,8 @@ int display::init(int x, int y, int aa)
     glDepthFunc(GL_LESS);
 
     //Uncomment this section to enable face-culling optimization (may broke model importation)
-    /*glEnable(GL_CULL_FACE);
-    glFrontFace(GL_CCW);*/
+    glEnable(GL_CULL_FACE);
+    glFrontFace(GL_CCW);
 
     m_disHeight = y;
     m_disWidth = x;
