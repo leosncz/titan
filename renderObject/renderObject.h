@@ -28,13 +28,33 @@ public:
     {
         m_texturePool = texPool;
     }
+    void renderDepth(glm::mat4* projection, glm::mat4* view, glm::mat4* model, glm::vec3 lightDirection)
+    {
+        //Update actual model matrix
+        glm::mat4 customModelMatrix = *model * modelMatrix;
+
+        glUseProgram(m_depthShader.getShaderID());
+
+        glBindVertexArray(vao);
+
+        //Send object relative data to display the object
+        glUniformMatrix4fv(glGetUniformLocation(m_depthShader.getShaderID(),"model"), 1, GL_FALSE, glm::value_ptr(customModelMatrix));
+        glUniformMatrix4fv(glGetUniformLocation(m_depthShader.getShaderID(), "view"), 1, GL_FALSE, glm::value_ptr(*view));
+        glUniformMatrix4fv(glGetUniformLocation(m_depthShader.getShaderID(), "projection"), 1, GL_FALSE, glm::value_ptr(*projection));
+
+        glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f,30.0f);
+        glm::mat4 lightView = glm::lookAt(lightDirection, glm::vec3(0,0,0), glm::vec3(0, 1, 0));
+        glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+        glUniformMatrix4fv(glGetUniformLocation(m_depthShader.getShaderID(),"lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
+        
+        glDrawArrays(GL_TRIANGLES, 0, m_nbOfPointToDraw);
+    }
     void render(glm::mat4 *projection, glm::mat4 *view, glm::mat4 *model, glm::vec3 viewPos, light* sceneLights[]=0, int numberOfLight=0, GLuint textureDepthMap=0)
     {
         //Update actual model matrix
         glm::mat4 customModelMatrix = *model * modelMatrix;
 
         glUseProgram(m_shader.getShaderID());
-
 
         glBindVertexArray(vao);
 
@@ -45,12 +65,12 @@ public:
             glUniform3f(viewPosID,viewPos.x,viewPos.y,viewPos.z);
 
             glUniform1i(howManyTexID,m_nbOfTextureToDraw);
-            if(glIsTexture(textureDepthMap))
-            {
-                glUniform1i(textureDepthMapID,0);
-                glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D,textureDepthMap);
-            }
+
+            glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f,30.0f);
+            glm::mat4 lightView = glm::lookAt(sceneLights[0]->lightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+            glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+            glUniformMatrix4fv(glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
+
             if(glIsTexture(texture1))
             {
                 glUniform1i(texture1ID,1);
@@ -88,6 +108,7 @@ public:
             m_shader.registerLightToRender(sceneLights,numberOfLight); // MUST BE CALLED if you want lighting to work
 
             glDrawArrays(GL_TRIANGLES,0,m_nbOfPointToDraw);
+            
     }
     void removeSpecularTexture()
     {
@@ -186,7 +207,6 @@ public:
     }
 
     int getID(){return id;}
-    int getNBOfTextureCreated(){return m_nbOfTexture;}
 
 protected:
 
@@ -211,6 +231,7 @@ protected:
 
     GLuint vao;
     shader m_shader;
+    shader m_depthShader;
 
     GLuint modelID;
     GLuint viewID;
@@ -247,6 +268,7 @@ protected:
         if (texCoord != 0) { for (int i = 0; i < nbOfPointToDraw * 2; i++) { texCoords.push_back(texCoord[i]); } }
 
             m_shader.compileDefaultShader();
+            m_depthShader.compileDepthShader();
 
             glGenBuffers(1, &vbo);
             glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -333,6 +355,7 @@ protected:
         }
         stbi_image_free(data);
         m_texturePool->addTextureToCache(*texture, path);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
 };

@@ -8,6 +8,9 @@ Handles everything related to shaders
 #include "../light/light.h"
 #include "../renderObject/renderObject.h"
 #include <GL/glew.h>
+#include <glm.hpp>
+#include <gtc/type_ptr.hpp>
+#include <gtc/matrix_transform.hpp>
 using namespace std;
 class shader
 {
@@ -119,7 +122,7 @@ public:
         ambStrenghtID = glGetUniformLocation(m_shaderID,"ambStrenght");
     }
 
-    void registerLightToRender(light* sceneLights[], int numberOfLight) // the shader chosen must support light
+    void registerLightToRender(light* sceneLights[], int numberOfLight, float nearPlane=1.0f,float farPlane=50.0f) // the shader chosen must support light
     {
         //Check if there is light
             if(numberOfLight > 0) // Assuming we only got one light possible (for now), so we only send first light data
@@ -233,12 +236,23 @@ public:
         "uniform mat4 view;"
         "uniform mat4 projection;"
         "out vec3 final_color;"
+        "out VS_OUT{"
+        "vec3 FragPos;"
+        "vec3 Normal;"
+        "vec2 TexCoords;"
+        "vec4 FragPosLightSpace;"
+        " } vs_out;"
+        "uniform mat4 lightSpaceMatrix;"
         "void main() {"
         "   gl_Position = projection * view * model * vec4(vp, 1.0);"
         "   aNormals = mat3(transpose(inverse(model))) * normals;"
         "   final_color = color;"
         "   fragPos = vec3(model * vec4(vp,1.0));"
         "   texCoord = inputTexCoord;"
+        "   vs_out.FragPos = fragPos;"
+        "   vs_out.Normal = aNormals;"
+        "   vs_out.TexCoords = inputTexCoord;"
+        "   vs_out.FragPosLightSpace = lightSpaceMatrix * vec4(vs_out.FragPos, 1.0);"
         "}";
 
         const char* fragment_shader =
@@ -321,20 +335,56 @@ public:
         "in vec2 texCoord;"
         "uniform int howManyTex;"
         // TEXTURES
-        "uniform sampler2D depthMap;"
+        "uniform sampler2D textureDepthMap;"
         "uniform sampler2D texture1;"
         "uniform sampler2D texture2;"
         "uniform sampler2D texture3;"
         "uniform sampler2D texture4;"
         "uniform sampler2D specularMap;"
         "uniform int useSpecularMap;"
+        "in VS_OUT{"
+        "vec3 FragPos;"
+        "vec3 Normal;"
+        "vec2 TexCoords;"
+        "vec4 FragPosLightSpace;"
+        "} fs_in;"
+        "float ShadowCalculation(vec4 fragPosLightSpace)"
+        "{"
+        // perform perspective divide
+        "   vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;"
+        // transform to [0,1] range
+        "   projCoords = projCoords * 0.5 + 0.5;"
+        // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+        "   float closestDepth = texture(textureDepthMap, projCoords.xy).r;"
+        // get depth of current fragment from light's perspective
+        "   float currentDepth = projCoords.z;"
+        // check whether current frag pos is in shadow
+        " float bias = 0.0011;"
+        //"  float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;"
+        "float shadow = 0.0;"
+        "vec2 texelSize = 1.0 / textureSize(textureDepthMap, 0);"
+        "for (int x = -1; x <= 1; ++x)"
+        "{"
+        "   for (int y = -1; y <= 1; ++y)"
+        "  {"
+        "       float pcfDepth = texture(textureDepthMap, projCoords.xy + vec2(x, y) * texelSize).r;"
+        "       shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;"
+        "   }"
+        "}"
+        "shadow /= 9.0;"
+        "  if(projCoords.z > 1.0){"
+        "   shadow = 0.0;} "
+        "   return shadow;"
+        "}"
         "vec4 calculateLightOutput0()"
         "{"
         "  vec3 norm = normalize(aNormals);"
         "  vec3 lightDir;"
         "  float attenuation = 1.0;"
+        "  float shadowCoeff = 1.0;"
         "  if(lightType0 == 1){" //directionnal
         "    lightDir = normalize(-lightDir0);"
+        "    shadowCoeff = (1 - ShadowCalculation(fs_in.FragPosLightSpace) * (1 - ambStrenght));"
         "  }"
         "  else if(lightType0 == 0){"
         "    lightDir = normalize(lightPos0 - fragPos);" //point light
@@ -363,7 +413,7 @@ public:
         "  vec3 specular = vec3(0,0,0);"
         "  if(useSpecularMap == 1){specular = (specularStrength * spec) * lightColor0 * vec3(texture(specularMap, texCoord));}"
         "  else{specular = (specularStrength * spec) * lightColor0;}"
-        "  vec3 result = ((ambiant*=attenuation) + (diffuse*=attenuation) + (specular*=attenuation)) * final_color;"
+        "  vec3 result = ((ambiant*=attenuation) + (diffuse*=attenuation) + (specular*=attenuation)) * shadowCoeff * final_color;"
         "  return(vec4(result,1.0));"
         "}"
         //""
@@ -605,7 +655,7 @@ public:
         "  if(howManyTex >= 3){textureResult = textureResult * texture(texture3,texCoord);}"
         "  if(howManyTex >= 4){textureResult = textureResult * texture(texture4,texCoord);}"
         "  "
-        "  frag_colour = textureResult * lightSummary;"
+        "  frag_colour = lightSummary * textureResult;"
         "}";
 
         GLuint vs = glCreateShader(GL_VERTEX_SHADER);
