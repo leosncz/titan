@@ -41,7 +41,7 @@ int main()
     //triangle.addTexture("texture2.jpg");
     //triangle.setNumberOfTextureToDraw(1);
     //triangle.setSpecularTexture("specularmap2.jpg");
-    triangle.setSpecularStrenght(3.0);
+    triangle.setSpecularStrenght(1.0);
     triangle.setAmbiantStrenght(0.1);
 
     plane myplane = plane();
@@ -62,24 +62,24 @@ int main()
     myscene.addLight(&mylight3);
     mylight3.quadratic = 0.019;
     mylight3.linear = 0.022;
-    mylight3.constant = 1.0;*/
+    mylight3.constant = 1.0;
 
     light mylight4 = light();
     mylight4.setData(glm::vec3(2, 1, 3), glm::vec3(1,1,1), glm::vec3(0, -1, -1), 1000.0f);
     mylight4.type = DIRECTIONNAL_LIGHT;
     myscene.addLight(&mylight4);
     //mylight4.quadratic = 0.09;
-    //mylight4.linear = 0.032;
+    //mylight4.linear = 0.032;*/
 
-    /*light mylight5 = light();
+    light mylight5 = light();
     mylight5.setData(glm::vec3(1, 0.0, 0.0), glm::vec3(0.0, 1.0, 1.0), glm::vec3(0, 0, -1), 1000.0f);
     mylight5.type = POINT_LIGHT;
     myscene.addLight(&mylight5);
     /*mylight5.quadratic = 0.09;
     mylight5.linear = 0.032;*/
 
-    /*light mylight6 = light();
-    mylight6.setData(glm::vec3(0, 0, 0), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, -1), 1000.0f);
+    light mylight6 = light();
+    mylight6.setData(glm::vec3(-1, 0, 0), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, -1), 1000.0f);
     mylight6.type = POINT_LIGHT;
     myscene.addLight(&mylight6);
     /*mylight6.quadratic = 0.09;

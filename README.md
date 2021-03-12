@@ -63,6 +63,7 @@ Piece of code that boots up the engine and draw the demo in the capture file :
 - Blinn-Phong shading
 - Diffuse map (up to 4 textures on a single object)
 - Specular map
+- Dynamic shadows
 - OBJ Model loader
 - Automatic texture cache
 

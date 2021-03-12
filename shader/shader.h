@@ -348,13 +348,43 @@ public:
         "vec2 TexCoords;"
         "vec4 FragPosLightSpace;"
         "} fs_in;"
+        "float ShadowCalculation(vec4 fragPosLightSpace)"
+        "{"
+        // perform perspective divide
+        "   vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;"
+        // transform to [0,1] range
+        "   projCoords = projCoords * 0.5 + 0.5;"
+        // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+        "   float closestDepth = texture(textureDepthMap, projCoords.xy).r;"
+        // get depth of current fragment from light's perspective
+        "   float currentDepth = projCoords.z;"
+        // check whether current frag pos is in shadow
+        " float bias = 0.0011;"
+        //"  float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;"
+        "float shadow = 0.0;"
+        "vec2 texelSize = 1.0 / textureSize(textureDepthMap, 0);"
+        "for (int x = -1; x <= 1; ++x)"
+        "{"
+        "   for (int y = -1; y <= 1; ++y)"
+        "  {"
+        "       float pcfDepth = texture(textureDepthMap, projCoords.xy + vec2(x, y) * texelSize).r;"
+        "       shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;"
+        "   }"
+        "}"
+        "shadow /= 9.0;"
+        "  if(projCoords.z > 1.0){"
+        "   shadow = 0.0;} "
+        "   return shadow;"
+        "}"
         "vec4 calculateLightOutput0()"
         "{"
         "  vec3 norm = normalize(aNormals);"
         "  vec3 lightDir;"
         "  float attenuation = 1.0;"
+        "  float shadowCoeff = 1.0;"
         "  if(lightType0 == 1){" //directionnal
         "    lightDir = normalize(-lightDir0);"
+        "    shadowCoeff = (1 - ShadowCalculation(fs_in.FragPosLightSpace) * (1 - ambStrenght));"
         "  }"
         "  else if(lightType0 == 0){"
         "    lightDir = normalize(lightPos0 - fragPos);" //point light
@@ -383,7 +413,7 @@ public:
         "  vec3 specular = vec3(0,0,0);"
         "  if(useSpecularMap == 1){specular = (specularStrength * spec) * lightColor0 * vec3(texture(specularMap, texCoord));}"
         "  else{specular = (specularStrength * spec) * lightColor0;}"
-        "  vec3 result = ((ambiant*=attenuation) + (diffuse*=attenuation) + (specular*=attenuation)) * final_color;"
+        "  vec3 result = ((ambiant*=attenuation) + (diffuse*=attenuation) + (specular*=attenuation)) * shadowCoeff * final_color;"
         "  return(vec4(result,1.0));"
         "}"
         //""
@@ -609,35 +639,6 @@ public:
         "  return(vec4(result,1.0));"
         "}"
         //""
-        "float ShadowCalculation(vec4 fragPosLightSpace)"
-        "{"
-            // perform perspective divide
-         "   vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;"
-            // transform to [0,1] range
-         "   projCoords = projCoords * 0.5 + 0.5;"
-            // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
-         "   float closestDepth = texture(textureDepthMap, projCoords.xy).r;"
-            // get depth of current fragment from light's perspective
-         "   float currentDepth = projCoords.z;"
-            // check whether current frag pos is in shadow
-         " float bias = 0.0011;"
-         //"  float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;"
-         "float shadow = 0.0;"
-
-         "vec2 texelSize = 1.0 / textureSize(textureDepthMap, 0);"
-         "for (int x = -1; x <= 1; ++x)"
-         "{"
-         "   for (int y = -1; y <= 1; ++y)"
-         "  {"
-         "       float pcfDepth = texture(textureDepthMap, projCoords.xy + vec2(x, y) * texelSize).r;"
-         "       shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;"
-         "   }"
-         "}"
-         "shadow /= 9.0;"
-         "  if(projCoords.z > 1.0){"
-         "   shadow = 0.0;} "
-         "   return shadow;"
-        "}"
         "void main() {"
         "  vec4 lightSummary = vec4(0.0,0.0,0.0,0.0);"
         "  if(numberOfLight >= 1){lightSummary += calculateLightOutput0();}"
@@ -654,9 +655,7 @@ public:
         "  if(howManyTex >= 3){textureResult = textureResult * texture(texture3,texCoord);}"
         "  if(howManyTex >= 4){textureResult = textureResult * texture(texture4,texCoord);}"
         "  "
-        "  if(lightType0 == 1){"
-        "    frag_colour = textureResult * lightSummary * ((1-ShadowCalculation(fs_in.FragPosLightSpace)*(1-ambStrenght)));"
-        "  }"
+        "  frag_colour = lightSummary * textureResult;"
         "}";
 
         GLuint vs = glCreateShader(GL_VERTEX_SHADER);
