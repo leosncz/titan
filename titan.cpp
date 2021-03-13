@@ -62,7 +62,7 @@ int main()
     mylight3.type = DIRECTIONNAL_LIGHT;
     myscene.addLight(&mylight3);
 
-    light mylight4 = light();
+   /* light mylight4 = light();
     mylight4.setData(glm::vec3(2, 1, 3), glm::vec3(1,1,1), glm::vec3(0, -1, -1), 1000.0f);
     mylight4.type = DIRECTIONNAL_LIGHT;
     myscene.addLight(&mylight4);
@@ -70,11 +70,11 @@ int main()
     light mylight5 = light();
     mylight5.setData(glm::vec3(6, 1, -3), glm::vec3(1, 1, 1), glm::vec3(0, -1, -1), 1000.0f);
     mylight5.type = DIRECTIONNAL_LIGHT;
-    //myscene.addLight(&mylight5);
+    myscene.addLight(&mylight5);*/
 
     
 
-   /* renderObjectScene objScene = renderObjectScene(&myscene);
+    /*renderObjectScene objScene = renderObjectScene(&myscene);
     objScene.loadOBJFromFile("ironman.obj");
     objScene.moveRenderObjectScene(glm::vec3(0, 0.1, -2));
     objScene.scaleRenderObjectScene(glm::vec3(0.1, 0.1, 0.1));
