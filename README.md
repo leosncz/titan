@@ -58,12 +58,12 @@ Piece of code that boots up the engine and draw the demo in the capture file :
 
 ## Actual supported features:
 - Runs on Windows, Mac & Linux (32-64 bits)
-- Support up to 7 seven lights at the same time
+- Support up to 7 lights at the same time
 - Directionnal, spot and point light supported
 - Blinn-Phong shading
 - Diffuse map (up to 4 textures on a single object)
 - Specular map
-- Dynamic shadows
+- Dynamic shadows, all lights can cast shadow
 - OBJ Model loader
 - Automatic texture cache
 
