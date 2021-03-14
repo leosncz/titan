@@ -18,7 +18,7 @@ class renderObject
 public:
     renderObject() { id = rand(); std::cout << "--> Creating new renderObject ID=" << id << std::endl;
     }
-    void setData(float* vertices, float* colors, float* texCoord, int nbOfPointToDraw, float* normals=0, texturePool* texturePool=0) // Use this methode to define the mesh by hand
+    void setData(float* vertices, float* colors, float* texCoord, int nbOfPointToDraw, float* normals=0, texturePool* texturePool_=0) // Use this methode to define the mesh by hand
     {
         m_nbOfPointToDraw = nbOfPointToDraw;
         modelMatrix = glm::mat4(1.0);
@@ -26,7 +26,7 @@ public:
         m_nbOfTextureToDraw = 0;
         hasSpecularMap = false;
         isInitialized = true;
-        m_texturePool = texturePool;
+        m_texturePool = texturePool_;
         //Set texcordds
         if (texCoord != 0) { for (int i = 0; i < nbOfPointToDraw * 2; i++) { texCoords.push_back(texCoord[i]); } }
 

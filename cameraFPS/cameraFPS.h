@@ -14,25 +14,36 @@ public:
         std::cout << "--> Creating camera FPS id=" << id << std::endl;
         firstMouse = true;
         yaw = -90.0f;
+        delay = 0;
     }
-    
+    void pauseControls()
+    {
+        isPaused = true;
+    }
+    void resumeControls()
+    {
+        isPaused = false;
+    }
     void update(display *display, glm::mat4* viewMatrix, bool isAzerty = true)
     {
-        if (isAzerty)
+        if (!isPaused)
         {
-            if (glfwGetKey(display->getGLFWWindow(), GLFW_KEY_W) == GLFW_PRESS) { cameraPos += cameraSpeed * cameraFront; }
-            else if (glfwGetKey(display->getGLFWWindow(), GLFW_KEY_A) == GLFW_PRESS) { cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed; }
-            else if (glfwGetKey(display->getGLFWWindow(), GLFW_KEY_S) == GLFW_PRESS) { cameraPos -= cameraSpeed * cameraFront; }
-            else if (glfwGetKey(display->getGLFWWindow(), GLFW_KEY_D) == GLFW_PRESS) { cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed; }
+            if (isAzerty)
+            {
+                if (glfwGetKey(m_display->getGLFWWindow(),GLFW_KEY_W) == GLFW_PRESS) { cameraPos += cameraSpeed * cameraFront; }
+                else if (glfwGetKey(m_display->getGLFWWindow(), GLFW_KEY_A) == GLFW_PRESS) { cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed; }
+                else if (glfwGetKey(m_display->getGLFWWindow(), GLFW_KEY_S) == GLFW_PRESS) { cameraPos -= cameraSpeed * cameraFront; }
+                else if (glfwGetKey(m_display->getGLFWWindow(), GLFW_KEY_D) == GLFW_PRESS) { cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed; }
+            }
+            else
+            {
+                if (glfwGetKey(m_display->getGLFWWindow(), GLFW_KEY_Z) == GLFW_PRESS) { cameraPos += cameraSpeed * cameraFront; }
+                else if (glfwGetKey(m_display->getGLFWWindow(), GLFW_KEY_Q) == GLFW_PRESS) { cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed; }
+                else if (glfwGetKey(m_display->getGLFWWindow(), GLFW_KEY_S) == GLFW_PRESS) { cameraPos -= cameraSpeed * cameraFront; }
+                else if (glfwGetKey(m_display->getGLFWWindow(), GLFW_KEY_D) == GLFW_PRESS) { cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed; }
+            }
+            *viewMatrix = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         }
-        else
-        {
-            if (glfwGetKey(display->getGLFWWindow(), GLFW_KEY_Z) == GLFW_PRESS) { cameraPos += cameraSpeed * cameraFront; }
-            else if (glfwGetKey(display->getGLFWWindow(), GLFW_KEY_Q) == GLFW_PRESS) { cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed; }
-            else if (glfwGetKey(display->getGLFWWindow(), GLFW_KEY_S) == GLFW_PRESS) { cameraPos -= cameraSpeed * cameraFront; }
-            else if (glfwGetKey(display->getGLFWWindow(), GLFW_KEY_D) == GLFW_PRESS) { cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed; }
-        }
-        *viewMatrix = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
     }
 
     static void mouse_callback(GLFWwindow* window, double xpos, double ypos)
@@ -70,18 +81,19 @@ public:
         getThis->cameraFront = glm::normalize(direction);
     }
 
-    void init(display* display)
+    void init(display* display_, gui* gui_)
     {
-        m_display = display;
-        glfwSetWindowUserPointer(display->getGLFWWindow(), this);
+        m_display = display_;
+        m_gui = gui_;
+        glfwSetWindowUserPointer(display_->getGLFWWindow(), this);
         glfwSetCursorPosCallback(m_display->getGLFWWindow(), mouse_callback);
-        glfwSetInputMode(m_display->getGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
 
 private:
     glm::vec3 direction;
-    display* m_display;
 
     bool firstMouse;
     float yaw, pitch, lastX, lastY;
+
+    int delay; //Used to prevent multiple update in the same loop
 };

@@ -114,5 +114,8 @@
     <ClInclude Include="gui\imgui\imgui_impl_opengl3.h">
       <Filter>gui</Filter>
     </ClInclude>
+    <ClInclude Include="gui\gui.h">
+      <Filter>gui</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -15,13 +15,9 @@ class display
 public:
     int init(int x, int y, int aa); // Create window and context
     void exitEngine();
-    void refreshWindow()
-    {
-        glfwSwapBuffers(m_window);
-    }
     bool shouldExit()
     {
-        if(glfwGetKey(m_window, GLFW_KEY_ESCAPE ) == GLFW_PRESS || glfwWindowShouldClose(m_window))
+        if(glfwWindowShouldClose(m_window))
         {
             return true;
         }
@@ -31,6 +27,8 @@ public:
     int getDisHeight(){return m_disHeight;}
     int getDisWidth(){return m_disWidth;}
     GLFWwindow *getGLFWWindow(){return m_window;}
+    void hideCursor(){ glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); }
+    void showCursor() { glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); }
 
     ~display()
     {

@@ -83,12 +83,13 @@ int main()
     objScene.scaleRenderObjectScene(glm::vec3(0.1, 0.1, 0.1));
     objScene.setRenderObjectSpecularStrenght(2.0);*/
 
+    mainDisplay.hideCursor();
+
     while (!mainDisplay.shouldExit()) {
         myscene.clearScene();
         myscene.updateCamera();
         myscene.renderScene();
-        myscene.updateGUI();
-        mainDisplay.refreshWindow();
+        myscene.refreshScene();
     }
 
     return 0;
