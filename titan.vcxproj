@@ -152,12 +152,28 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="display\display.cpp" />
+    <ClCompile Include="gui\imgui\imgui.cpp" />
+    <ClCompile Include="gui\imgui\imgui_demo.cpp" />
+    <ClCompile Include="gui\imgui\imgui_draw.cpp" />
+    <ClCompile Include="gui\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="gui\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="gui\imgui\imgui_tables.cpp" />
+    <ClCompile Include="gui\imgui\imgui_widgets.cpp" />
     <ClCompile Include="titan.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cameraFPS\cameraFPS.h" />
     <ClInclude Include="camera\camera.h" />
     <ClInclude Include="display\display.h" />
+    <ClInclude Include="gui\gui.h" />
+    <ClInclude Include="gui\imgui\imconfig.h" />
+    <ClInclude Include="gui\imgui\imgui.h" />
+    <ClInclude Include="gui\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="gui\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="gui\imgui\imgui_internal.h" />
+    <ClInclude Include="gui\imgui\imstb_rectpack.h" />
+    <ClInclude Include="gui\imgui\imstb_textedit.h" />
+    <ClInclude Include="gui\imgui\imstb_truetype.h" />
     <ClInclude Include="light\light.h" />
     <ClInclude Include="modelLoaders\objLoader\objLoader.h" />
     <ClInclude Include="prefab\cube\cube.h" />

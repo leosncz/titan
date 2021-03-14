@@ -13,12 +13,15 @@ Handles everything related to scenes and object rendering loop in scenes
 #include "../renderObject/renderObject.h"
 #include "../cameraFPS/cameraFPS.h"
 #include "../texturePool/texturePool.h"
+#include "../gui/gui.h"
 
 class scene
 {
 public:
     void setupDisplay(display* customDisplay) // Set the display that will be used to render the scene
     {
+        std::cout << "--> Creating new scene ID=" << id << std::endl;
+
         m_display = customDisplay;
         m_nbOfLight = 0;
 
@@ -29,7 +32,9 @@ public:
 
         id = rand();
 
-        m_actualCamera.init(m_display);
+        m_actualCamera.init(m_display, &m_gui);
+
+        m_gui.init(m_display);
 
         glGenFramebuffers(1, &depthMapFBO);
         glGenTextures(1, &depthMap);
@@ -157,9 +162,7 @@ public:
         glReadBuffer(GL_NONE);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glBindTexture(GL_TEXTURE_2D, 0);
-        std::cout << "--> Creating new scene ID=" << id << std::endl;
     }
-
     void renderScene()
     {
         // SHADOW PASSES
@@ -278,6 +281,9 @@ public:
         {
             m_objectHolder[i]->render(&projection, &view, &model, m_actualCamera.getCameraPos(), lights,m_nbOfLight,depthMap,depthMap1,depthMap2,depthMap3,depthMap4, depthMap5, depthMap6);
         }
+
+        //Then render the GUI
+        m_gui.update();
     }
 
     void addDrawableObject(renderObject* object)
@@ -292,10 +298,23 @@ public:
         m_nbOfLight++;
     }
 
+    void clearScene()
+    {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glfwPollEvents();
+    }
+
     void updateCamera(bool isAzerty=true)
     {
         m_actualCamera.update(m_display, &view, isAzerty);
     }
+
+    void refreshScene()
+    {
+        glfwSwapBuffers(m_display->getGLFWWindow());
+    }
+
+    display* getDisplay() { return m_display; }
 
     int getNbOfLight(){return m_nbOfLight;}
 
@@ -318,6 +337,9 @@ public:
         glDeleteFramebuffers(1, &depthMapFBO4);
         glDeleteFramebuffers(1, &depthMapFBO5);
         glDeleteFramebuffers(1, &depthMapFBO6);
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
     }
 
 private:
@@ -338,6 +360,7 @@ private:
 
     GLuint depthMap, depthMapFBO, depthMap1, depthMap2, depthMap3, depthMap4, depthMap5, depthMap6, depthMapFBO1, depthMapFBO2, depthMapFBO3, depthMapFBO4, depthMapFBO5, depthMapFBO6; // Shadow stuff
 
+    gui m_gui; // Each scene has its own gui
 };
 
 #endif // SCENE_H_INCLUDED
