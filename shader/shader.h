@@ -765,7 +765,6 @@ public:
     {
         if (glIsProgram(m_shaderID))
         {
-            std::cout << "--> Destroying shader ID=" << id << std::endl;
             glDeleteProgram(m_shaderID);
         }
     }

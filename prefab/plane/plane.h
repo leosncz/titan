@@ -4,11 +4,6 @@
 class plane : public renderObject
 {
 public:
-    plane(){
-        id = rand();
-        std::cout << "--> Creating new plane prefab ID=" << id << std::endl;
-    }
-
     void initPrefab(float* colors, texturePool* texturePool)
     {
         float planeVertices[] = {

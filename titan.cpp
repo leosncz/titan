@@ -38,11 +38,15 @@ int main()
     triangle.initPrefab(colors,myscene.getTexturePool());
     myscene.addDrawableObject(&triangle);
     triangle.moveObject(glm::vec3(0, 0.0, -1));
-    //triangle.addTexture("texture2.jpg");
-    //triangle.setNumberOfTextureToDraw(1);
-    //triangle.setSpecularTexture("specularmap2.jpg");
     triangle.setSpecularStrenght(1.0);
     triangle.setAmbiantStrenght(0.1);
+
+    cube triangle2 = cube();
+    triangle2.initPrefab(colors, myscene.getTexturePool());
+    myscene.addDrawableObject(&triangle2);
+    triangle2.moveObject(glm::vec3(-0.5, 1.2, 3));
+    triangle2.setSpecularStrenght(1.0);
+    triangle2.setAmbiantStrenght(0.1);
 
     plane myplane = plane();
     myplane.initPrefab(colors, myscene.getTexturePool());
@@ -54,7 +58,7 @@ int main()
     myplane.setNumberOfTextureToDraw(1);
     myplane.setTextureResolution(100);
     myplane.setSpecularStrenght(1.0);
-    myplane.setAmbiantStrenght(0.0);
+    myplane.setAmbiantStrenght(0.3);
 
 
     light mylight3 = light();
@@ -62,7 +66,7 @@ int main()
     mylight3.type = DIRECTIONNAL_LIGHT;
     myscene.addLight(&mylight3);
 
-   /* light mylight4 = light();
+   /*light mylight4 = light();
     mylight4.setData(glm::vec3(2, 1, 3), glm::vec3(1,1,1), glm::vec3(0, -1, -1), 1000.0f);
     mylight4.type = DIRECTIONNAL_LIGHT;
     myscene.addLight(&mylight4);

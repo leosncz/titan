@@ -162,7 +162,7 @@ public:
 
     void renderScene()
     {
-        //Check if first light is directionnal in order to compute shadows
+        // SHADOW PASSES
         if (m_nbOfLight > 0) {
             if (m_nbOfLight >= 1) {
                 if (lights[0]->type == DIRECTIONNAL_LIGHT && lights[0]->computeShadows) // we only compute shadows for directionnal lights
@@ -271,7 +271,7 @@ public:
             }
         }
         
-        //Then, Render scene normally
+        //REGULAR PASSES, USING PREVIOUS GENERATED DEPTH MAP
         glViewport(0, 0, m_display->getDisWidth(), m_display->getDisHeight());
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         for(int i = 0; i<m_objectHolder.size();i++)

@@ -16,13 +16,84 @@ Handles everything related to drawable nodes
 class renderObject
 {
 public:
-    renderObject() { isInitialized = false; }
-    void setData(float* vertices, float* colors, float* texCoords, int nbOfPointToDraw, float* normals=0, texturePool* texturePool=0) // Use this methode to define the mesh by hand
+    renderObject() { id = rand(); std::cout << "--> Creating new renderObject ID=" << id << std::endl;
+    }
+    void setData(float* vertices, float* colors, float* texCoord, int nbOfPointToDraw, float* normals=0, texturePool* texturePool=0) // Use this methode to define the mesh by hand
     {
-        //Initialize members
-        id = rand();
-        std::cout << "--> Creating new renderObject ID=" << id << std::endl;
-        init(vertices,colors,normals,texCoords,nbOfPointToDraw,texturePool);
+        m_nbOfPointToDraw = nbOfPointToDraw;
+        modelMatrix = glm::mat4(1.0);
+        m_nbOfTexture = 0;
+        m_nbOfTextureToDraw = 0;
+        hasSpecularMap = false;
+        isInitialized = true;
+        m_texturePool = texturePool;
+        //Set texcordds
+        if (texCoord != 0) { for (int i = 0; i < nbOfPointToDraw * 2; i++) { texCoords.push_back(texCoord[i]); } }
+
+        m_shader.compileDefaultShader();
+        m_depthShader.compileDepthShader();
+
+        glGenBuffers(1, &vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, 3 * m_nbOfPointToDraw * sizeof(float), vertices, GL_STATIC_DRAW);
+
+        glGenBuffers(1, &vbo_colors);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_colors);
+        glBufferData(GL_ARRAY_BUFFER, 3 * m_nbOfPointToDraw * sizeof(float), colors, GL_STATIC_DRAW);
+
+        glGenBuffers(1, &vbo_texCoords);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_texCoords);
+        glBufferData(GL_ARRAY_BUFFER, 2 * m_nbOfPointToDraw * sizeof(float), &texCoords[0], GL_STATIC_DRAW);
+
+        glGenBuffers(1, &vbo_normals);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_normals);
+        glBufferData(GL_ARRAY_BUFFER, 3 * m_nbOfPointToDraw * sizeof(float), normals, GL_STATIC_DRAW);
+
+        glGenVertexArrays(1, &vao);
+        glBindVertexArray(vao);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_colors);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_texCoords);
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_normals);
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+        modelID = glGetUniformLocation(m_shader.getShaderID(), "model");
+        viewID = glGetUniformLocation(m_shader.getShaderID(), "view");
+        projectionID = glGetUniformLocation(m_shader.getShaderID(), "projection");
+        viewPosID = glGetUniformLocation(m_shader.getShaderID(), "viewPos");
+        texture1ID = glGetUniformLocation(m_shader.getShaderID(), "texture1");
+        texture2ID = glGetUniformLocation(m_shader.getShaderID(), "texture2");
+        texture3ID = glGetUniformLocation(m_shader.getShaderID(), "texture3");
+        texture4ID = glGetUniformLocation(m_shader.getShaderID(), "texture4");
+        specularTextureID = glGetUniformLocation(m_shader.getShaderID(), "specularMap");
+        textureDepthMapID = glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap");
+        textureDepthMap1ID = glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap1");
+        textureDepthMap2ID = glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap2");
+        textureDepthMap3ID = glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap3");
+        textureDepthMap4ID = glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap4");
+        textureDepthMap5ID = glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap5");
+        textureDepthMap6ID = glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap6");
+        howManyTexID = glGetUniformLocation(m_shader.getShaderID(), "howManyTex");
+        useSpecularMapID = glGetUniformLocation(m_shader.getShaderID(), "useSpecularMap");
+        lightSpaceMatrixID = glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix");
+        lightSpaceMatrix1ID = glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix1");
+        lightSpaceMatrix2ID = glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix2");
+        lightSpaceMatrix3ID = glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix3");
+        lightSpaceMatrix4ID = glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix4");
+        lightSpaceMatrix5ID = glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix5");
+        lightSpaceMatrix6ID = glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix6");
+        lightSpaceMatrixDepthID = glGetUniformLocation(m_depthShader.getShaderID(), "lightSpaceMatrix");
     }
     void setTexturePool(texturePool* texPool)
     {
@@ -42,7 +113,7 @@ public:
         glUniformMatrix4fv(glGetUniformLocation(m_depthShader.getShaderID(), "view"), 1, GL_FALSE, glm::value_ptr(*view));
         glUniformMatrix4fv(glGetUniformLocation(m_depthShader.getShaderID(), "projection"), 1, GL_FALSE, glm::value_ptr(*projection));
 
-        glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f,30.0f);
+        glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f,50.0f);
         glm::mat4 lightView = glm::lookAt(lightToRender->lightPosition, glm::vec3(0,0,0), glm::vec3(0, 1, 0));
         glm::mat4 lightSpaceMatrix = lightProjection * lightView;
         glUniformMatrix4fv(lightSpaceMatrixDepthID, 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
@@ -68,7 +139,7 @@ public:
 
             if (numberOfLight > 0)
             {
-                glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 30.0f);
+                glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 50.0f);
 
                 if(numberOfLight >= 1 && sceneLights[0]->type == DIRECTIONNAL_LIGHT && sceneLights[0]->computeShadows)
                 {
@@ -353,85 +424,6 @@ protected:
     GLuint lightSpaceMatrix5ID;
     GLuint lightSpaceMatrix6ID;
     GLuint lightSpaceMatrixDepthID;
-
-
-    void init(float* vertices, float* colors, float* normals, float* texCoord, int nbOfPointToDraw, texturePool* texturePool)
-    {
-        m_nbOfPointToDraw = nbOfPointToDraw;
-        modelMatrix = glm::mat4(1.0);
-        m_nbOfTexture = 0;
-        m_nbOfTextureToDraw = 0;
-        hasSpecularMap = false;
-        isInitialized = true;
-        m_texturePool = texturePool;
-        //Set texcordds
-        if (texCoord != 0) { for (int i = 0; i < nbOfPointToDraw * 2; i++) { texCoords.push_back(texCoord[i]); } }
-
-            m_shader.compileDefaultShader();
-            m_depthShader.compileDepthShader();
-
-            glGenBuffers(1, &vbo);
-            glBindBuffer(GL_ARRAY_BUFFER, vbo);
-            glBufferData(GL_ARRAY_BUFFER, 3 * m_nbOfPointToDraw * sizeof(float), vertices, GL_STATIC_DRAW);
-
-            glGenBuffers(1, &vbo_colors);
-            glBindBuffer(GL_ARRAY_BUFFER, vbo_colors);
-            glBufferData(GL_ARRAY_BUFFER, 3 * m_nbOfPointToDraw * sizeof(float), colors, GL_STATIC_DRAW);
-
-            glGenBuffers(1, &vbo_texCoords);
-            glBindBuffer(GL_ARRAY_BUFFER, vbo_texCoords);
-            glBufferData(GL_ARRAY_BUFFER, 2 * m_nbOfPointToDraw * sizeof(float), &texCoords[0], GL_STATIC_DRAW);
-
-            glGenBuffers(1, &vbo_normals);
-            glBindBuffer(GL_ARRAY_BUFFER, vbo_normals);
-            glBufferData(GL_ARRAY_BUFFER, 3 * m_nbOfPointToDraw * sizeof(float), normals, GL_STATIC_DRAW);
-
-            glGenVertexArrays(1, &vao);
-            glBindVertexArray(vao);
-
-            glBindBuffer(GL_ARRAY_BUFFER, vbo);
-            glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
-            glBindBuffer(GL_ARRAY_BUFFER, vbo_colors);
-            glEnableVertexAttribArray(1);
-            glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,0,NULL);
-
-            glBindBuffer(GL_ARRAY_BUFFER, vbo_texCoords);
-            glEnableVertexAttribArray(2);
-            glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,0,NULL);
-
-            glBindBuffer(GL_ARRAY_BUFFER, vbo_normals);
-            glEnableVertexAttribArray(3);
-            glVertexAttribPointer(3,3,GL_FLOAT,GL_FALSE,0,NULL);
-
-            modelID = glGetUniformLocation(m_shader.getShaderID(), "model");
-            viewID = glGetUniformLocation(m_shader.getShaderID(), "view");
-            projectionID = glGetUniformLocation(m_shader.getShaderID(), "projection");
-            viewPosID = glGetUniformLocation(m_shader.getShaderID(),"viewPos");
-            texture1ID = glGetUniformLocation(m_shader.getShaderID(),"texture1");
-            texture2ID = glGetUniformLocation(m_shader.getShaderID(),"texture2");
-            texture3ID = glGetUniformLocation(m_shader.getShaderID(),"texture3");
-            texture4ID = glGetUniformLocation(m_shader.getShaderID(),"texture4");
-            specularTextureID = glGetUniformLocation(m_shader.getShaderID(), "specularMap");
-            textureDepthMapID = glGetUniformLocation(m_shader.getShaderID(),"textureDepthMap");
-            textureDepthMap1ID = glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap1");
-            textureDepthMap2ID = glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap2");
-            textureDepthMap3ID = glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap3");
-            textureDepthMap4ID = glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap4");
-            textureDepthMap5ID = glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap5");
-            textureDepthMap6ID = glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap6");
-            howManyTexID = glGetUniformLocation(m_shader.getShaderID(),"howManyTex");
-            useSpecularMapID = glGetUniformLocation(m_shader.getShaderID(), "useSpecularMap");
-            lightSpaceMatrixID = glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix");
-            lightSpaceMatrix1ID = glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix1");
-            lightSpaceMatrix2ID = glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix2");
-            lightSpaceMatrix3ID = glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix3");
-            lightSpaceMatrix4ID = glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix4");
-            lightSpaceMatrix5ID = glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix5");
-            lightSpaceMatrix6ID = glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix6");
-            lightSpaceMatrixDepthID = glGetUniformLocation(m_depthShader.getShaderID(), "lightSpaceMatrix");
-    }
 
     void setTexture(GLuint *texture, const char* path)
     {
