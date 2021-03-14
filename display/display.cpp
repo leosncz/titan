@@ -15,12 +15,14 @@ int display::init(int x, int y, int aa)
 
     m_window = glfwCreateWindow( x, y, "Titan Engine debug", NULL, NULL);
     if( m_window == NULL ){
+        std::cout << "--> CRITICAL ERROR : OPENGL 3.X IS PROBABLY NOT SUPPORTED BY YOUR GRAPHIC CARD ! (-2)" << std::endl;
         glfwTerminate();
         return -2;
     }
     glfwMakeContextCurrent(m_window); // setup GLEW
     glewExperimental=true; // Nécessaire dans le profil de base
     if (glewInit() != GLEW_OK) {
+        std::cout << "--> CRITICAL ERROR : OPENGL 3.X IS PROBABLY NOT SUPPORTED BY YOUR GRAPHIC CARD ! (-3)" << std::endl;
         glfwTerminate();
         return -3;
     }
@@ -39,7 +41,7 @@ int display::init(int x, int y, int aa)
 
     std::cout << "---> Titan Engine successfuly created OpenGL Context" << std::endl;
 
-    return true;
+    return 0;
 }
 
 void display::exitEngine()
