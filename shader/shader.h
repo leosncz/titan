@@ -223,7 +223,7 @@ public:
     {
         std::cout << "---> Compiling lightBasicShader for shader ID=" << id << std::endl;
 
-         const char* vertex_shader =
+        const char* vertex_shader =
         "#version 330\n"
         "layout(location = 0) in vec3 vp;"
         "layout(location = 1) in vec3 color;"
@@ -728,6 +728,19 @@ public:
      void compileDepthShader()
     {
         std::cout << "---> Compiling depthShader for shader ID=" << id << std::endl;
+        const char* geometry_shader =
+            "#version 330\n"
+            "layout(triangles) in;"
+            "layout(triangle_strip, max_vertices = 3) out;"
+            "void main() {"
+            "    gl_Position = gl_in[0].gl_Position;"
+            "    EmitVertex();"
+            "    gl_Position = gl_in[1].gl_Position;"
+            "    EmitVertex();"
+            "    gl_Position = gl_in[2].gl_Position;"
+            "    EmitVertex();"
+            "    EndPrimitive();"
+            "}";
 
          const char* vertex_shader =
         "#version 330\n"
@@ -750,14 +763,19 @@ public:
         GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
         glShaderSource(fs, 1, &fragment_shader, NULL);
         glCompileShader(fs);
+        GLuint gs = glCreateShader(GL_GEOMETRY_SHADER);
+        glShaderSource(gs, 1, &geometry_shader, NULL);
+        glCompileShader(gs);
 
         m_shaderID = glCreateProgram();
         glAttachShader(m_shaderID, fs);
         glAttachShader(m_shaderID, vs);
+        glAttachShader(m_shaderID, gs);
         glLinkProgram(m_shaderID);
 
         glDeleteShader(vs);
         glDeleteShader(fs);
+        glDeleteShader(gs);
     }
 
     GLuint getShaderID(){return m_shaderID;}
