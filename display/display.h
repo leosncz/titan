@@ -15,14 +15,9 @@ class display
 public:
     int init(int x, int y, int aa); // Create window and context
     void exitEngine();
-    void clearWindow()
-    {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    }
     void refreshWindow()
     {
         glfwSwapBuffers(m_window);
-        glfwPollEvents();
     }
     bool shouldExit()
     {

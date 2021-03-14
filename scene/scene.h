@@ -14,11 +14,18 @@ Handles everything related to scenes and object rendering loop in scenes
 #include "../cameraFPS/cameraFPS.h"
 #include "../texturePool/texturePool.h"
 
+//GUI using imgui library
+#include "../gui/imgui/imgui.h"
+#include "../gui/imgui/imgui_impl_glfw.h"
+#include "../gui/imgui/imgui_impl_opengl3.h"
+
 class scene
 {
 public:
     void setupDisplay(display* customDisplay) // Set the display that will be used to render the scene
     {
+        std::cout << "--> Creating new scene ID=" << id << std::endl;
+
         m_display = customDisplay;
         m_nbOfLight = 0;
 
@@ -157,7 +164,15 @@ public:
         glReadBuffer(GL_NONE);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glBindTexture(GL_TEXTURE_2D, 0);
-        std::cout << "--> Creating new scene ID=" << id << std::endl;
+
+        std::cout << "---> Initializing GUI for scene ID=" << id << std::endl;
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGuiIO& io = ImGui::GetIO(); (void)io;
+        ImGui::StyleColorsDark();
+        ImGui_ImplGlfw_InitForOpenGL(m_display->getGLFWWindow(), true);
+        ImGui_ImplOpenGL3_Init("#version 330");
+
     }
 
     void renderScene()
@@ -292,6 +307,24 @@ public:
         m_nbOfLight++;
     }
 
+    void clearScene()
+    {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glfwPollEvents();
+    }
+
+    void updateGUI()
+    {
+        bool show_demo_window = true;
+        ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+        ImGui::ShowDemoWindow(&show_demo_window);
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    }
+
     void updateCamera(bool isAzerty=true)
     {
         m_actualCamera.update(m_display, &view, isAzerty);
@@ -318,6 +351,9 @@ public:
         glDeleteFramebuffers(1, &depthMapFBO4);
         glDeleteFramebuffers(1, &depthMapFBO5);
         glDeleteFramebuffers(1, &depthMapFBO6);
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
     }
 
 private:

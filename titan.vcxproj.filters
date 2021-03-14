@@ -5,13 +5,17 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Fichiers d%27en-tête">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="gui">
+      <UniqueIdentifier>{7c2a4182-20ba-46eb-b372-e23c5a219fd9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers de ressources">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="renderObject">
+      <UniqueIdentifier>{39a7b6e4-6bd3-452d-9113-bfa87c1d3933}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="display">
+      <UniqueIdentifier>{87455364-681d-4a73-8f11-f9fa378032f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scene">
+      <UniqueIdentifier>{a9b2894a-42a8-47ab-a4df-4ee68828b7b0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -19,51 +23,96 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="display\display.cpp">
-      <Filter>Fichiers sources</Filter>
+      <Filter>display</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\imgui\imgui.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\imgui\imgui_demo.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\imgui\imgui_draw.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\imgui\imgui_tables.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\imgui\imgui_widgets.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\imgui\imgui_impl_glfw.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\imgui\imgui_impl_opengl3.cpp">
+      <Filter>gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stb_image\stb_image.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="display\display.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="light\light.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="prefab\cube\cube.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="prefab\plane\plane.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="renderObject\renderObject.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="scene\scene.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="shader\shader.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="version\version.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="cameraFPS\cameraFPS.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="camera\camera.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>renderObject</Filter>
     </ClInclude>
     <ClInclude Include="renderObjectScene\renderObjectScene.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>renderObject</Filter>
     </ClInclude>
     <ClInclude Include="modelLoaders\objLoader\objLoader.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>renderObject</Filter>
+    </ClInclude>
+    <ClInclude Include="prefab\cube\cube.h">
+      <Filter>renderObject</Filter>
+    </ClInclude>
+    <ClInclude Include="prefab\plane\plane.h">
+      <Filter>renderObject</Filter>
+    </ClInclude>
+    <ClInclude Include="shader\shader.h">
+      <Filter>renderObject</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image\stb_image.h">
+      <Filter>renderObject</Filter>
+    </ClInclude>
+    <ClInclude Include="display\display.h">
+      <Filter>display</Filter>
     </ClInclude>
     <ClInclude Include="texturePool\texturePool.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>display</Filter>
+    </ClInclude>
+    <ClInclude Include="version\version.h">
+      <Filter>display</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\scene.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="light\light.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="cameraFPS\cameraFPS.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="camera\camera.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\imgui\imconfig.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\imgui\imgui.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\imgui\imgui_internal.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\imgui\imstb_rectpack.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\imgui\imstb_textedit.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\imgui\imstb_truetype.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\imgui\imgui_impl_glfw.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\imgui\imgui_impl_opengl3.h">
+      <Filter>gui</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -76,7 +76,6 @@ int main()
     mylight5.type = DIRECTIONNAL_LIGHT;
     myscene.addLight(&mylight5);*/
 
-    
 
     /*renderObjectScene objScene = renderObjectScene(&myscene);
     objScene.loadOBJFromFile("ironman.obj");
@@ -85,9 +84,10 @@ int main()
     objScene.setRenderObjectSpecularStrenght(2.0);*/
 
     while (!mainDisplay.shouldExit()) {
-        mainDisplay.clearWindow();
+        myscene.clearScene();
         myscene.updateCamera();
         myscene.renderScene();
+        myscene.updateGUI();
         mainDisplay.refreshWindow();
     }
 
