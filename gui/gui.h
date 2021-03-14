@@ -19,7 +19,7 @@ public:
 		ImGui_ImplOpenGL3_Init("#version 330");
 		isVisible = false;
 	}
-	void setVisibility(bool isVisible_) { isVisible = isVisible; }
+	void setVisibility(bool isVisible_) { isVisible = isVisible_; }
 	void update()
 	{
 		if(isVisible)

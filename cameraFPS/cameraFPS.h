@@ -14,7 +14,7 @@ public:
         std::cout << "--> Creating camera FPS id=" << id << std::endl;
         firstMouse = true;
         yaw = -90.0f;
-        delay = 0;
+        escapeLastState = GLFW_RELEASE;
     }
     void pauseControls()
     {
@@ -26,6 +26,17 @@ public:
     }
     void update(display *display, glm::mat4* viewMatrix, bool isAzerty = true)
     {
+        if (glfwGetKey(m_display->getGLFWWindow(), GLFW_KEY_ESCAPE) == GLFW_RELEASE) { escapeLastState = GLFW_RELEASE; }
+        if (glfwGetKey(m_display->getGLFWWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        {
+            if (escapeLastState == GLFW_RELEASE)
+            {
+                if (isPaused == true) { isPaused = false; m_gui->setVisibility(false); m_display->hideCursor(); }
+                else if (isPaused == false) { isPaused = true; m_gui->setVisibility(true); m_display->showCursor(); }
+            }
+            escapeLastState = GLFW_PRESS;
+        }
+
         if (!isPaused)
         {
             if (isAzerty)
@@ -95,5 +106,5 @@ private:
     bool firstMouse;
     float yaw, pitch, lastX, lastY;
 
-    int delay; //Used to prevent multiple update in the same loop
+    int escapeLastState;
 };
