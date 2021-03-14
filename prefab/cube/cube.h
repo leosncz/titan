@@ -4,11 +4,6 @@
 class cube : public renderObject
 {
 public:
-    cube(){
-        id = rand();
-        std::cout << "--> Creating new cube prefab ID=" << id << std::endl;
-    }
-
     void initPrefab(float* colors, texturePool* texturePool)
     {
         float cubeVertices[] = {
