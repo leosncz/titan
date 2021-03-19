@@ -49,7 +49,7 @@ public:
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
         float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
         glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 2024, 2024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
         glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
         glDrawBuffer(GL_NONE);
@@ -67,7 +67,7 @@ public:
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
         glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 2024, 2024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
         glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO1);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap1, 0);
         glDrawBuffer(GL_NONE);
@@ -80,7 +80,7 @@ public:
         glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
         for (unsigned int i = 0; i < 6; ++i)
         {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 2024,2024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 1024,1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
         }
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -98,7 +98,7 @@ public:
         glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap1);
         for (unsigned int i = 0; i < 6; ++i)
         {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 2024, 2024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
         }
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -116,7 +116,7 @@ public:
         glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap2);
         for (unsigned int i = 0; i < 6; ++i)
         {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 2024, 2024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
         }
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -134,7 +134,7 @@ public:
         glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap3);
         for (unsigned int i = 0; i < 6; ++i)
         {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 2024, 2024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
         }
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -152,7 +152,7 @@ public:
         glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap4);
         for (unsigned int i = 0; i < 6; ++i)
         {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 2024, 2024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
         }
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -170,7 +170,7 @@ public:
         glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap5);
         for (unsigned int i = 0; i < 6; ++i)
         {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 2024, 2024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
         }
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -188,7 +188,7 @@ public:
         glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap6);
         for (unsigned int i = 0; i < 6; ++i)
         {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 2024, 2024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
         }
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -210,7 +210,7 @@ public:
                 if (lights[0]->type == DIRECTIONNAL_LIGHT && lights[0]->computeShadows) // we only compute shadows for directionnal lights
                 {
                     glCullFace(GL_FRONT);
-                    glViewport(0, 0, 2024, 2024);
+                    glViewport(0, 0, 1024, 1024);
                     glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
                     glClear(GL_DEPTH_BUFFER_BIT);
                     for (int i = 0; i < m_objectHolder.size(); i++)
@@ -222,7 +222,8 @@ public:
                 }
                 else if (lights[0]->type == POINT_LIGHT && lights[0]->computeShadows)
                 {
-                    glViewport(0, 0, 2024,2024);
+                    glCullFace(GL_FRONT);
+                    glViewport(0, 0, 1024,1024);
                     glBindFramebuffer(GL_FRAMEBUFFER, depthCubemapFBO);
                     glClear(GL_DEPTH_BUFFER_BIT);
                     for (int i = 0; i < m_objectHolder.size(); i++)
@@ -230,13 +231,14 @@ public:
                         m_objectHolder[i]->renderDepth(&projection, &view, &model, lights[0]);
                     }
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                    glCullFace(GL_BACK);
                 }
             }
             if (m_nbOfLight >= 2) {
                 if (lights[1]->type == DIRECTIONNAL_LIGHT && lights[1]->computeShadows) // we only compute shadows for directionnal lights
                 { 
                     glCullFace(GL_FRONT);
-                    glViewport(0, 0, 2024, 2024);
+                    glViewport(0, 0, 1024, 1024);
                     glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO1);
                     glClear(GL_DEPTH_BUFFER_BIT);
                     for (int i = 0; i < m_objectHolder.size(); i++)
@@ -249,7 +251,7 @@ public:
                 else if (lights[1]->type == POINT_LIGHT && lights[1]->computeShadows) // we only compute shadows for directionnal lights
                 {
                     glCullFace(GL_FRONT);
-                    glViewport(0, 0, 2024, 2024);
+                    glViewport(0, 0, 1024, 1024);
                     glBindFramebuffer(GL_FRAMEBUFFER, depthCubemapFBO1);
                     glClear(GL_DEPTH_BUFFER_BIT);
                     for (int i = 0; i < m_objectHolder.size(); i++)
@@ -264,7 +266,7 @@ public:
                 if (lights[2]->type == POINT_LIGHT && lights[2]->computeShadows) // we only compute shadows for directionnal lights
                 {
                     glCullFace(GL_FRONT);
-                    glViewport(0, 0, 2024, 2024);
+                    glViewport(0, 0, 1024, 1024);
                     glBindFramebuffer(GL_FRAMEBUFFER, depthCubemapFBO2);
                     glClear(GL_DEPTH_BUFFER_BIT);
                     for (int i = 0; i < m_objectHolder.size(); i++)
@@ -279,7 +281,7 @@ public:
                 if (lights[3]->type == POINT_LIGHT && lights[3]->computeShadows) // we only compute shadows for directionnal lights
                 {
                     glCullFace(GL_FRONT);
-                    glViewport(0, 0, 2024, 2024);
+                    glViewport(0, 0, 1024, 1024);
                     glBindFramebuffer(GL_FRAMEBUFFER, depthCubemapFBO3);
                     glClear(GL_DEPTH_BUFFER_BIT);
                     for (int i = 0; i < m_objectHolder.size(); i++)
@@ -294,7 +296,7 @@ public:
                 if (lights[4]->type == POINT_LIGHT && lights[4]->computeShadows) // we only compute shadows for directionnal lights
                 {
                     glCullFace(GL_FRONT);
-                    glViewport(0, 0, 2024, 2024);
+                    glViewport(0, 0, 1024, 1024);
                     glBindFramebuffer(GL_FRAMEBUFFER, depthCubemapFBO4);
                     glClear(GL_DEPTH_BUFFER_BIT);
                     for (int i = 0; i < m_objectHolder.size(); i++)
@@ -309,7 +311,7 @@ public:
                 if (lights[5]->type == POINT_LIGHT && lights[5]->computeShadows) // we only compute shadows for directionnal lights
                 {
                     glCullFace(GL_FRONT);
-                    glViewport(0, 0, 2024, 2024);
+                    glViewport(0, 0, 1024, 1024);
                     glBindFramebuffer(GL_FRAMEBUFFER, depthCubemapFBO5);
                     glClear(GL_DEPTH_BUFFER_BIT);
                     for (int i = 0; i < m_objectHolder.size(); i++)
@@ -324,7 +326,7 @@ public:
                 if (lights[6]->type == POINT_LIGHT && lights[6]->computeShadows) // we only compute shadows for directionnal lights
                 {
                     glCullFace(GL_FRONT);
-                    glViewport(0, 0, 2024, 2024);
+                    glViewport(0, 0, 1024, 1024);
                     glBindFramebuffer(GL_FRAMEBUFFER, depthCubemapFBO6);
                     glClear(GL_DEPTH_BUFFER_BIT);
                     for (int i = 0; i < m_objectHolder.size(); i++)

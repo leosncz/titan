@@ -362,46 +362,45 @@ public:
         "float ShadowCalculationPL(vec3 fragPos, vec3 lightPos, samplerCube tex)"
         "{"
         // get vector between fragment position and light position
-        "    vec3 fragToLight = fragPos - lightPos;"
-        // use the light to fragment vector to sample from the depth map    
-        "    float closestDepth = texture(tex, fragToLight).r;"
-        // it is currently in linear range between [0,1]. Re-transform back to original value
-        "    closestDepth *= 25.0;"
+        "vec3 fragToLight = fragPos - lightPos;"
         // now get current linear depth as the length between the fragment and light position
-        "    float currentDepth = length(fragToLight);"
+        "float currentDepth = length(fragToLight);"
         // now test for shadows
-        "    float bias = 0.05;"
-        "    float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;"
-
-        "    return shadow;"
+        "float shadow = 0.0;"
+        "float bias = 0.05;"
+        "float samples = 4.0;"
+        "float offset = 0.1;"
+        "for (float x = -offset; x < offset; x += offset / (samples * 0.5))"
+        "{"
+        "    for (float y = -offset; y < offset; y += offset / (samples * 0.5))"
+        "    {"
+        "        for (float z = -offset; z < offset; z += offset / (samples * 0.5))"
+        "        {"
+        "            float closestDepth = texture(tex, fragToLight + vec3(x, y, z)).r;"
+        "            closestDepth *= 25.0;"   // undo mapping [0;1]
+        "            if (currentDepth - bias > closestDepth){"
+        "                shadow += 1.0;}"
+        "        }"
+        "    }"
+        "}"
+        "shadow /= (samples * samples * samples);"
+        "return shadow;"
         "}"
         "float ShadowCalculation(vec4 fragPosLightSpace, sampler2D texture_)"
         "{"
         // perform perspective divide
-        "   vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;"
+        "vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;"
         // transform to [0,1] range
-        "   projCoords = projCoords * 0.5 + 0.5;"
+        "projCoords = projCoords * 0.5 + 0.5;"
         // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
-        "   float closestDepth = texture(texture_, projCoords.xy).r;"
+        "float closestDepth = texture(texture_, projCoords.xy).r;"
         // get depth of current fragment from light's perspective
-        "   float currentDepth = projCoords.z;"
+        "float currentDepth = projCoords.z;"
         // check whether current frag pos is in shadow
-        " float bias = 0.003;"
-        //"  float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;"
-        "float shadow = 0.0;"
-        "vec2 texelSize = 1.0 / textureSize(texture_, 0);"
-        "for (int x = -1; x <= 1; ++x)"
-        "{"
-        "   for (int y = -1; y <= 1; ++y)"
-        "  {"
-        "       float pcfDepth = texture(texture_, projCoords.xy + vec2(x, y) * texelSize).r;"
-        "       shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;"
-        "   }"
-        "}"
-        "shadow /= 9.0;"
-        "  if(projCoords.z > 1.0){"
-        "   shadow = 0.0;} "
-        "   return shadow;"
+        "float shadow = currentDepth > closestDepth ? 1.0 : 0.0;"
+        "if (projCoords.z > 1.0){"
+        "     shadow = 0.0;}"
+        "return shadow;"
         "}"
         "vec4 calculateLightOutput0()"
         "{"
@@ -764,7 +763,7 @@ public:
             "    gl_Position = gl_in[2].gl_Position;"
             "    EmitVertex();"
             "    EndPrimitive();"
-      //      "    FragPos = vec4(0,0,0,0);"
+            "    FragPos = vec4(0,0,0,0);"
             "}"
             "}";
 
@@ -787,10 +786,10 @@ public:
         "uniform int isPoint;"
         //""
         "void main() {"
-        "   if(isPoint==1){"  
+        "   if(isPoint == 1){"
         "   float lightDistance = length(FragPos.xyz - lightPos);"
         "   lightDistance = lightDistance / 25.0;"
-        "   gl_FragDepth = lightDistance;}"
+        "   gl_FragDepth = lightDistance;}else{gl_FragDepth = gl_FragCoord.z;}"
         "}";
 
         GLuint vs = glCreateShader(GL_VERTEX_SHADER);
@@ -812,11 +811,6 @@ public:
         glDeleteShader(vs);
         glDeleteShader(fs);
         glDeleteShader(gs);
-
-        GLenum err;
-        while ((err = glGetError()) != GL_NO_ERROR) {
-            std::cerr << "OpenGL error: " << err << std::endl;
-        }
     }
 
     GLuint getShaderID(){return m_shaderID;}

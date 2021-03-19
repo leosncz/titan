@@ -44,7 +44,7 @@ int main()
     cube triangle2 = cube();
     triangle2.initPrefab(colors, myscene.getTexturePool());
     myscene.addDrawableObject(&triangle2);
-    triangle2.moveObject(glm::vec3(5, 0.0, 3));
+    triangle2.moveObject(glm::vec3(5, 0.0, 2));
     triangle2.setSpecularStrenght(1.0);
     triangle2.setAmbiantStrenght(0.1);
 
@@ -61,17 +61,19 @@ int main()
     myplane.setAmbiantStrenght(0.3);
 
 
-    light mylight3 = light();
-    mylight3.setData(glm::vec3(-1, 1, 3), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, -1), 1000.0f);
-    mylight3.type = POINT_LIGHT;
-    myscene.addLight(&mylight3);
+    /*light mylight3 = light();
+    mylight3.setData(glm::vec3(0.5,2,2), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, -1), 1000.0f);
+    mylight3.type = DIRECTIONNAL_LIGHT;
+    myscene.addLight(&mylight3);*/
 
-    /*light mylight4 = light();
-    mylight4.setData(glm::vec3(-5, 1, -8), glm::vec3(1,1,1), glm::vec3(0, -1, -1), 1000.0f);
-    mylight4.type = POINT_LIGHT;
+    light mylight4 = light();
+    mylight4.setData(glm::vec3(0, 0.5, 5), glm::vec3(1,1,1), glm::vec3(0, -1, -1), 1000.0f);
+    mylight4.type = DIRECTIONNAL_LIGHT;
     myscene.addLight(&mylight4);
+    /*mylight4.linear = 0.09;
+    mylight4.quadratic = 0.032;*/
 
-    light mylight5 = light();
+    /*light mylight5 = light();
     mylight5.setData(glm::vec3(-5, 1.5, 0), glm::vec3(1, 1, 1), glm::vec3(0, -1, -1), 1000.0f);
     mylight5.type = POINT_LIGHT;
     myscene.addLight(&mylight5);

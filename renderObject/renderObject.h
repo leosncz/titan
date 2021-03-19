@@ -104,7 +104,7 @@ public:
 
         if (lightToRender->type == DIRECTIONNAL_LIGHT)
         {
-            glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 50.0f);
+            glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 25.0f);
             glm::mat4 lightView = glm::lookAt(lightToRender->lightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
             glm::mat4 lightSpaceMatrix = lightProjection * lightView;
             glUniformMatrix4fv(lightSpaceMatrixDepthID, 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
@@ -113,8 +113,8 @@ public:
         else if (lightToRender->type == POINT_LIGHT)
         {
             float aspect = (float)2024 / (float)2024;
-            float near = 0.1f;
-            float far = 50.0f;
+            float near = 1.0f;
+            float far = 25.0f;
             glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect, near, far);
             std::vector<glm::mat4> shadowTransforms;
             shadowTransforms.push_back(shadowProj *
@@ -158,7 +158,7 @@ public:
 
             if (numberOfLight > 0)
             {
-                glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 50.0f);
+                glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 25.0f);
 
                 if(numberOfLight >= 1 && sceneLights[0]->type == DIRECTIONNAL_LIGHT && sceneLights[0]->computeShadows)
                 {
