@@ -242,19 +242,9 @@ public:
         "vec2 TexCoords;"
         "vec4 FragPosLightSpace;"
         "vec4 FragPosLightSpace1;"
-        "vec4 FragPosLightSpace2;"
-        "vec4 FragPosLightSpace3;"
-        "vec4 FragPosLightSpace4;"
-        "vec4 FragPosLightSpace5;"
-        "vec4 FragPosLightSpace6;"
         " } vs_out;"
         "uniform mat4 lightSpaceMatrix;"
         "uniform mat4 lightSpaceMatrix1;"
-        "uniform mat4 lightSpaceMatrix2;"
-        "uniform mat4 lightSpaceMatrix3;"
-        "uniform mat4 lightSpaceMatrix4;"
-        "uniform mat4 lightSpaceMatrix5;"
-        "uniform mat4 lightSpaceMatrix6;"
         "void main() {"
         "   gl_Position = projection * view * model * vec4(vp, 1.0);"
         "   aNormals = mat3(transpose(inverse(model))) * normals;"
@@ -266,11 +256,6 @@ public:
         "   vs_out.TexCoords = inputTexCoord;"
         "   vs_out.FragPosLightSpace = lightSpaceMatrix * vec4(vs_out.FragPos, 1.0);"
         "   vs_out.FragPosLightSpace1 = lightSpaceMatrix1 * vec4(vs_out.FragPos, 1.0);"
-        "   vs_out.FragPosLightSpace2 = lightSpaceMatrix2 * vec4(vs_out.FragPos, 1.0);"
-        "   vs_out.FragPosLightSpace3 = lightSpaceMatrix3 * vec4(vs_out.FragPos, 1.0);"
-        "   vs_out.FragPosLightSpace4 = lightSpaceMatrix4 * vec4(vs_out.FragPos, 1.0);"
-        "   vs_out.FragPosLightSpace5 = lightSpaceMatrix5 * vec4(vs_out.FragPos, 1.0);"
-        "   vs_out.FragPosLightSpace6 = lightSpaceMatrix6 * vec4(vs_out.FragPos, 1.0);"
         "}";
 
         const char* fragment_shader =
@@ -356,14 +341,8 @@ public:
         "uniform sampler2D texture1;"
         "uniform sampler2D texture2;"
         "uniform sampler2D texture3;"
-        "uniform sampler2D texture4;"
         "uniform sampler2D textureDepthMap;"
         "uniform sampler2D textureDepthMap1;"
-        "uniform sampler2D textureDepthMap2;"
-        "uniform sampler2D textureDepthMap3;"
-        "uniform sampler2D textureDepthMap4;"
-        "uniform sampler2D textureDepthMap5;"
-        "uniform sampler2D textureDepthMap6;"
         "uniform sampler2D specularMap;"
         "uniform int useSpecularMap;"
         "in VS_OUT{"
@@ -372,12 +351,30 @@ public:
         "vec2 TexCoords;"
         "vec4 FragPosLightSpace;"
         "vec4 FragPosLightSpace1;"
-        "vec4 FragPosLightSpace2;"
-        "vec4 FragPosLightSpace3;"
-        "vec4 FragPosLightSpace4;"
-        "vec4 FragPosLightSpace5;"
-        "vec4 FragPosLightSpace6;"
         "} fs_in;"
+        "uniform samplerCube textureDepthCubemap;"
+        "uniform samplerCube textureDepthCubemap1;"
+        "uniform samplerCube textureDepthCubemap2;"
+        "uniform samplerCube textureDepthCubemap3;"
+        "uniform samplerCube textureDepthCubemap4;"
+        "uniform samplerCube textureDepthCubemap5;"
+        "uniform samplerCube textureDepthCubemap6;"
+        "float ShadowCalculationPL(vec3 fragPos, vec3 lightPos, samplerCube tex)"
+        "{"
+        // get vector between fragment position and light position
+        "    vec3 fragToLight = fragPos - lightPos;"
+        // use the light to fragment vector to sample from the depth map    
+        "    float closestDepth = texture(tex, fragToLight).r;"
+        // it is currently in linear range between [0,1]. Re-transform back to original value
+        "    closestDepth *= 25.0;"
+        // now get current linear depth as the length between the fragment and light position
+        "    float currentDepth = length(fragToLight);"
+        // now test for shadows
+        "    float bias = 0.05;"
+        "    float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;"
+
+        "    return shadow;"
+        "}"
         "float ShadowCalculation(vec4 fragPosLightSpace, sampler2D texture_)"
         "{"
         // perform perspective divide
@@ -389,7 +386,7 @@ public:
         // get depth of current fragment from light's perspective
         "   float currentDepth = projCoords.z;"
         // check whether current frag pos is in shadow
-        " float bias = 0.0011;"
+        " float bias = 0.003;"
         //"  float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;"
         "float shadow = 0.0;"
         "vec2 texelSize = 1.0 / textureSize(texture_, 0);"
@@ -414,12 +411,13 @@ public:
         "  float shadowCoeff = 1.0;"
         "  if(lightType0 == 1){" //directionnal
         "    lightDir = normalize(-lightDir0);"
-        "    shadowCoeff = (1 - ShadowCalculation(fs_in.FragPosLightSpace,textureDepthMap) * (1 - ambStrenght));"
+        "    shadowCoeff = 1-ShadowCalculation(fs_in.FragPosLightSpace,textureDepthMap);"
         "  }"
         "  else if(lightType0 == 0){"
         "    lightDir = normalize(lightPos0 - fragPos);" //point light
         "    float distance    = length(lightPos0 - fragPos);"
         "    attenuation = 1.0 / (lightConstant0 + lightLinear0 * distance + lightQuadratic0 * (distance * distance));"
+        "    shadowCoeff = (1-ShadowCalculationPL(fs_in.FragPos,lightPos0,textureDepthCubemap));"  
         "  }"
         "  else if(lightType0 == 2){" // spotlight
         "    lightDir = normalize(lightPos0 - fragPos);"
@@ -461,6 +459,7 @@ public:
         "  else if(lightType1 == 0){lightDir = normalize(lightPos1 - fragPos);" //point light
         "    float distance    = length(lightPos1 - fragPos);"
         "    attenuation = 1.0 / (lightConstant1 + lightLinear1 * distance + lightQuadratic1 * (distance * distance));"
+        "    shadowCoeff = (1 - ShadowCalculationPL(fs_in.FragPos, lightPos1, textureDepthCubemap1));"
         "  }"
         "  else if(lightType1 == 2){" // spotlight
         "    lightDir = normalize(lightPos1 - fragPos);"
@@ -496,11 +495,12 @@ public:
         "  float shadowCoeff = 1.0;"
         "  if(lightType2 == 1){" //directionnal
         "    lightDir = normalize(-lightDir2);"
-        "    shadowCoeff = (1 - ShadowCalculation(fs_in.FragPosLightSpace2,textureDepthMap2) * (1 - ambStrenght));"
+        "    "
         "   }"
         "  else if(lightType2 == 0){lightDir = normalize(lightPos2 - fragPos);" //point light
         "    float distance    = length(lightPos2 - fragPos);"
         "    attenuation = 1.0 / (lightConstant2 + lightLinear2 * distance + lightQuadratic2 * (distance * distance));"
+        "    shadowCoeff = (1-ShadowCalculationPL(fs_in.FragPos,lightPos2,textureDepthCubemap2));"  
         "  }"
         "  else if(lightType2 == 2){" // spotlight
         "    lightDir = normalize(lightPos2 - fragPos);"
@@ -536,11 +536,12 @@ public:
         "  float shadowCoeff = 1.0;"
         "  if(lightType3 == 1){" //directionnal
         "    lightDir = normalize(-lightDir3);"
-        "    shadowCoeff = (1 - ShadowCalculation(fs_in.FragPosLightSpace3,textureDepthMap3) * (1 - ambStrenght));"
+        "  "
         "   }"
         "  else if(lightType3 == 0){lightDir = normalize(lightPos3 - fragPos);" //point light
         "    float distance    = length(lightPos3 - fragPos);"
         "    attenuation = 1.0 / (lightConstant3 + lightLinear3 * distance + lightQuadratic3 * (distance * distance));"
+        "    shadowCoeff = (1-ShadowCalculationPL(fs_in.FragPos,lightPos3,textureDepthCubemap3));"
         "  }"
         "  else if(lightType3 == 2){" // spotlight
         "    lightDir = normalize(lightPos3 - fragPos);"
@@ -576,11 +577,12 @@ public:
         "  float shadowCoeff = 1.0;"
         "  if(lightType4 == 1){" //directionnal
         "    lightDir = normalize(-lightDir4);"
-        "    shadowCoeff = (1 - ShadowCalculation(fs_in.FragPosLightSpace4,textureDepthMap4) * (1 - ambStrenght));"
+        "  "
         "  }"
         "  else if(lightType4 == 0){lightDir = normalize(lightPos4 - fragPos);" //point light
         "    float distance    = length(lightPos4 - fragPos);"
         "    attenuation = 1.0 / (lightConstant4 + lightLinear4 * distance + lightQuadratic4 * (distance * distance));"
+        "    shadowCoeff = (1-ShadowCalculationPL(fs_in.FragPos,lightPos4,textureDepthCubemap4));"
         "  }"
         "  else if(lightType4 == 2){" // spotlight
         "    lightDir = normalize(lightPos4 - fragPos);"
@@ -616,11 +618,12 @@ public:
         "  float shadowCoeff = 1.0;"
         "  if(lightType5 == 1){" //directionnal
         "    lightDir = normalize(-lightDir5);"
-        "    shadowCoeff = (1 - ShadowCalculation(fs_in.FragPosLightSpace5,textureDepthMap5) * (1 - ambStrenght));"
+        "   "
         "  }"
         "  else if(lightType5 == 0){lightDir = normalize(lightPos5 - fragPos);" //point light
         "    float distance    = length(lightPos5 - fragPos);"
         "    attenuation = 1.0 / (lightConstant5 + lightLinear5 * distance + lightQuadratic5 * (distance * distance));"
+        "    shadowCoeff = (1-ShadowCalculationPL(fs_in.FragPos,lightPos5,textureDepthCubemap5));"
         "  }"
         "  else if(lightType5 == 2){" // spotlight
         "    lightDir = normalize(lightPos5 - fragPos);"
@@ -656,11 +659,12 @@ public:
         "  float shadowCoeff = 1.0;"
         "  if(lightType6 == 1){" //directionnal
         "    lightDir = normalize(-lightDir6);"
-        "    shadowCoeff = (1 - ShadowCalculation(fs_in.FragPosLightSpace6,textureDepthMap6) * (1 - ambStrenght));"
+        "   "
         "  }"
         "  else if(lightType6 == 0){lightDir = normalize(lightPos6 - fragPos);" //point light
         "    float distance    = length(lightPos6 - fragPos);"
         "    attenuation = 1.0 / (lightConstant6 + lightLinear6 * distance + lightQuadratic6 * (distance * distance));"
+        "    shadowCoeff = (1-ShadowCalculationPL(fs_in.FragPos,lightPos6,textureDepthCubemap6));"
         "  }"
         "  else if(lightType6 == 2){" // spotlight
         "    lightDir = normalize(lightPos6 - fragPos);"
@@ -702,7 +706,6 @@ public:
         "  if(howManyTex >= 1){textureResult = texture(texture1,texCoord);}"
         "  if(howManyTex >= 2){textureResult = textureResult * texture(texture2,texCoord);}"
         "  if(howManyTex >= 3){textureResult = textureResult * texture(texture3,texCoord);}"
-        "  if(howManyTex >= 4){textureResult = textureResult * texture(texture4,texCoord);}"
         "  "
         "  frag_colour = lightSummary * textureResult;"
         "}";
@@ -729,10 +732,31 @@ public:
     {
         std::cout << "---> Compiling depthShader for shader ID=" << id << std::endl;
         const char* geometry_shader =
-            "#version 330\n"
+            "#version 330 core\n"
             "layout(triangles) in;"
-            "layout(triangle_strip, max_vertices = 3) out;"
-            "void main() {"
+            "layout(triangle_strip, max_vertices = 18) out;"
+
+            "uniform mat4 shadowMatrices[6];"
+            "uniform int isPoint;"
+
+            "out vec4 FragPos;" // FragPos from GS (output per emitvertex)
+
+            "void main()"
+            "{"
+            " if(isPoint == 1){"
+            "    for (int face = 0; face < 6; ++face)"
+            "    {"
+            "        gl_Layer = face;" // built-in variable that specifies to which face we render.
+            "        for (int i = 0; i < 3; ++i)" // for each triangle vertex
+            "        {"
+            "            FragPos = gl_in[i].gl_Position;"
+            "            gl_Position = shadowMatrices[face] * FragPos;"
+            "            EmitVertex();"
+            "        }"
+            "        EndPrimitive();"
+            "    }"
+            "}"
+            "else{"
             "    gl_Position = gl_in[0].gl_Position;"
             "    EmitVertex();"
             "    gl_Position = gl_in[1].gl_Position;"
@@ -740,21 +764,33 @@ public:
             "    gl_Position = gl_in[2].gl_Position;"
             "    EmitVertex();"
             "    EndPrimitive();"
+      //      "    FragPos = vec4(0,0,0,0);"
+            "}"
             "}";
 
          const char* vertex_shader =
-        "#version 330\n"
+        "#version 330 core\n"
         "layout(location = 0) in vec3 vp;"
         "uniform mat4 model;"
+        "uniform int isPoint;"
         "uniform mat4 lightSpaceMatrix;"
         "void main() {"
-        "   gl_Position = lightSpaceMatrix * model * vec4(vp, 1.0);"
+        "   if(isPoint == 1){"
+        "   gl_Position = model * vec4(vp, 1.0);}else{"
+        "   gl_Position = lightSpaceMatrix * model * vec4(vp, 1.0);}"
         "}";
 
         const char* fragment_shader =
-        "#version 330\n"
+        "#version 330 core\n"
+        "in vec4 FragPos;"
+        "uniform vec3 lightPos;"
+        "uniform int isPoint;"
         //""
         "void main() {"
+        "   if(isPoint==1){"  
+        "   float lightDistance = length(FragPos.xyz - lightPos);"
+        "   lightDistance = lightDistance / 25.0;"
+        "   gl_FragDepth = lightDistance;}"
         "}";
 
         GLuint vs = glCreateShader(GL_VERTEX_SHADER);
@@ -776,6 +812,11 @@ public:
         glDeleteShader(vs);
         glDeleteShader(fs);
         glDeleteShader(gs);
+
+        GLenum err;
+        while ((err = glGetError()) != GL_NO_ERROR) {
+            std::cerr << "OpenGL error: " << err << std::endl;
+        }
     }
 
     GLuint getShaderID(){return m_shaderID;}

@@ -75,24 +75,13 @@ public:
         texture1ID = glGetUniformLocation(m_shader.getShaderID(), "texture1");
         texture2ID = glGetUniformLocation(m_shader.getShaderID(), "texture2");
         texture3ID = glGetUniformLocation(m_shader.getShaderID(), "texture3");
-        texture4ID = glGetUniformLocation(m_shader.getShaderID(), "texture4");
         specularTextureID = glGetUniformLocation(m_shader.getShaderID(), "specularMap");
         textureDepthMapID = glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap");
         textureDepthMap1ID = glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap1");
-        textureDepthMap2ID = glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap2");
-        textureDepthMap3ID = glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap3");
-        textureDepthMap4ID = glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap4");
-        textureDepthMap5ID = glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap5");
-        textureDepthMap6ID = glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap6");
         howManyTexID = glGetUniformLocation(m_shader.getShaderID(), "howManyTex");
         useSpecularMapID = glGetUniformLocation(m_shader.getShaderID(), "useSpecularMap");
         lightSpaceMatrixID = glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix");
         lightSpaceMatrix1ID = glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix1");
-        lightSpaceMatrix2ID = glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix2");
-        lightSpaceMatrix3ID = glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix3");
-        lightSpaceMatrix4ID = glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix4");
-        lightSpaceMatrix5ID = glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix5");
-        lightSpaceMatrix6ID = glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix6");
         lightSpaceMatrixDepthID = glGetUniformLocation(m_depthShader.getShaderID(), "lightSpaceMatrix");
     }
     void setTexturePool(texturePool* texPool)
@@ -113,14 +102,44 @@ public:
         glUniformMatrix4fv(glGetUniformLocation(m_depthShader.getShaderID(), "view"), 1, GL_FALSE, glm::value_ptr(*view));
         glUniformMatrix4fv(glGetUniformLocation(m_depthShader.getShaderID(), "projection"), 1, GL_FALSE, glm::value_ptr(*projection));
 
-        glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f,50.0f);
-        glm::mat4 lightView = glm::lookAt(lightToRender->lightPosition, glm::vec3(0,0,0), glm::vec3(0, 1, 0));
-        glm::mat4 lightSpaceMatrix = lightProjection * lightView;
-        glUniformMatrix4fv(lightSpaceMatrixDepthID, 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
+        if (lightToRender->type == DIRECTIONNAL_LIGHT)
+        {
+            glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 50.0f);
+            glm::mat4 lightView = glm::lookAt(lightToRender->lightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+            glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+            glUniformMatrix4fv(lightSpaceMatrixDepthID, 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
+            glUniform1i(glGetUniformLocation(m_depthShader.getShaderID(), "isPoint"), 0);
+        }
+        else if (lightToRender->type == POINT_LIGHT)
+        {
+            float aspect = (float)2024 / (float)2024;
+            float near = 0.1f;
+            float far = 50.0f;
+            glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect, near, far);
+            std::vector<glm::mat4> shadowTransforms;
+            shadowTransforms.push_back(shadowProj *
+                glm::lookAt(lightToRender->lightPosition, lightToRender->lightPosition + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
+            shadowTransforms.push_back(shadowProj *
+                glm::lookAt(lightToRender->lightPosition, lightToRender->lightPosition + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
+            shadowTransforms.push_back(shadowProj *
+                glm::lookAt(lightToRender->lightPosition, lightToRender->lightPosition + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0)));
+            shadowTransforms.push_back(shadowProj *
+                glm::lookAt(lightToRender->lightPosition, lightToRender->lightPosition + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0)));
+            shadowTransforms.push_back(shadowProj *
+                glm::lookAt(lightToRender->lightPosition, lightToRender->lightPosition + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0)));
+            shadowTransforms.push_back(shadowProj *
+                glm::lookAt(lightToRender->lightPosition, lightToRender->lightPosition + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)));
+            glUniform3f(glGetUniformLocation(m_depthShader.getShaderID(), "lightPos"), lightToRender->lightPosition.x, lightToRender->lightPosition.y, lightToRender->lightPosition.z);
+                for (int i = 0; i < 6; i++) {
+                    string value = "shadowMatrices["; value.append(to_string(i)); value.append("]");
+                    glUniformMatrix4fv(glGetUniformLocation(m_depthShader.getShaderID(), value.c_str()), 1, GL_FALSE, value_ptr(shadowTransforms[i]));
+                }
+                glUniform1i(glGetUniformLocation(m_depthShader.getShaderID(), "isPoint"), 1);
+        }
         
         glDrawArrays(GL_TRIANGLES, 0, m_nbOfPointToDraw);
     }
-    void render(glm::mat4 *projection, glm::mat4 *view, glm::mat4 *model, glm::vec3 viewPos, light* sceneLights[]=0, int numberOfLight=0, GLuint textureDepthMap=0, GLuint textureDepthMap1 = 0, GLuint textureDepthMap2 = 0, GLuint textureDepthMap3 = 0, GLuint textureDepthMap4 = 0, GLuint textureDepthMap5 = 0, GLuint textureDepthMap6 = 0)
+    void render(glm::mat4 *projection, glm::mat4 *view, glm::mat4 *model, glm::vec3 viewPos, light* sceneLights[]=0, int numberOfLight=0, GLuint textureDepthMap=0, GLuint textureDepthMap1 = 0, GLuint textureDepthCubemap = 0, GLuint textureDepthCubemap1=0, GLuint textureDepthCubemap2 = 0, GLuint textureDepthCubemap3 = 0, GLuint textureDepthCubemap4 = 0, GLuint textureDepthCubemap5 = 0, GLuint textureDepthCubemap6 = 0)
     {
         //Update actual model matrix
         glm::mat4 customModelMatrix = *model * modelMatrix;
@@ -152,109 +171,85 @@ public:
                     glm::mat4 lightView = glm::lookAt(sceneLights[1]->lightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
                     glm::mat4 lightSpaceMatrix = lightProjection * lightView;
                     glUniformMatrix4fv(lightSpaceMatrix1ID, 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
-                }
-                if (numberOfLight >= 3 && sceneLights[2]->type == DIRECTIONNAL_LIGHT && sceneLights[2]->computeShadows)
-                {
-                    glm::mat4 lightView = glm::lookAt(sceneLights[2]->lightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-                    glm::mat4 lightSpaceMatrix = lightProjection * lightView;
-                    glUniformMatrix4fv(lightSpaceMatrix2ID, 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
-                }
-                if (numberOfLight >= 4 && sceneLights[3]->type == DIRECTIONNAL_LIGHT && sceneLights[3]->computeShadows)
-                {
-                    glm::mat4 lightView = glm::lookAt(sceneLights[3]->lightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-                    glm::mat4 lightSpaceMatrix = lightProjection * lightView;
-                    glUniformMatrix4fv(lightSpaceMatrix3ID, 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
-                }
-                if (numberOfLight >= 5 && sceneLights[4]->type == DIRECTIONNAL_LIGHT && sceneLights[4]->computeShadows)
-                {
-                    glm::mat4 lightView = glm::lookAt(sceneLights[4]->lightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-                    glm::mat4 lightSpaceMatrix = lightProjection * lightView;
-                    glUniformMatrix4fv(lightSpaceMatrix4ID, 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
-                }
-                if (numberOfLight >= 6 && sceneLights[5]->type == DIRECTIONNAL_LIGHT && sceneLights[5]->computeShadows)
-                {
-                    glm::mat4 lightView = glm::lookAt(sceneLights[5]->lightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-                    glm::mat4 lightSpaceMatrix = lightProjection * lightView;
-                    glUniformMatrix4fv(lightSpaceMatrix5ID, 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
-                }
-                if (numberOfLight == 7 && sceneLights[6]->type == DIRECTIONNAL_LIGHT && sceneLights[6]->computeShadows)
-                {
-                    glm::mat4 lightView = glm::lookAt(sceneLights[6]->lightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-                    glm::mat4 lightSpaceMatrix = lightProjection * lightView;
-                    glUniformMatrix4fv(lightSpaceMatrix6ID, 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
-                }
+                }                
             }
 
+            if (glIsTexture(textureDepthCubemap))
+            {
+                glUniform1i(glGetUniformLocation(m_shader.getShaderID(),"textureDepthCubemap"), 0);
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_CUBE_MAP, textureDepthCubemap);
+            }
+            if (glIsTexture(textureDepthCubemap1))
+            {
+                glUniform1i(glGetUniformLocation(m_shader.getShaderID(), "textureDepthCubemap1"), 1);
+                glActiveTexture(GL_TEXTURE0+1);
+                glBindTexture(GL_TEXTURE_CUBE_MAP, textureDepthCubemap1);
+            }
+            if (glIsTexture(textureDepthCubemap2))
+            {
+                glUniform1i(glGetUniformLocation(m_shader.getShaderID(), "textureDepthCubemap2"), 2);
+                glActiveTexture(GL_TEXTURE0 + 2);
+                glBindTexture(GL_TEXTURE_CUBE_MAP, textureDepthCubemap2);
+            }
+            if (glIsTexture(textureDepthCubemap3))
+            {
+                glUniform1i(glGetUniformLocation(m_shader.getShaderID(), "textureDepthCubemap3"), 3);
+                glActiveTexture(GL_TEXTURE0 + 3);
+                glBindTexture(GL_TEXTURE_CUBE_MAP, textureDepthCubemap3);
+            }
+            if (glIsTexture(textureDepthCubemap4))
+            {
+                glUniform1i(glGetUniformLocation(m_shader.getShaderID(), "textureDepthCubemap4"), 4);
+                glActiveTexture(GL_TEXTURE0 + 4);
+                glBindTexture(GL_TEXTURE_CUBE_MAP, textureDepthCubemap4);
+            }
+            if (glIsTexture(textureDepthCubemap5))
+            {
+                glUniform1i(glGetUniformLocation(m_shader.getShaderID(), "textureDepthCubemap5"), 5);
+                glActiveTexture(GL_TEXTURE0 + 5);
+                glBindTexture(GL_TEXTURE_CUBE_MAP, textureDepthCubemap5);
+            }
+            if (glIsTexture(textureDepthCubemap6))
+            {
+                glUniform1i(glGetUniformLocation(m_shader.getShaderID(), "textureDepthCubemap6"), 6);
+                glActiveTexture(GL_TEXTURE0 + 6);
+                glBindTexture(GL_TEXTURE_CUBE_MAP, textureDepthCubemap6);
+            }
             if(glIsTexture(texture1))
             {
-                glUniform1i(texture1ID,0);
-                glActiveTexture(GL_TEXTURE0);
+                glUniform1i(texture1ID,7);
+                glActiveTexture(GL_TEXTURE0 + 7);
                 glBindTexture(GL_TEXTURE_2D,texture1);
             }
             if(glIsTexture(texture2))
             {
-                glUniform1i(texture2ID,1);
-                glActiveTexture(GL_TEXTURE0 + 1);
+                glUniform1i(texture2ID,8);
+                glActiveTexture(GL_TEXTURE0 + 8);
                 glBindTexture(GL_TEXTURE_2D,texture2);
             }
             if(glIsTexture(texture3))
             {
-               glUniform1i(texture3ID,2);
-               glActiveTexture(GL_TEXTURE0 + 2);
+               glUniform1i(texture3ID,9);
+               glActiveTexture(GL_TEXTURE0 + 9);
                glBindTexture(GL_TEXTURE_2D,texture3);
-            }
-            if(glIsTexture(texture4))
-            {
-               glUniform1i(texture4ID,3);
-               glActiveTexture(GL_TEXTURE0 + 3);
-               glBindTexture(GL_TEXTURE_2D,texture4);
             }
             if (glIsTexture(textureDepthMap))
             {
-                glUniform1i(textureDepthMapID, 4);
-                glActiveTexture(GL_TEXTURE0 + 4);
+                glUniform1i(textureDepthMapID, 10);
+                glActiveTexture(GL_TEXTURE0 + 10);
                 glBindTexture(GL_TEXTURE_2D, textureDepthMap);
             }
             if (glIsTexture(textureDepthMap1))
             {
-                glUniform1i(textureDepthMap1ID, 5);
-                glActiveTexture(GL_TEXTURE0 + 5);
+                glUniform1i(textureDepthMap1ID, 11);
+                glActiveTexture(GL_TEXTURE0 + 11);
                 glBindTexture(GL_TEXTURE_2D, textureDepthMap1);
-            }
-            if (glIsTexture(textureDepthMap2))
-            {
-                glUniform1i(textureDepthMap2ID, 6);
-                glActiveTexture(GL_TEXTURE0 + 6);
-                glBindTexture(GL_TEXTURE_2D, textureDepthMap2);
-            }
-            if (glIsTexture(textureDepthMap3))
-            {
-                glUniform1i(textureDepthMap3ID, 7);
-                glActiveTexture(GL_TEXTURE0 + 7);
-                glBindTexture(GL_TEXTURE_2D, textureDepthMap3);
-            }
-            if (glIsTexture(textureDepthMap4))
-            {
-                glUniform1i(textureDepthMap4ID, 8);
-                glActiveTexture(GL_TEXTURE0 + 8);
-                glBindTexture(GL_TEXTURE_2D, textureDepthMap4);
-            }
-            if (glIsTexture(textureDepthMap5))
-            {
-                glUniform1i(textureDepthMap5ID, 9);
-                glActiveTexture(GL_TEXTURE0 + 9);
-                glBindTexture(GL_TEXTURE_2D, textureDepthMap5);
-            }
-            if (glIsTexture(textureDepthMap6))
-            {
-                glUniform1i(textureDepthMap6ID, 10);
-                glActiveTexture(GL_TEXTURE0 + 10);
-                glBindTexture(GL_TEXTURE_2D, textureDepthMap6);
             }
             if (hasSpecularMap)
             {
-                glUniform1i(specularTextureID, 11);
-                glActiveTexture(GL_TEXTURE0 + 11);
+                glUniform1i(specularTextureID, 12);
+                glActiveTexture(GL_TEXTURE0 + 12);
                 glBindTexture(GL_TEXTURE_2D, specularTexture);
 
                 glUniform1i(useSpecularMapID, 1);
@@ -314,10 +309,6 @@ public:
         {
             setTexture(&texture3,pathToTexture);
         }
-        else if(m_nbOfTexture == 3)
-        {
-            setTexture(&texture4,pathToTexture);
-        }
         m_nbOfTexture++;
     }
 
@@ -342,7 +333,6 @@ public:
             glDeleteTextures(1, &texture1);
             glDeleteTextures(1, &texture2);
             glDeleteTextures(1, &texture3);
-            glDeleteTextures(1, &texture4);
             glDeleteTextures(1, &specularTexture);
             glDeleteBuffers(1, &vbo);
             glDeleteBuffers(1, &vbo_colors);
@@ -397,15 +387,9 @@ protected:
     GLuint useSpecularMapID;
     GLuint textureDepthMapID;
     GLuint textureDepthMap1ID;
-    GLuint textureDepthMap2ID;
-    GLuint textureDepthMap3ID;
-    GLuint textureDepthMap4ID;
-    GLuint textureDepthMap5ID;
-    GLuint textureDepthMap6ID;
     GLuint texture1ID;
     GLuint texture2ID;
     GLuint texture3ID;
-    GLuint texture4ID;
     GLuint specularTextureID;
 
     bool hasSpecularMap;
@@ -413,16 +397,10 @@ protected:
     GLuint texture1;
     GLuint texture2;
     GLuint texture3;
-    GLuint texture4;
     GLuint specularTexture;
 
     GLuint lightSpaceMatrixID;
     GLuint lightSpaceMatrix1ID;
-    GLuint lightSpaceMatrix2ID;
-    GLuint lightSpaceMatrix3ID;
-    GLuint lightSpaceMatrix4ID;
-    GLuint lightSpaceMatrix5ID;
-    GLuint lightSpaceMatrix6ID;
     GLuint lightSpaceMatrixDepthID;
 
     void setTexture(GLuint *texture, const char* path)

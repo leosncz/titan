@@ -14,7 +14,7 @@
 - Blinn-Phong shading
 - Diffuse map (up to 4 textures on a single object)
 - Specular map
-- Dynamic shadows, all lights can cast shadow
+- Dynamic shadows
 - OBJ Model loader
 - Automatic texture cache
 - GUI
