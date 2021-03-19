@@ -112,7 +112,7 @@ public:
         }
         else if (lightToRender->type == POINT_LIGHT)
         {
-            float aspect = (float)2024 / (float)2024;
+            float aspect = (float)1024 / (float)1024;
             float near = 1.0f;
             float far = 25.0f;
             glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect, near, far);
