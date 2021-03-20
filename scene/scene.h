@@ -41,93 +41,17 @@ public:
     void renderScene()
     {
         // SHADOW PASSES
-        if (m_nbOfLight > 0) {
-            if (m_nbOfLight >= 1 && lights[0]->computeShadows) {
-
+        for (int i = 0; i < lights.size(); i++)
+        {
+            if (lights[i]->computeShadows)
+            {
                 glCullFace(GL_FRONT);
                 glViewport(0, 0, 1024, 1024);
-                glBindFramebuffer(GL_FRAMEBUFFER, lights[0]->depthMapFBO);
+                glBindFramebuffer(GL_FRAMEBUFFER, lights[i]->depthMapFBO);
                 glClear(GL_DEPTH_BUFFER_BIT);
-                for (int i = 0; i < m_objectHolder.size(); i++)
+                for (int i2 = 0; i2 < m_objectHolder.size(); i2++)
                 {
-                    m_objectHolder[i]->renderDepth(&projection, &view, &model, lights[0]);
-                }
-                glBindFramebuffer(GL_FRAMEBUFFER, 0);
-                glCullFace(GL_BACK);
-            }
-            if (m_nbOfLight >= 2 && lights[1]->computeShadows) {
-                    glCullFace(GL_FRONT);
-                    glViewport(0, 0, 1024, 1024);
-                    glBindFramebuffer(GL_FRAMEBUFFER, lights[1]->depthMapFBO);
-                    glClear(GL_DEPTH_BUFFER_BIT);
-                    for (int i = 0; i < m_objectHolder.size(); i++)
-                    {
-                        m_objectHolder[i]->renderDepth(&projection, &view, &model, lights[1]);
-                    }
-                    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-                    glCullFace(GL_BACK);
-            }
-            if (m_nbOfLight >= 3 && lights[2]->computeShadows) {
-
-                glCullFace(GL_FRONT);
-                glViewport(0, 0, 1024, 1024);
-                glBindFramebuffer(GL_FRAMEBUFFER, lights[2]->depthMapFBO);
-                glClear(GL_DEPTH_BUFFER_BIT);
-                for (int i = 0; i < m_objectHolder.size(); i++)
-                {
-                    m_objectHolder[i]->renderDepth(&projection, &view, &model, lights[2]);
-                }
-                glBindFramebuffer(GL_FRAMEBUFFER, 0);
-                glCullFace(GL_BACK);
-            }
-            if (m_nbOfLight >= 4 && lights[3]->computeShadows) {
-
-                glCullFace(GL_FRONT);
-                glViewport(0, 0, 1024, 1024);
-                glBindFramebuffer(GL_FRAMEBUFFER, lights[3]->depthMapFBO);
-                glClear(GL_DEPTH_BUFFER_BIT);
-                for (int i = 0; i < m_objectHolder.size(); i++)
-                {
-                    m_objectHolder[i]->renderDepth(&projection, &view, &model, lights[3]);
-                }
-                glBindFramebuffer(GL_FRAMEBUFFER, 0);
-                glCullFace(GL_BACK);
-            }
-            if (m_nbOfLight >= 5 && lights[4]->computeShadows) {
-
-                glCullFace(GL_FRONT);
-                glViewport(0, 0, 1024, 1024);
-                glBindFramebuffer(GL_FRAMEBUFFER, lights[4]->depthMapFBO);
-                glClear(GL_DEPTH_BUFFER_BIT);
-                for (int i = 0; i < m_objectHolder.size(); i++)
-                {
-                    m_objectHolder[i]->renderDepth(&projection, &view, &model, lights[4]);
-                }
-                glBindFramebuffer(GL_FRAMEBUFFER, 0);
-                glCullFace(GL_BACK);
-            }
-            if (m_nbOfLight >= 6 && lights[5]->computeShadows) {
-
-                glCullFace(GL_FRONT);
-                glViewport(0, 0, 1024, 1024);
-                glBindFramebuffer(GL_FRAMEBUFFER, lights[5]->depthMapFBO);
-                glClear(GL_DEPTH_BUFFER_BIT);
-                for (int i = 0; i < m_objectHolder.size(); i++)
-                {
-                    m_objectHolder[i]->renderDepth(&projection, &view, &model, lights[5]);
-                }
-                glBindFramebuffer(GL_FRAMEBUFFER, 0);
-                glCullFace(GL_BACK);
-            }
-            if (m_nbOfLight == 7 && lights[6]->computeShadows) {
-
-                glCullFace(GL_FRONT);
-                glViewport(0, 0, 1024, 1024);
-                glBindFramebuffer(GL_FRAMEBUFFER, lights[6]->depthMapFBO);
-                glClear(GL_DEPTH_BUFFER_BIT);
-                for (int i = 0; i < m_objectHolder.size(); i++)
-                {
-                    m_objectHolder[i]->renderDepth(&projection, &view, &model, lights[6]);
+                    m_objectHolder[i2]->renderDepth(&projection, &view, &model, lights[i]);
                 }
                 glBindFramebuffer(GL_FRAMEBUFFER, 0);
                 glCullFace(GL_BACK);
