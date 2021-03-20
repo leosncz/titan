@@ -184,10 +184,14 @@ public:
                 }
                 else if (glIsTexture(sceneLights[i]->textureDepthMap) && sceneLights[i]->computeShadows && sceneLights[i]->type == DIRECTIONNAL_LIGHT)
                 {
+                    string name = "lightSpaceMatrix";
+                    if (dirLightID != 0) {
+                        name.append(to_string(dirLightID));
+                    }
                     glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 25.0f);
                     glm::mat4 lightView = glm::lookAt(sceneLights[i]->lightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
                     glm::mat4 lightSpaceMatrix = lightProjection * lightView;
-                    glUniformMatrix4fv(lightSpaceMatrixID, 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
+                    glUniformMatrix4fv(glGetUniformLocation(m_shader.getShaderID(),name.c_str()), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
 
                     if (dirLightID == 0)
                     {

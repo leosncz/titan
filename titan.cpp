@@ -63,8 +63,8 @@ int main()
     mylight3.type = DIRECTIONNAL_LIGHT;
     myscene.addLight(&mylight3);
 
-   /* light mylight4 = light();
-    mylight4.setData(glm::vec3(0, 0.5, 5), glm::vec3(1,1,1), glm::vec3(0, -1, -1), 1000.0f);
+    light mylight4 = light();
+    mylight4.setData(glm::vec3(-2, 2, 0), glm::vec3(1,1,1), glm::vec3(0, -1, -1), 1000.0f);
     mylight4.type = DIRECTIONNAL_LIGHT;
     myscene.addLight(&mylight4);
     /*mylight4.linear = 0.09;
