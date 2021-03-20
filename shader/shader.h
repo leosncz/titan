@@ -352,6 +352,7 @@ public:
         "vec4 FragPosLightSpace;"
         "vec4 FragPosLightSpace1;"
         "} fs_in;"
+        "uniform float gamma;"
         "uniform samplerCube textureDepthCubemap;"
         "uniform samplerCube textureDepthCubemap1;"
         "uniform samplerCube textureDepthCubemap2;"
@@ -422,8 +423,8 @@ public:
         "  else if(lightType0 == 0){"
         "    lightDir = normalize(lightPos0 - fragPos);" //point light
         "    float distance    = length(lightPos0 - fragPos);"
-        "    attenuation = 1.0 / (lightConstant0 + lightLinear0 * distance + lightQuadratic0 * (distance * distance));"
-        "    shadowCoeff = (1-ShadowCalculationPL(fs_in.FragPos,lightPos0,textureDepthCubemap));"  
+        "    attenuation = 1.0 / (lightConstant0 + lightLinear0 * distance + lightQuadratic0 * (distance));"
+        "    shadowCoeff = 1-ShadowCalculationPL(fs_in.FragPos,lightPos0,textureDepthCubemap);"
         "  }"
         "  else if(lightType0 == 2){" // spotlight
         "    lightDir = normalize(lightPos0 - fragPos);"
@@ -464,7 +465,7 @@ public:
         "  }"
         "  else if(lightType1 == 0){lightDir = normalize(lightPos1 - fragPos);" //point light
         "    float distance    = length(lightPos1 - fragPos);"
-        "    attenuation = 1.0 / (lightConstant1 + lightLinear1 * distance + lightQuadratic1 * (distance * distance));"
+        "    attenuation = 1.0 / (lightConstant1 + lightLinear1 * distance + lightQuadratic1 * (distance));"
         "    shadowCoeff = (1 - ShadowCalculationPL(fs_in.FragPos, lightPos1, textureDepthCubemap1));"
         "  }"
         "  else if(lightType1 == 2){" // spotlight
@@ -505,7 +506,7 @@ public:
         "   }"
         "  else if(lightType2 == 0){lightDir = normalize(lightPos2 - fragPos);" //point light
         "    float distance    = length(lightPos2 - fragPos);"
-        "    attenuation = 1.0 / (lightConstant2 + lightLinear2 * distance + lightQuadratic2 * (distance * distance));"
+        "    attenuation = 1.0 / (lightConstant2 + lightLinear2 * distance + lightQuadratic2 * (distance));"
         "    shadowCoeff = (1-ShadowCalculationPL(fs_in.FragPos,lightPos2,textureDepthCubemap2));"  
         "  }"
         "  else if(lightType2 == 2){" // spotlight
@@ -546,7 +547,7 @@ public:
         "   }"
         "  else if(lightType3 == 0){lightDir = normalize(lightPos3 - fragPos);" //point light
         "    float distance    = length(lightPos3 - fragPos);"
-        "    attenuation = 1.0 / (lightConstant3 + lightLinear3 * distance + lightQuadratic3 * (distance * distance));"
+        "    attenuation = 1.0 / (lightConstant3 + lightLinear3 * distance + lightQuadratic3 * (distance));"
         "    shadowCoeff = (1-ShadowCalculationPL(fs_in.FragPos,lightPos3,textureDepthCubemap3));"
         "  }"
         "  else if(lightType3 == 2){" // spotlight
@@ -587,7 +588,7 @@ public:
         "  }"
         "  else if(lightType4 == 0){lightDir = normalize(lightPos4 - fragPos);" //point light
         "    float distance    = length(lightPos4 - fragPos);"
-        "    attenuation = 1.0 / (lightConstant4 + lightLinear4 * distance + lightQuadratic4 * (distance * distance));"
+        "    attenuation = 1.0 / (lightConstant4 + lightLinear4 * distance + lightQuadratic4 * (distance));"
         "    shadowCoeff = (1-ShadowCalculationPL(fs_in.FragPos,lightPos4,textureDepthCubemap4));"
         "  }"
         "  else if(lightType4 == 2){" // spotlight
@@ -628,7 +629,7 @@ public:
         "  }"
         "  else if(lightType5 == 0){lightDir = normalize(lightPos5 - fragPos);" //point light
         "    float distance    = length(lightPos5 - fragPos);"
-        "    attenuation = 1.0 / (lightConstant5 + lightLinear5 * distance + lightQuadratic5 * (distance * distance));"
+        "    attenuation = 1.0 / (lightConstant5 + lightLinear5 * distance + lightQuadratic5 * (distance));"
         "    shadowCoeff = (1-ShadowCalculationPL(fs_in.FragPos,lightPos5,textureDepthCubemap5));"
         "  }"
         "  else if(lightType5 == 2){" // spotlight
@@ -669,7 +670,7 @@ public:
         "  }"
         "  else if(lightType6 == 0){lightDir = normalize(lightPos6 - fragPos);" //point light
         "    float distance    = length(lightPos6 - fragPos);"
-        "    attenuation = 1.0 / (lightConstant6 + lightLinear6 * distance + lightQuadratic6 * (distance * distance));"
+        "    attenuation = 1.0 / (lightConstant6 + lightLinear6 * distance + lightQuadratic6 * (distance));"
         "    shadowCoeff = (1-ShadowCalculationPL(fs_in.FragPos,lightPos6,textureDepthCubemap6));"
         "  }"
         "  else if(lightType6 == 2){" // spotlight
@@ -714,6 +715,8 @@ public:
         "  if(howManyTex >= 3){textureResult = textureResult * texture(texture3,texCoord);}"
         "  "
         "  frag_colour = lightSummary * textureResult;"
+        // GAMA CORRECTION
+        "  frag_colour.rgb = pow(frag_colour.rgb, vec3(1.0 / gamma));"
         "}";
 
         GLuint vs = glCreateShader(GL_VERTEX_SHADER);

@@ -139,7 +139,7 @@ public:
         
         glDrawArrays(GL_TRIANGLES, 0, m_nbOfPointToDraw);
     }
-    void render(glm::mat4 *projection, glm::mat4 *view, glm::mat4 *model, glm::vec3 viewPos, light* sceneLights[]=0, int numberOfLight=0, GLuint textureDepthMap=0, GLuint textureDepthMap1 = 0, GLuint textureDepthCubemap = 0, GLuint textureDepthCubemap1=0, GLuint textureDepthCubemap2 = 0, GLuint textureDepthCubemap3 = 0, GLuint textureDepthCubemap4 = 0, GLuint textureDepthCubemap5 = 0, GLuint textureDepthCubemap6 = 0)
+    void render(glm::mat4 *projection, glm::mat4 *view, glm::mat4 *model, glm::vec3 viewPos, light* sceneLights[]=0, int numberOfLight=0, GLuint textureDepthMap=0, GLuint textureDepthMap1 = 0, GLuint textureDepthCubemap = 0, GLuint textureDepthCubemap1=0, GLuint textureDepthCubemap2 = 0, GLuint textureDepthCubemap3 = 0, GLuint textureDepthCubemap4 = 0, GLuint textureDepthCubemap5 = 0, GLuint textureDepthCubemap6 = 0, float gamma=2.2)
     {
         //Update actual model matrix
         glm::mat4 customModelMatrix = *model * modelMatrix;
@@ -155,6 +155,7 @@ public:
             glUniform3f(viewPosID,viewPos.x,viewPos.y,viewPos.z);
 
             glUniform1i(howManyTexID,m_nbOfTextureToDraw);
+            glUniform1f(glGetUniformLocation(m_shader.getShaderID(), "gamma"), gamma);
 
             if (numberOfLight > 0)
             {
@@ -299,15 +300,15 @@ public:
     {
         if(m_nbOfTexture == 0)
         {  
-            setTexture(&texture1, pathToTexture); 
+            setTexture(&texture1, pathToTexture,true); 
         }
         else if(m_nbOfTexture == 1)
         {
-            setTexture(&texture2,pathToTexture);
+            setTexture(&texture2,pathToTexture,true);
         }
         else if(m_nbOfTexture == 2)
         {
-            setTexture(&texture3,pathToTexture);
+            setTexture(&texture3,pathToTexture,true);
         }
         m_nbOfTexture++;
     }
@@ -403,7 +404,7 @@ protected:
     GLuint lightSpaceMatrix1ID;
     GLuint lightSpaceMatrixDepthID;
 
-    void setTexture(GLuint *texture, const char* path)
+    void setTexture(GLuint *texture, const char* path, bool isDiffuseTexture=false)
     {
         //Check if texture is cached
         GLuint cacheValue = m_texturePool->getCacheTextureID(path);
@@ -430,7 +431,14 @@ protected:
         {
             glGenTextures(1, texture);
             glBindTexture(GL_TEXTURE_2D, *texture);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+            if (isDiffuseTexture)
+            {
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+            }
+            else
+            {
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+            }
             glGenerateMipmap(GL_TEXTURE_2D);
         }
         else

@@ -36,6 +36,8 @@ public:
 
         m_gui.init(m_display);
 
+        m_gamma = 2.2;
+
         // Generate buffers & textures
 
         glGenFramebuffers(1, &depthMapFBO);
@@ -200,7 +202,6 @@ public:
         glDrawBuffer(GL_NONE);
         glReadBuffer(GL_NONE);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-       
     }
     void renderScene()
     {
@@ -344,12 +345,14 @@ public:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         for(int i = 0; i<m_objectHolder.size();i++)
         {
-            m_objectHolder[i]->render(&projection, &view, &model, m_actualCamera.getCameraPos(), lights,m_nbOfLight,depthMap,depthMap1,depthCubemap, depthCubemap1, depthCubemap2, depthCubemap3, depthCubemap4, depthCubemap5, depthCubemap6);
+            m_objectHolder[i]->render(&projection, &view, &model, m_actualCamera.getCameraPos(), lights,m_nbOfLight,depthMap,depthMap1,depthCubemap, depthCubemap1, depthCubemap2, depthCubemap3, depthCubemap4, depthCubemap5, depthCubemap6,m_gamma);
         }
 
         //Then render the GUI
         m_gui.update();
     }
+
+    void setGamma(float gamma) { m_gamma = gamma; }
 
     void addDrawableObject(renderObject* object)
     {
@@ -432,8 +435,11 @@ private:
 
     //Point shadows
     GLuint depthCubemap, depthCubemapFBO, depthCubemap1, depthCubemap2, depthCubemap3, depthCubemap4, depthCubemap5, depthCubemap6, depthCubemapFBO1, depthCubemapFBO2, depthCubemapFBO3, depthCubemapFBO4, depthCubemapFBO5, depthCubemapFBO6;
-
+    
     gui m_gui; // Each scene has its own gui
+
+    //gamma
+    float m_gamma;
 };
 
 #endif // SCENE_H_INCLUDED
