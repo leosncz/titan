@@ -58,19 +58,19 @@ int main()
     myplane.setAmbiantStrenght(0.3);
 
 
-    light mylight3 = light();
-    mylight3.setData(glm::vec3(0.5,1,4), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, -1, -1), 1000.0f);
+  /*  light mylight3 = light();
+    mylight3.setData(glm::vec3(0.5,1,4), glm::vec3(0.0, 1.0, 1.0), glm::vec3(0, -1, -1), 1000.0f);
     mylight3.type = DIRECTIONNAL_LIGHT;
-    myscene.addLight(&mylight3);
+    myscene.addLight(&mylight3);*/
 
-    light mylight4 = light();
+   /* light mylight4 = light();
     mylight4.setData(glm::vec3(-2, 2, 0), glm::vec3(1,1,1), glm::vec3(0, -1, -1), 1000.0f);
     mylight4.type = DIRECTIONNAL_LIGHT;
     myscene.addLight(&mylight4);
     /*mylight4.linear = 0.09;
     mylight4.quadratic = 0.032;*/
 
-   /* light mylight5 = light();
+    light mylight5 = light();
     mylight5.setData(glm::vec3(-5, 1.5, 0), glm::vec3(1, 1, 1), glm::vec3(0, -1, -1), 1000.0f);
     mylight5.type = POINT_LIGHT;
     myscene.addLight(&mylight5);
