@@ -157,24 +157,6 @@ public:
             glUniform1i(howManyTexID,m_nbOfTextureToDraw);
             glUniform1f(glGetUniformLocation(m_shader.getShaderID(), "gamma"), gamma);
 
-            if (numberOfLight > 0)
-            {
-                glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 25.0f);
-
-                if(numberOfLight >= 1 && sceneLights[0]->type == DIRECTIONNAL_LIGHT && sceneLights[0]->computeShadows)
-                {
-                    glm::mat4 lightView = glm::lookAt(sceneLights[0]->lightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-                    glm::mat4 lightSpaceMatrix = lightProjection * lightView;
-                    glUniformMatrix4fv(lightSpaceMatrixID, 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
-                }
-                if (numberOfLight >= 2 && sceneLights[1]->type == DIRECTIONNAL_LIGHT && sceneLights[1]->computeShadows)
-                {
-                    glm::mat4 lightView = glm::lookAt(sceneLights[1]->lightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-                    glm::mat4 lightSpaceMatrix = lightProjection * lightView;
-                    glUniformMatrix4fv(lightSpaceMatrix1ID, 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
-                }                
-            }
-
             int dirLightID = 0;
             int ptLightID = 0;
             int textureCount = 0;
@@ -202,13 +184,17 @@ public:
                 }
                 else if (glIsTexture(sceneLights[i]->textureDepthMap) && sceneLights[i]->computeShadows && sceneLights[i]->type == DIRECTIONNAL_LIGHT)
                 {
+                    glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 25.0f);
+                    glm::mat4 lightView = glm::lookAt(sceneLights[i]->lightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+                    glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+                    glUniformMatrix4fv(lightSpaceMatrixID, 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
+
                     if (dirLightID == 0)
                     {
                         glUniform1i(glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap"), 0);
                         glActiveTexture(GL_TEXTURE0);
                         glBindTexture(GL_TEXTURE_2D, sceneLights[i]->textureDepthMap);
                         dirLightID++;
-
                     }
                     else
                     {

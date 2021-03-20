@@ -395,7 +395,7 @@ public:
         // transform to [0,1] range
         "projCoords = projCoords * 0.5 + 0.5;"
         "float shadow = 0.0;"
-        "float bias = 0.005;"
+        "float bias = 0.001;"
         "vec2 texelSize = 1.0 / textureSize(texture_, 0);"
         "float currentDepth = projCoords.z;"
         "for (int x = -1; x <= 1; ++x)"

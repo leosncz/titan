@@ -55,11 +55,11 @@ int main()
     myplane.setNumberOfTextureToDraw(1);
     myplane.setTextureResolution(100);
     myplane.setSpecularStrenght(2.0);
-    myplane.setAmbiantStrenght(0.0);
+    myplane.setAmbiantStrenght(0.3);
 
 
     light mylight3 = light();
-    mylight3.setData(glm::vec3(0.5,1,5), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, -1, -1), 1000.0f);
+    mylight3.setData(glm::vec3(0.5,1,4), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, -1, -1), 1000.0f);
     mylight3.type = DIRECTIONNAL_LIGHT;
     myscene.addLight(&mylight3);
 
