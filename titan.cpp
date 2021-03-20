@@ -54,7 +54,7 @@ int main()
     myplane.addTexture("texture.jpg");
     myplane.setNumberOfTextureToDraw(1);
     myplane.setTextureResolution(100);
-    myplane.setSpecularStrenght(1.0);
+    myplane.setSpecularStrenght(2.0);
     myplane.setAmbiantStrenght(0.0);
 
 
@@ -71,7 +71,7 @@ int main()
     mylight4.quadratic = 0.032;*/
 
     light mylight5 = light();
-    mylight5.setData(glm::vec3(-5, 6, 0), glm::vec3(1, 1, 1), glm::vec3(0, -1, -1), 1000.0f);
+    mylight5.setData(glm::vec3(-5, 1.5, 0), glm::vec3(1, 1, 1), glm::vec3(0, -1, -1), 1000.0f);
     mylight5.type = POINT_LIGHT;
     myscene.addLight(&mylight5);
 

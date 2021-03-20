@@ -139,7 +139,7 @@ public:
         
         glDrawArrays(GL_TRIANGLES, 0, m_nbOfPointToDraw);
     }
-    void render(glm::mat4 *projection, glm::mat4 *view, glm::mat4 *model, glm::vec3 viewPos, light* sceneLights[]=0, int numberOfLight=0, GLuint textureDepthMap=0, GLuint textureDepthMap1 = 0, GLuint textureDepthCubemap = 0, GLuint textureDepthCubemap1=0, GLuint textureDepthCubemap2 = 0, GLuint textureDepthCubemap3 = 0, GLuint textureDepthCubemap4 = 0, GLuint textureDepthCubemap5 = 0, GLuint textureDepthCubemap6 = 0, float gamma=2.2)
+    void render(glm::mat4* projection, glm::mat4* view, glm::mat4* model, glm::vec3 viewPos, vector<light*> sceneLights = {}, int numberOfLight = 0, float gamma = 2.2)
     {
         //Update actual model matrix
         glm::mat4 customModelMatrix = *model * modelMatrix;
@@ -175,85 +175,82 @@ public:
                 }                
             }
 
-            if (glIsTexture(textureDepthCubemap))
+            int dirLightID = 0;
+            int ptLightID = 0;
+            int textureCount = 0;
+            for (int i = 0; i < sceneLights.size(); i++) // For each light
             {
-                glUniform1i(glGetUniformLocation(m_shader.getShaderID(),"textureDepthCubemap"), 0);
-                glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_CUBE_MAP, textureDepthCubemap);
+                if (glIsTexture(sceneLights[i]->textureDepthMap) && sceneLights[i]->computeShadows && sceneLights[i]->type == POINT_LIGHT)
+                {
+                    if (ptLightID == 0)
+                    {
+                        glUniform1i(glGetUniformLocation(m_shader.getShaderID(), "textureDepthCubemap"), 0);
+                        glActiveTexture(GL_TEXTURE0);
+                        glBindTexture(GL_TEXTURE_CUBE_MAP, sceneLights[i]->textureDepthMap);
+                        ptLightID++;
+                    }
+                    else
+                    {
+                        string name = "textureDepthCubemap";
+                        name.append(to_string(ptLightID));
+                        glUniform1i(glGetUniformLocation(m_shader.getShaderID(), name.c_str()), textureCount);
+                        glActiveTexture(GL_TEXTURE0 + textureCount);
+                        glBindTexture(GL_TEXTURE_CUBE_MAP, sceneLights[i]->textureDepthMap);
+                        ptLightID++;
+                    }
+                    textureCount++;
+                }
+                else if (glIsTexture(sceneLights[i]->textureDepthMap) && sceneLights[i]->computeShadows && sceneLights[i]->type == DIRECTIONNAL_LIGHT)
+                {
+                    if (dirLightID == 0)
+                    {
+                        glUniform1i(glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap"), 0);
+                        glActiveTexture(GL_TEXTURE0);
+                        glBindTexture(GL_TEXTURE_2D, sceneLights[i]->textureDepthMap);
+                        dirLightID++;
+
+                    }
+                    else
+                    {
+                        string name = "textureDepthMap";
+                        name.append(to_string(dirLightID));
+                        glUniform1i(glGetUniformLocation(m_shader.getShaderID(), name.c_str()), textureCount);
+                        glActiveTexture(GL_TEXTURE0 + textureCount);
+                        glBindTexture(GL_TEXTURE_2D, sceneLights[i]->textureDepthMap);
+                        dirLightID++;
+                    }
+                    textureCount++;
+                }
             }
-            if (glIsTexture(textureDepthCubemap1))
+
+            if (glIsTexture(texture1))
             {
-                glUniform1i(glGetUniformLocation(m_shader.getShaderID(), "textureDepthCubemap1"), 1);
-                glActiveTexture(GL_TEXTURE0+1);
-                glBindTexture(GL_TEXTURE_CUBE_MAP, textureDepthCubemap1);
+                glUniform1i(texture1ID, textureCount);
+                glActiveTexture(GL_TEXTURE0 + textureCount);
+                glBindTexture(GL_TEXTURE_2D, texture1);
+                textureCount++;
             }
-            if (glIsTexture(textureDepthCubemap2))
+            if (glIsTexture(texture2))
             {
-                glUniform1i(glGetUniformLocation(m_shader.getShaderID(), "textureDepthCubemap2"), 2);
-                glActiveTexture(GL_TEXTURE0 + 2);
-                glBindTexture(GL_TEXTURE_CUBE_MAP, textureDepthCubemap2);
+                glUniform1i(texture2ID, textureCount);
+                glActiveTexture(GL_TEXTURE0 + textureCount);
+                glBindTexture(GL_TEXTURE_2D, texture2);
+                textureCount++;
             }
-            if (glIsTexture(textureDepthCubemap3))
+            if (glIsTexture(texture3))
             {
-                glUniform1i(glGetUniformLocation(m_shader.getShaderID(), "textureDepthCubemap3"), 3);
-                glActiveTexture(GL_TEXTURE0 + 3);
-                glBindTexture(GL_TEXTURE_CUBE_MAP, textureDepthCubemap3);
-            }
-            if (glIsTexture(textureDepthCubemap4))
-            {
-                glUniform1i(glGetUniformLocation(m_shader.getShaderID(), "textureDepthCubemap4"), 4);
-                glActiveTexture(GL_TEXTURE0 + 4);
-                glBindTexture(GL_TEXTURE_CUBE_MAP, textureDepthCubemap4);
-            }
-            if (glIsTexture(textureDepthCubemap5))
-            {
-                glUniform1i(glGetUniformLocation(m_shader.getShaderID(), "textureDepthCubemap5"), 5);
-                glActiveTexture(GL_TEXTURE0 + 5);
-                glBindTexture(GL_TEXTURE_CUBE_MAP, textureDepthCubemap5);
-            }
-            if (glIsTexture(textureDepthCubemap6))
-            {
-                glUniform1i(glGetUniformLocation(m_shader.getShaderID(), "textureDepthCubemap6"), 6);
-                glActiveTexture(GL_TEXTURE0 + 6);
-                glBindTexture(GL_TEXTURE_CUBE_MAP, textureDepthCubemap6);
-            }
-            if(glIsTexture(texture1))
-            {
-                glUniform1i(texture1ID,7);
-                glActiveTexture(GL_TEXTURE0 + 7);
-                glBindTexture(GL_TEXTURE_2D,texture1);
-            }
-            if(glIsTexture(texture2))
-            {
-                glUniform1i(texture2ID,8);
-                glActiveTexture(GL_TEXTURE0 + 8);
-                glBindTexture(GL_TEXTURE_2D,texture2);
-            }
-            if(glIsTexture(texture3))
-            {
-               glUniform1i(texture3ID,9);
-               glActiveTexture(GL_TEXTURE0 + 9);
-               glBindTexture(GL_TEXTURE_2D,texture3);
-            }
-            if (glIsTexture(textureDepthMap))
-            {
-                glUniform1i(textureDepthMapID, 10);
-                glActiveTexture(GL_TEXTURE0 + 10);
-                glBindTexture(GL_TEXTURE_2D, textureDepthMap);
-            }
-            if (glIsTexture(textureDepthMap1))
-            {
-                glUniform1i(textureDepthMap1ID, 11);
-                glActiveTexture(GL_TEXTURE0 + 11);
-                glBindTexture(GL_TEXTURE_2D, textureDepthMap1);
+                glUniform1i(texture3ID, textureCount);
+                glActiveTexture(GL_TEXTURE0 + textureCount);
+                glBindTexture(GL_TEXTURE_2D, texture3);
+                textureCount++;
             }
             if (hasSpecularMap)
             {
-                glUniform1i(specularTextureID, 12);
-                glActiveTexture(GL_TEXTURE0 + 12);
+                glUniform1i(specularTextureID, textureCount);
+                glActiveTexture(GL_TEXTURE0 + textureCount);
                 glBindTexture(GL_TEXTURE_2D, specularTexture);
-
                 glUniform1i(useSpecularMapID, 1);
+                textureCount++;
             }
             else { glUniform1i(useSpecularMapID, 0);}
 

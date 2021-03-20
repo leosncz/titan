@@ -11,6 +11,7 @@ Handles everything related to shaders
 #include <glm.hpp>
 #include <gtc/type_ptr.hpp>
 #include <gtc/matrix_transform.hpp>
+#include <vector>
 using namespace std;
 class shader
 {
@@ -122,7 +123,7 @@ public:
         ambStrenghtID = glGetUniformLocation(m_shaderID,"ambStrenght");
     }
 
-    void registerLightToRender(light* sceneLights[], int numberOfLight, float nearPlane=1.0f,float farPlane=50.0f) // the shader chosen must support light
+    void registerLightToRender(vector<light*> sceneLights, int numberOfLight, float nearPlane=1.0f,float farPlane=50.0f) // the shader chosen must support light
     {
         //Check if there is light
             if(numberOfLight > 0) // Assuming we only got one light possible (for now), so we only send first light data

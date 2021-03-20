@@ -23,5 +23,13 @@ class light
 
      bool computeShadows;
 
+     GLuint textureDepthMap, depthMapFBO;
+
+     ~light()
+     {
+         glDeleteTextures(1, &textureDepthMap);
+         glDeleteFramebuffers(1, &depthMapFBO);
+     }
+
 };
 #endif // LIGHT_H_INCLUDED
