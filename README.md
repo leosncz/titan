@@ -12,8 +12,9 @@
 - Support up to 7 lights at the same time
 - Directionnal, spot and point light supported
 - Blinn-Phong shading
-- Diffuse map (up to 4 textures on a single object)
+- Diffuse map (up to 3 textures on a single object)
 - Specular map
+- Gamma correction
 - Dynamic shadows
 - OBJ Model loader
 - Automatic texture cache
