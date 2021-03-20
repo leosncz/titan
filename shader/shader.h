@@ -392,12 +392,19 @@ public:
         "vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;"
         // transform to [0,1] range
         "projCoords = projCoords * 0.5 + 0.5;"
-        // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
-        "float closestDepth = texture(texture_, projCoords.xy).r;"
-        // get depth of current fragment from light's perspective
+        "float shadow = 0.0;"
+        "float bias = 0.005;"
+        "vec2 texelSize = 1.0 / textureSize(texture_, 0);"
         "float currentDepth = projCoords.z;"
-        // check whether current frag pos is in shadow
-        "float shadow = currentDepth > closestDepth ? 1.0 : 0.0;"
+        "for (int x = -1; x <= 1; ++x)"
+        "{"
+        "    for (int y = -1; y <= 1; ++y)"
+        "    {"
+        "        float pcfDepth = texture(texture_, projCoords.xy + vec2(x, y) * texelSize).r;"
+        "        shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;"
+        "    }"
+        "}"
+        "shadow /= 9.0;"
         "if (projCoords.z > 1.0){"
         "     shadow = 0.0;}"
         "return shadow;"
@@ -410,7 +417,7 @@ public:
         "  float shadowCoeff = 1.0;"
         "  if(lightType0 == 1){" //directionnal
         "    lightDir = normalize(-lightDir0);"
-        "    shadowCoeff = 1-ShadowCalculation(fs_in.FragPosLightSpace,textureDepthMap);"
+        "    shadowCoeff = 1-ShadowCalculation(fs_in.FragPosLightSpace,textureDepthMap) * (1 - ambStrenght);"
         "  }"
         "  else if(lightType0 == 0){"
         "    lightDir = normalize(lightPos0 - fragPos);" //point light

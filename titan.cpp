@@ -1,6 +1,3 @@
-// titan.cpp : Ce fichier contient la fonction 'main'. L'exécution du programme commence et se termine à cet endroit.
-//
-
 #include <iostream>
 #include "display/display.h"
 #include "prefab/plane/plane.h"
@@ -61,10 +58,10 @@ int main()
     myplane.setAmbiantStrenght(0.3);
 
 
-    /*light mylight3 = light();
-    mylight3.setData(glm::vec3(0.5,2,2), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, -1), 1000.0f);
+    light mylight3 = light();
+    mylight3.setData(glm::vec3(0.5,1,5), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, -1), 1000.0f);
     mylight3.type = DIRECTIONNAL_LIGHT;
-    myscene.addLight(&mylight3);*/
+    myscene.addLight(&mylight3);
 
    /* light mylight4 = light();
     mylight4.setData(glm::vec3(0, 0.5, 5), glm::vec3(1,1,1), glm::vec3(0, -1, -1), 1000.0f);
@@ -73,7 +70,7 @@ int main()
     /*mylight4.linear = 0.09;
     mylight4.quadratic = 0.032;*/
 
-    light mylight5 = light();
+    /*light mylight5 = light();
     mylight5.setData(glm::vec3(-5, 1.5, 0), glm::vec3(1, 1, 1), glm::vec3(0, -1, -1), 1000.0f);
     mylight5.type = POINT_LIGHT;
     myscene.addLight(&mylight5);
