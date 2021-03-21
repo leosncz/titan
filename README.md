@@ -25,6 +25,7 @@
 - PBR
 - HDR
 - SSAO
+- Normal mapping
 - Infinite number of shadows
 - Dynamic light frustrum
 - TitanScripting to enable users exporting their game using TitanEngine
