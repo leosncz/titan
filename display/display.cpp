@@ -13,7 +13,7 @@ int display::init(int x, int y, int aa)
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make apple happy
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // We are courageous
 
-    m_window = glfwCreateWindow( x, y, "Titan Engine debug", NULL, NULL);
+    m_window = glfwCreateWindow( x, y, "Titan Engine debug - Press ESCAPE to show menu", NULL, NULL);
     if( m_window == NULL ){
         std::cout << "--> CRITICAL ERROR : OPENGL 3.X IS PROBABLY NOT SUPPORTED BY YOUR GRAPHIC CARD ! (-2)" << std::endl;
         glfwTerminate();

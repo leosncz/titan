@@ -87,6 +87,8 @@ public:
             glGenFramebuffers(1, &thelight->depthMapFBO);
             glGenTextures(1, &thelight->textureDepthMap);
             glBindTexture(GL_TEXTURE_CUBE_MAP, thelight->textureDepthMap);
+            float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+            glTexParameterfv(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_BORDER_COLOR, borderColor);
             for (unsigned int i = 0; i < 6; ++i)
             {
                 glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
