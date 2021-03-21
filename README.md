@@ -21,6 +21,8 @@
 - GUI
 
 ## Currently working on :
+- Physics system
+- PBR
 - HDR
 - SSAO
 - Infinite number of shadows
