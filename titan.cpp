@@ -10,7 +10,7 @@ using namespace std;
 int main()
 {
     display mainDisplay = display();
-    mainDisplay.init(1024, 768, 4);
+    mainDisplay.init(1920, 1080, 4, true);
 
     scene myscene = scene();
     myscene.setupDisplay(&mainDisplay);
@@ -31,12 +31,12 @@ int main()
 
 
 
-    cube triangle = cube();
+    /*cube triangle = cube();
     triangle.initPrefab(colors,myscene.getTexturePool());
     myscene.addDrawableObject(&triangle);
     triangle.moveObject(glm::vec3(0, 0.0, -1));
     triangle.setSpecularStrenght(1.0);
-    triangle.setAmbiantStrenght(0.0);
+    triangle.setAmbiantStrenght(0.0);*/
 
     cube triangle2 = cube();
     triangle2.initPrefab(colors, myscene.getTexturePool());
@@ -75,10 +75,10 @@ int main()
     mylight5.type = POINT_LIGHT;
     myscene.addLight(&mylight5);
 
-    /*light mylight6 = light();
+    light mylight6 = light();
     mylight6.setData(glm::vec3(10, 2, 30.0), glm::vec3(1, 1, 0), glm::vec3(0, -1, -1), 1000.0f);
     mylight6.type = POINT_LIGHT;
-    myscene.addLight(&mylight6);*/
+    myscene.addLight(&mylight6);
 
 
 

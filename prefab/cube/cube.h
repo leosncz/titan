@@ -6,6 +6,7 @@ class cube : public renderObject
 public:
     void initPrefab(float* colors, texturePool* texturePool)
     {
+        tag = "Cube";
         float cubeVertices[] = {
           -0.5,-0.5,0.5,    0.5,-0.5,0.5,    0.5,0.5,0.5,   0.5,0.5,0.5,  -0.5,0.5,0.5,    -0.5,-0.5,0.5,  //front
           -0.5,0.5,0.5,    0.5,0.5,0.5,    0.5,0.5,-0.5,    0.5,0.5,-0.5,   -0.5,0.5,-0.5,   -0.5,0.5,0.5,//top

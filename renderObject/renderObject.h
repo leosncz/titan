@@ -16,8 +16,14 @@ Handles everything related to drawable nodes
 class renderObject
 {
 public:
-    renderObject() { id = rand(); std::cout << "--> Creating new renderObject ID=" << id << std::endl;
+    renderObject() 
+    { 
+        id = rand(); 
+        std::cout << "--> Creating new renderObject ID=" << id << std::endl;
+        tag = "Custom Object";
     }
+    string getTag() { return tag; }
+    shader* getShader() { return &m_shader; }
     void setData(float* vertices, float* colors, float* texCoord, int nbOfPointToDraw, float* normals=0, texturePool* texturePool_=0) // Use this methode to define the mesh by hand
     {
         m_nbOfPointToDraw = nbOfPointToDraw;
@@ -340,6 +346,7 @@ public:
 protected:
 
     int id;
+    string tag;
 
     bool isInitialized;
 

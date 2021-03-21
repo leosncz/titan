@@ -1,5 +1,5 @@
 #include "display.h"
-int display::init(int x, int y, int aa)
+int display::init(int x, int y, int aa, bool fullscreen)
 {
     std::cout << "--> Titan Engine " << "dev 0.1" << " is warming up !" << std::endl;
     if( !glfwInit() )
@@ -13,7 +13,15 @@ int display::init(int x, int y, int aa)
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make apple happy
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // We are courageous
 
-    m_window = glfwCreateWindow( x, y, "Titan Engine debug - Press ESCAPE to show menu", NULL, NULL);
+    if (fullscreen)
+    {
+        m_window = glfwCreateWindow(x, y, "Titan Engine debug - Press ESCAPE to show menu",glfwGetPrimaryMonitor(), NULL);
+    }
+    else
+    {
+        m_window = glfwCreateWindow(x, y, "Titan Engine debug - Press ESCAPE to show menu", NULL, NULL);
+    }
+
     if( m_window == NULL ){
         std::cout << "--> CRITICAL ERROR : OPENGL 3.X IS PROBABLY NOT SUPPORTED BY YOUR GRAPHIC CARD ! (-2)" << std::endl;
         glfwTerminate();

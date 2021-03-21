@@ -4,6 +4,7 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "../display/display.h"
 #include "../renderObject/renderObject.h"
+#include "../shader/shader.h"
 #include <iostream>
 #include <vector>
 class gui
@@ -33,8 +34,10 @@ public:
 
 			ImGui::Begin("Hello", &isVisible);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
 			ImGui::SetWindowFontScale(1.4);
-			ImGui::Text("Welome to TITAN Engine !");
+			ImGui::TextColored(ImVec4(0,1,0,1),"Welome to TITAN Engine !");
 			ImGui::TextWrapped("Keep in mind : This engine is still in early development !");
+			ImGui::TextWrapped("The 'scene informations' panel only prints active objects");
+			ImGui::TextColored(ImVec4(1, 0, 0, 1), "From github.com/leosncz/titan");
 			ImGui::End();
 
 			ImGui::Begin("Scene informations", &isVisible);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
@@ -43,9 +46,21 @@ public:
 			{
 				vector<renderObject*>* test = objectHolder;
 				renderObject* object = test->at(i);
-				string name = "ASSET id ";
+				string name = "ID : ";
 				name.append(to_string(object->getID()));
 				ImGui::Text(name.c_str());
+				name = "TAG : ";
+				name.append(object->getTag());
+				ImGui::Text(name.c_str());
+				name = "AMBIANT : ";
+				float ambiant = object->getShader()->ambStrenght;
+				name.append(to_string(ambiant));
+				ImGui::Text(name.c_str());
+				name = "SPECULAR : ";
+				float specular = object->getShader()->specStrenght;
+				name.append(to_string(specular));
+				ImGui::Text(name.c_str());
+				ImGui::Separator();
 			}
 			ImGui::End();
 
