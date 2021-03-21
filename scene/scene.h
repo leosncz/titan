@@ -58,7 +58,7 @@ public:
             }
         }
         
-        //REGULAR PASSES, USING PREVIOUS GENERATED DEPTH MAPs
+        //FINAL PASS, USING PREVIOUS GENERATED DEPTH MAPs
         glViewport(0, 0, m_display->getDisWidth(), m_display->getDisHeight());
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         for(int i = 0; i<m_objectHolder.size();i++)
