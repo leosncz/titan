@@ -80,7 +80,7 @@ public:
             }
         }
     }
-    void setRenderObjectSpecularStrenght(int value)
+    void setRenderObjectSpecularStrenght(float value)
     {
         if (objects.size() > 0)
         {
@@ -90,7 +90,7 @@ public:
             }
         }
     }
-    void setRenderObjectAmbiantStrenght(int value)
+    void setRenderObjectAmbiantStrenght(float value)
     {
         if (objects.size() > 0)
         {
