@@ -9,7 +9,7 @@
 
 ## Actual supported features:
 - Runs on Windows, Mac & Linux (32-64 bits)
-- Support up to 7 lights at the same time
+- Infinite number of lights
 - Directionnal, spot and point light supported
 - Blinn-Phong shading
 - Diffuse map (up to 3 textures on a single object)
@@ -19,6 +19,13 @@
 - OBJ Model loader
 - Automatic texture cache
 - GUI
+
+## Currently working on :
+- HDR
+- SSAO
+- Infinite number of shadows
+- Dynamic light frustrum
+- TitanScripting to enable users exporting their game using TitanEngine
 
 ## Build
 In order to use & build the project with this library, you must install the following libraries :

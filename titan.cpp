@@ -86,7 +86,7 @@ int main()
     objScene.loadOBJFromFile("tree.obj");
     objScene.scaleRenderObjectScene(glm::vec3(0.2, 0.2, 0.2));
     objScene.moveRenderObjectScene(glm::vec3(0, -2.0, -2));
-    //objScene.setRenderObjectAmbiantStrenght(1.0);
+    objScene.setRenderObjectSpecularStrenght(2.0);
 
     mainDisplay.hideCursor();
 
