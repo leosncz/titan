@@ -117,9 +117,18 @@ public:
         "uniform float lightsLinear[100];"
         "uniform float lightsQuadratic[100];"
         "uniform float lightsCutoff[100];"
+        "uniform int useSpecularMap;"
+        "in VS_OUT{"
+        "vec3 FragPos;"
+        "vec3 Normal;"
+        "vec2 TexCoords;"
+        "vec4 FragPosLightSpace;"
+        "vec4 FragPosLightSpace1;"
+        "} fs_in;"
+        "uniform float gamma;"
         //number of lights
         "uniform int numberOfLight;"
-        // next important render matrixes
+        // next important render things
         "uniform vec3 viewPos;"
         "out vec4 frag_colour;"
         "in vec3 final_color;"
@@ -131,18 +140,6 @@ public:
         "uniform sampler2D texture1;"
         "uniform sampler2D texture2;"
         "uniform sampler2D texture3;"
-        "uniform sampler2D textureDepthMap;"
-        "uniform sampler2D textureDepthMap1;"
-        "uniform sampler2D specularMap;"
-        "uniform int useSpecularMap;"
-        "in VS_OUT{"
-        "vec3 FragPos;"
-        "vec3 Normal;"
-        "vec2 TexCoords;"
-        "vec4 FragPosLightSpace;"
-        "vec4 FragPosLightSpace1;"
-        "} fs_in;"
-        "uniform float gamma;"
         "uniform samplerCube textureDepthCubemap;"
         "uniform samplerCube textureDepthCubemap1;"
         "uniform samplerCube textureDepthCubemap2;"
@@ -150,6 +147,10 @@ public:
         "uniform samplerCube textureDepthCubemap4;"
         "uniform samplerCube textureDepthCubemap5;"
         "uniform samplerCube textureDepthCubemap6;"
+        "uniform sampler2D textureDepthMap;"
+        "uniform sampler2D textureDepthMap1;"
+        "uniform sampler2D specularMap;"
+        // METHODS
         "float ShadowCalculationPL(vec3 fragPos, vec3 lightPos, samplerCube tex)"
         "{"
         // get vector between fragment position and light position
@@ -209,7 +210,8 @@ public:
         "    float shadowCoeff = 1.0;"
         "  if(lightsType[i] == 1){" //directionnal
         "    lightDir = normalize(-lightsDir[i]);"
-  //      "    shadowCoeff = 1-ShadowCalculation(fs_in.FragPosLightSpace,textureDepthMap) * (1 - ambStrenght);"
+        "    if(i == 0){shadowCoeff = 1-ShadowCalculation(fs_in.FragPosLightSpace,textureDepthMap) * (1 - ambStrenght);}"
+        "    else if(i == 1){shadowCoeff = 1-ShadowCalculation(fs_in.FragPosLightSpace1,textureDepthMap1) * (1 - ambStrenght);}"
         "  }"
         "  else if(lightsType[i] == 0){"
         "    lightDir = normalize(lightsPosition[i] - fragPos);" //point light
@@ -259,8 +261,8 @@ public:
         "  if(howManyTex >= 1){textureResult = texture(texture1,texCoord);}"
         "  if(howManyTex >= 2){textureResult = textureResult * texture(texture2,texCoord);}"
         "  if(howManyTex >= 3){textureResult = textureResult * texture(texture3,texCoord);}"
+        "  if(lightSummary == 0){frag_colour = ambStrenght * textureResult;}else{frag_colour = lightSummary * textureResult;}"
         "  "
-        "  frag_colour = lightSummary * textureResult;"
         // GAMA CORRECTION
         "  frag_colour.rgb = pow(frag_colour.rgb, vec3(1.0 / gamma));"
         "}";

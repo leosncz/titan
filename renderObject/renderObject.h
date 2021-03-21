@@ -76,13 +76,8 @@ public:
         texture2ID = glGetUniformLocation(m_shader.getShaderID(), "texture2");
         texture3ID = glGetUniformLocation(m_shader.getShaderID(), "texture3");
         specularTextureID = glGetUniformLocation(m_shader.getShaderID(), "specularMap");
-        textureDepthMapID = glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap");
-        textureDepthMap1ID = glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap1");
         howManyTexID = glGetUniformLocation(m_shader.getShaderID(), "howManyTex");
         useSpecularMapID = glGetUniformLocation(m_shader.getShaderID(), "useSpecularMap");
-        lightSpaceMatrixID = glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix");
-        lightSpaceMatrix1ID = glGetUniformLocation(m_shader.getShaderID(), "lightSpaceMatrix1");
-        lightSpaceMatrixDepthID = glGetUniformLocation(m_depthShader.getShaderID(), "lightSpaceMatrix");
     }
     void setTexturePool(texturePool* texPool)
     {
@@ -107,7 +102,7 @@ public:
             glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 25.0f);
             glm::mat4 lightView = glm::lookAt(lightToRender->lightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
             glm::mat4 lightSpaceMatrix = lightProjection * lightView;
-            glUniformMatrix4fv(lightSpaceMatrixDepthID, 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
+            glUniformMatrix4fv(glGetUniformLocation(m_depthShader.getShaderID(),"lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
             glUniform1i(glGetUniformLocation(m_depthShader.getShaderID(), "isPoint"), 0);
         }
         else if (lightToRender->type == POINT_LIGHT)
@@ -373,8 +368,6 @@ protected:
     GLuint projectionID;
     GLuint howManyTexID;
     GLuint useSpecularMapID;
-    GLuint textureDepthMapID;
-    GLuint textureDepthMap1ID;
     GLuint texture1ID;
     GLuint texture2ID;
     GLuint texture3ID;
@@ -386,10 +379,6 @@ protected:
     GLuint texture2;
     GLuint texture3;
     GLuint specularTexture;
-
-    GLuint lightSpaceMatrixID;
-    GLuint lightSpaceMatrix1ID;
-    GLuint lightSpaceMatrixDepthID;
 
     void setTexture(GLuint *texture, const char* path, bool isDiffuseTexture=false)
     {
