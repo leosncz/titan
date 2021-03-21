@@ -54,6 +54,11 @@ public:
                 objects[objects.size() - 1]->addTexture(curMesh.MeshMaterial.map_Kd.c_str());
                 objects[objects.size() - 1]->setNumberOfTextureToDraw(1);
             }
+            if (curMesh.MeshMaterial.map_Ks != "") // If there is a specular texture
+            {
+                objects[objects.size() - 1]->setSpecularTexture(curMesh.MeshMaterial.map_Ks.c_str());
+            }
+            objects[objects.size() - 1]->setSpecularStrenght((curMesh.MeshMaterial.Ks.X + curMesh.MeshMaterial.Ks.Y + curMesh.MeshMaterial.Ks.Z)/3);
             m_scene->addDrawableObject(objects[objects.size() - 1]);
         }
     }

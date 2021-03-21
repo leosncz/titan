@@ -36,14 +36,14 @@ int main()
     myscene.addDrawableObject(&triangle);
     triangle.moveObject(glm::vec3(0, 0.0, -1));
     triangle.setSpecularStrenght(1.0);
-    triangle.setAmbiantStrenght(0.1);
+    triangle.setAmbiantStrenght(0.0);
 
     cube triangle2 = cube();
     triangle2.initPrefab(colors, myscene.getTexturePool());
     myscene.addDrawableObject(&triangle2);
     triangle2.moveObject(glm::vec3(5, 0.0, 2));
     triangle2.setSpecularStrenght(1.0);
-    triangle2.setAmbiantStrenght(0.1);
+    triangle2.setAmbiantStrenght(0.0);
 
     plane myplane = plane();
     myplane.initPrefab(colors, myscene.getTexturePool());
@@ -63,36 +63,30 @@ int main()
     mylight3.type = DIRECTIONNAL_LIGHT;
     myscene.addLight(&mylight3);
 
-    light mylight4 = light();
+    /*light mylight4 = light();
     mylight4.setData(glm::vec3(-2, 2, 0), glm::vec3(1,1,1), glm::vec3(0, -1, -1), 1000.0f);
     mylight4.type = DIRECTIONNAL_LIGHT;
     myscene.addLight(&mylight4);
     /*mylight4.linear = 0.09;
     mylight4.quadratic = 0.032;*/
 
-   /* light mylight5 = light();
-    mylight5.setData(glm::vec3(-5, 1.5, 0), glm::vec3(1, 1, 1), glm::vec3(0, -1, -1), 1000.0f);
+    light mylight5 = light();
+    mylight5.setData(glm::vec3(0, 4.0, 7.0), glm::vec3(1, 1, 1), glm::vec3(0, -1, -1), 1000.0f);
     mylight5.type = POINT_LIGHT;
     myscene.addLight(&mylight5);
 
-    light mylight6 = light();
-    mylight6.setData(glm::vec3(7, 1.5, 0), glm::vec3(1, 1, 1), glm::vec3(0, -1, -1), 1000.0f);
+    /*light mylight6 = light();
+    mylight6.setData(glm::vec3(10, 2, 30.0), glm::vec3(1, 1, 0), glm::vec3(0, -1, -1), 1000.0f);
     mylight6.type = POINT_LIGHT;
-    myscene.addLight(&mylight6);
-
-    light mylight7 = light();
-    mylight7.setData(glm::vec3(7, 1.5, 28), glm::vec3(1, 1, 1), glm::vec3(0, -1, -1), 1000.0f);
-    mylight7.type = POINT_LIGHT;
-    myscene.addLight(&mylight7);
+    myscene.addLight(&mylight6);*/
 
 
 
-    /*renderObjectScene objScene = renderObjectScene(&myscene);
-    objScene.loadOBJFromFile("ironman.obj");
-    objScene.moveRenderObjectScene(glm::vec3(0, 0.1, -2));
-    objScene.scaleRenderObjectScene(glm::vec3(0.1, 0.1, 0.1));
-    objScene.setRenderObjectSpecularStrenght(2.0);*/
-    
+    renderObjectScene objScene = renderObjectScene(&myscene);
+    objScene.loadOBJFromFile("tree.obj");
+    objScene.scaleRenderObjectScene(glm::vec3(0.2, 0.2, 0.2));
+    objScene.moveRenderObjectScene(glm::vec3(0, -2.0, -2));
+    //objScene.setRenderObjectAmbiantStrenght(1.0);
 
     mainDisplay.hideCursor();
 

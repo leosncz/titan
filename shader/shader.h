@@ -35,7 +35,7 @@ public:
         ambStrenghtID = glGetUniformLocation(m_shaderID,"ambStrenght");
     }
 
-    void registerLightToRender(vector<light*> sceneLights, int numberOfLight, float nearPlane=1.0f,float farPlane=50.0f) // the shader chosen must support light
+    void registerLightToRender(vector<light*> sceneLights, int numberOfLight) // the shader chosen must support light
     {
         //Send material properties
         glUniform1f(specStrenghtID, specStrenght);
@@ -225,6 +225,7 @@ public:
         "    else if(i == 5){shadowCoeff = (1-ShadowCalculationPL(fs_in.FragPos,lightsPosition[i],textureDepthCubemap5));}"
         "    else if(i == 6){shadowCoeff = (1-ShadowCalculationPL(fs_in.FragPos,lightsPosition[i],textureDepthCubemap6));}"
         "    if(shadowCoeff < ambStrenght && distance > 25.0){shadowCoeff = 1.0;}"
+        "    if(shadowCoeff < ambStrenght){shadowCoeff = ambStrenght;}"
         "  }"
         "  else if(lightsType[i] == 2){" // spotlight
         "    lightDir = normalize(lightsPosition[i] - fragPos);"

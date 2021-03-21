@@ -5,6 +5,7 @@
 #include <gtc/matrix_transform.hpp>
 #include "../display/display.h"
 #include "../camera/camera.h"
+#include "../renderObject/renderObject.h"
 
 class cameraFPS : public camera
 {
