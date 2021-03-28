@@ -3,9 +3,9 @@
 **Titan Engine** is a rendering engine (possibly also game engine in the future) which is small, lightweigth and easily customizable.
 
 ## Example
-![Example](example.png "Example of actual titan rendering")
-![Example](example2.png "Example of actual titan rendering")
 ![Example](example3.png "Example of actual titan rendering")
+![Example](example2.png "Example of actual titan rendering")
+![Example](example.png "Example of actual titan rendering")
 
 ## Actual supported features:
 - Runs on Windows, Mac & Linux (32-64 bits)
