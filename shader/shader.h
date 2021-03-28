@@ -63,7 +63,58 @@ public:
             glUniform1f(glGetUniformLocation(m_shaderID, (IDCutoff.append(to_string(i).append("]")).c_str())), sceneLights[i]->cutOff);
         }
     }
+    void compileQuadRenderShader()
+    {
+        std::cout << "---> Compiling quadRenderShader for scene"<< std::endl;
 
+        const char* vertex_shader =
+            "#version 330\n"
+            "layout(location = 0) in vec3 vp;"
+            "layout(location = 1) in vec3 color;"
+            "layout(location = 2) in vec2 inputTexCoord;"
+           
+            "out vec2 texCoord;"
+            "out vec3 final_color;"
+            
+            "void main() {"
+            "   gl_Position = vec4(vp, 1.0);"
+            "   final_color = color;"
+            "   texCoord = inputTexCoord;"
+            "}";
+
+        const char* fragment_shader =
+            "#version 330\n"
+            "out vec4 frag_colour;"
+            "in vec3 final_color;"
+            "in vec2 texCoord;"
+            "uniform sampler2D hdrTexture;"
+            "uniform float gamma;"
+            "uniform float exposure;"
+           
+            "void main() {"
+            // GAMA AND HDR CORRECTION
+            "  vec3 hdrColor = texture(hdrTexture, texCoord).rgb;"
+            "  vec3 mapped = vec3(1.0) - exp(-hdrColor * exposure);"
+            "  mapped = pow(mapped, vec3(1.0 / gamma));"
+            "  frag_colour = vec4(mapped, 1.0);"
+            "}";
+
+        GLuint vs = glCreateShader(GL_VERTEX_SHADER);
+        glShaderSource(vs, 1, &vertex_shader, NULL);
+        glCompileShader(vs);
+
+        GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(fs, 1, &fragment_shader, NULL);
+        glCompileShader(fs);
+
+        m_shaderID = glCreateProgram();
+        glAttachShader(m_shaderID, fs);
+        glAttachShader(m_shaderID, vs);
+        glLinkProgram(m_shaderID);
+
+        glDeleteShader(vs);
+        glDeleteShader(fs);
+    }
     void compileDefaultShader() //For now handles directionnal, spot and point lights
     {
         std::cout << "---> Compiling lightBasicShader for shader ID=" << id << std::endl;
@@ -125,7 +176,6 @@ public:
         "vec4 FragPosLightSpace;"
         "vec4 FragPosLightSpace1;"
         "} fs_in;"
-        "uniform float gamma;"
         //number of lights
         "uniform int numberOfLight;"
         // next important render things
@@ -263,9 +313,6 @@ public:
         "  if(howManyTex >= 2){textureResult = textureResult * texture(texture2,texCoord);}"
         "  if(howManyTex >= 3){textureResult = textureResult * texture(texture3,texCoord);}"
         "  if(lightSummary == 0){frag_colour = ambStrenght * textureResult;}else{frag_colour = lightSummary * textureResult;}"
-        "  "
-        // GAMA CORRECTION
-        "  frag_colour.rgb = pow(frag_colour.rgb, vec3(1.0 / gamma));"
         "}";
 
         GLuint vs = glCreateShader(GL_VERTEX_SHADER);

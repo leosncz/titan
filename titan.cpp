@@ -76,7 +76,7 @@ int main()
     myscene.addLight(&mylight5);
 
     light mylight6 = light();
-    mylight6.setData(glm::vec3(10, 2, 30.0), glm::vec3(1, 1, 0), glm::vec3(0, -1, -1), 1000.0f);
+    mylight6.setData(glm::vec3(10, 2, 30.0), glm::vec3(10, 10, 0), glm::vec3(0, -1, -1), 1000.0f);
     mylight6.type = POINT_LIGHT;
     myscene.addLight(&mylight6);
 

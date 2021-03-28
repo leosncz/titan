@@ -14,6 +14,7 @@ Handles everything related to scenes and object rendering loop in scenes
 #include "../cameraFPS/cameraFPS.h"
 #include "../texturePool/texturePool.h"
 #include "../gui/gui.h"
+#include "../shader/shader.h"
 
 class scene
 {
@@ -37,6 +38,57 @@ public:
         m_gui.init(m_display);
 
         m_gamma = 2.2;
+
+        //Create HDR stuff
+        m_exposure = 1.0f;
+        glGenFramebuffers(1, &hdrFBO);
+        glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
+        glGenTextures(1, &hdrTexture);
+        glBindTexture(GL_TEXTURE_2D, hdrTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_display->getDisWidth(), m_display->getDisHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, hdrTexture, 0);
+        glGenRenderbuffers(1, &hdrRBO);
+        glBindRenderbuffer(GL_RENDERBUFFER, hdrRBO);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_display->getDisWidth(), m_display->getDisHeight());
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, hdrRBO);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        //Create quad to render HDR scene
+        m_hdrShader.compileQuadRenderShader();
+        float vertices[] = {-1.0,-1.0,0.0,    1.0,-1.0,0.0,      1.0,1.0,0.0,     1.0,1.0,0.0,   -1.0,1.0,0.0,    -1.0,-1.0,0.0};
+        float colors[] = {1.0,1.0,1.0,    1.0,1.0,1.0,    1.0,1.0,1.0,    1.0,1.0,1.0,    1.0,1.0,1.0,    1.0,1.0,1.0};
+        float texCoords[] = { 0.0,0.0,  1.0,0.0,   1.0,1.0,   1.0,1.0,   0.0,1.0,    0.0,0.0 };
+        glGenBuffers(1, &vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, 3 * 6 * sizeof(float), vertices, GL_STATIC_DRAW);
+
+        glGenBuffers(1, &vbo_colors);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_colors);
+        glBufferData(GL_ARRAY_BUFFER, 3 * 6 * sizeof(float), colors, GL_STATIC_DRAW);
+
+        glGenBuffers(1, &vbo_texCoords);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_texCoords);
+        glBufferData(GL_ARRAY_BUFFER, 2 *6 * sizeof(float), &texCoords[0], GL_STATIC_DRAW);
+
+        glGenVertexArrays(1, &vao);
+        glBindVertexArray(vao);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_colors);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_texCoords);
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+
     }
     void renderScene()
     {
@@ -58,19 +110,31 @@ public:
             }
         }
         
-        //FINAL PASS, USING PREVIOUS GENERATED DEPTH MAPs
+        //Generate the final scene onto a quad
+        glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
         glViewport(0, 0, m_display->getDisWidth(), m_display->getDisHeight());
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         for(int i = 0; i<m_objectHolder.size();i++)
         {
-            m_objectHolder[i]->render(&projection, &view, &model, m_actualCamera.getCameraPos(), lights,m_nbOfLight,m_gamma);
+            m_objectHolder[i]->render(&projection, &view, &model, m_actualCamera.getCameraPos(), lights,m_nbOfLight);
         }
-
         //Then render the GUI
         m_gui.update(&m_objectHolder);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        //Draw quad
+        glUseProgram(m_hdrShader.getShaderID());
+        glBindVertexArray(vao);
+        glUniform1i(glGetUniformLocation(m_hdrShader.getShaderID(), "hdrTexture"), 15);
+        glUniform1f(glGetUniformLocation(m_hdrShader.getShaderID(), "gamma"), m_gamma);
+        glUniform1f(glGetUniformLocation(m_hdrShader.getShaderID(), "exposure"), m_exposure);
+        glActiveTexture(GL_TEXTURE0+15);
+        glBindTexture(GL_TEXTURE_2D, hdrTexture);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 
     void setGamma(float gamma) { m_gamma = gamma; }
+    void setExposure(float exposure) { m_exposure = exposure; }
 
     void addDrawableObject(renderObject* object)
     {
@@ -153,6 +217,13 @@ public:
 
     ~scene()
     {
+        glDeleteTextures(1, &hdrTexture);
+        glDeleteRenderbuffers(1, &hdrRBO);
+        glDeleteFramebuffers(1, &hdrFBO);
+        glDeleteBuffers(1, &vbo);
+        glDeleteBuffers(1, &vbo_colors);
+        glDeleteBuffers(1, &vbo_texCoords);
+        glDeleteVertexArrays(1, &vao);
         std::cout << "--> Destroying scene ID=" << id << std::endl;
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
@@ -179,6 +250,12 @@ private:
 
     //gamma
     float m_gamma;
+
+    //hdr
+    GLuint hdrFBO, hdrTexture, hdrRBO;
+    shader m_hdrShader;
+    GLuint vbo, vbo_colors, vbo_texCoords, vao;
+    float m_exposure;
 };
 
 #endif // SCENE_H_INCLUDED

@@ -140,7 +140,7 @@ public:
         
         glDrawArrays(GL_TRIANGLES, 0, m_nbOfPointToDraw);
     }
-    void render(glm::mat4* projection, glm::mat4* view, glm::mat4* model, glm::vec3 viewPos, vector<light*> sceneLights = {}, int numberOfLight = 0, float gamma = 2.2)
+    void render(glm::mat4* projection, glm::mat4* view, glm::mat4* model, glm::vec3 viewPos, vector<light*> sceneLights = {}, int numberOfLight = 0)
     {
         //Update actual model matrix
         glm::mat4 customModelMatrix = *model * modelMatrix;
@@ -156,7 +156,6 @@ public:
             glUniform3f(viewPosID,viewPos.x,viewPos.y,viewPos.z);
 
             glUniform1i(howManyTexID,m_nbOfTextureToDraw);
-            glUniform1f(glGetUniformLocation(m_shader.getShaderID(), "gamma"), gamma);
 
             int dirLightID = 0;
             int ptLightID = 0;

@@ -15,6 +15,7 @@
 - Diffuse map (up to 3 textures on a single object)
 - Specular map
 - Gamma correction
+- HDR (customizable exposure)
 - Dynamic shadows
 - OBJ Model loader
 - Automatic texture cache
@@ -23,7 +24,6 @@
 ## Currently working on :
 - Physics system
 - PBR
-- HDR
 - SSAO
 - Normal mapping
 - Infinite number of shadows
