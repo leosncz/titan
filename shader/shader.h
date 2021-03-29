@@ -68,7 +68,7 @@ public:
         std::cout << "---> Compiling quadRenderShader for scene"<< std::endl;
 
         const char* vertex_shader =
-            "#version 330\n"
+            "#version 330 core\n"
             "layout(location = 0) in vec3 vp;"
             "layout(location = 1) in vec3 color;"
             "layout(location = 2) in vec2 inputTexCoord;"
@@ -83,7 +83,7 @@ public:
             "}";
 
         const char* fragment_shader =
-            "#version 330\n"
+            "#version 330 core\n"
             "out vec4 frag_colour;"
             "in vec3 final_color;"
             "in vec2 texCoord;"
@@ -168,7 +168,6 @@ public:
         "uniform float lightsLinear[100];"
         "uniform float lightsQuadratic[100];"
         "uniform float lightsCutoff[100];"
-        "uniform int useSpecularMap;"
         "in VS_OUT{"
         "vec3 FragPos;"
         "vec3 Normal;"
@@ -200,6 +199,9 @@ public:
         "uniform sampler2D textureDepthMap;"
         "uniform sampler2D textureDepthMap1;"
         "uniform sampler2D specularMap;"
+            "uniform sampler2D normalMap;"
+            "uniform int useNormalMap;"
+        "uniform int useSpecularMap;"
         // METHODS
         "float ShadowCalculationPL(vec3 fragPos, vec3 lightPos, samplerCube tex)"
         "{"
@@ -254,7 +256,10 @@ public:
         "vec4 calculateLightOutput(){"
         "  vec4 lightSummary = vec4(0,0,0,0);"
         "  for(int i = 0;i<numberOfLight;i++){"
-        "    vec3 norm = normalize(aNormals);"
+        "    vec3 norm = vec3(0,0,0);"
+        "    if(useNormalMap == 0){"
+        "    norm = normalize(aNormals);}"
+        "    else{vec3 normal = texture(normalMap, texCoord).rgb; normal = normalize(normal * 2.0 - 1.0); norm = normal;}"
         "    vec3 lightDir;"
         "    float attenuation = 1.0;"
         "    float shadowCoeff = 1.0;"
@@ -306,8 +311,9 @@ public:
         "}"
         //""
         "void main() {"
+        // APPLY LIGHT EFFECT
         "  vec4 lightSummary = calculateLightOutput();"
-        // ""
+        // APPLY TEXTURE
         "  vec4 textureResult = vec4(1,1,1,1);"
         "  if(howManyTex >= 1){textureResult = texture(texture1,texCoord);}"
         "  if(howManyTex >= 2){textureResult = textureResult * texture(texture2,texCoord);}"

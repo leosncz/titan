@@ -31,6 +31,7 @@ public:
         m_nbOfTexture = 0;
         m_nbOfTextureToDraw = 0;
         hasSpecularMap = false;
+        hasNormalMap = false;
         isInitialized = true;
         m_texturePool = texturePool_;
         //Set texcordds
@@ -82,8 +83,10 @@ public:
         texture2ID = glGetUniformLocation(m_shader.getShaderID(), "texture2");
         texture3ID = glGetUniformLocation(m_shader.getShaderID(), "texture3");
         specularTextureID = glGetUniformLocation(m_shader.getShaderID(), "specularMap");
+        normalTextureID = glGetUniformLocation(m_shader.getShaderID(), "normalMap");
         howManyTexID = glGetUniformLocation(m_shader.getShaderID(), "howManyTex");
         useSpecularMapID = glGetUniformLocation(m_shader.getShaderID(), "useSpecularMap");
+        useNormalMapID = glGetUniformLocation(m_shader.getShaderID(), "useNormalMap");
     }
     void setTexturePool(texturePool* texPool)
     {
@@ -159,7 +162,7 @@ public:
 
             int dirLightID = 0;
             int ptLightID = 0;
-            int textureCount = 0;
+            int textureCount = 0; // 0 is hdr texture
             for (int i = 0; i < sceneLights.size(); i++) // For each light
             {
                 if (glIsTexture(sceneLights[i]->textureDepthMap) && sceneLights[i]->computeShadows && sceneLights[i]->type == POINT_LIGHT)
@@ -243,21 +246,34 @@ public:
                 textureCount++;
             }
             else { glUniform1i(useSpecularMapID, 0);}
+            if (hasNormalMap)
+            {
+                glUniform1i(normalTextureID, textureCount);
+                glActiveTexture(GL_TEXTURE0 + textureCount);
+                glBindTexture(GL_TEXTURE_2D, normalTexture);
+                glUniform1i(useNormalMapID, 1);
+                textureCount++;
+            }
+            else { glUniform1i(useNormalMapID, 0); }
 
             m_shader.registerLightToRender(sceneLights,numberOfLight); // MUST BE CALLED if you want lighting to work
 
             glDrawArrays(GL_TRIANGLES,0,m_nbOfPointToDraw);
-            
     }
-    void removeSpecularTexture()
+    void removeSpecularMap()
     {
         glDeleteTextures(1, &specularTexture);
         hasSpecularMap = false;
     }
-    void setSpecularTexture(const char* path)
+    void setSpecularMap(const char* path)
     {
         setTexture(&specularTexture, path);
         hasSpecularMap = true;
+    }
+    void setNormalMap(const char* path)
+    {
+        setTexture(&normalTexture, path);
+        hasNormalMap = true;
     }
     void setNumberOfTextureToDraw(int howMany){ // Set how many texture should be reserved for drawing
         m_nbOfTextureToDraw = howMany;
@@ -321,6 +337,7 @@ public:
             glDeleteTextures(1, &texture1);
             glDeleteTextures(1, &texture2);
             glDeleteTextures(1, &texture3);
+            glDeleteTextures(1, &normalTexture);
             glDeleteTextures(1, &specularTexture);
             glDeleteBuffers(1, &vbo);
             glDeleteBuffers(1, &vbo_colors);
@@ -374,17 +391,21 @@ protected:
     GLuint projectionID;
     GLuint howManyTexID;
     GLuint useSpecularMapID;
+    GLuint useNormalMapID;
     GLuint texture1ID;
     GLuint texture2ID;
     GLuint texture3ID;
     GLuint specularTextureID;
+    GLuint normalTextureID;
 
     bool hasSpecularMap;
+    bool hasNormalMap;
 
     GLuint texture1;
     GLuint texture2;
     GLuint texture3;
     GLuint specularTexture;
+    GLuint normalTexture;
 
     void setTexture(GLuint *texture, const char* path, bool isDiffuseTexture=false)
     {

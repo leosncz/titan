@@ -10,7 +10,7 @@ public:
 	GLuint getCacheTextureID(string path) {
 		if (textureIDs.size() != 0) {
 			for(int i=0;i<textureIDs.size()-1;i++){
-				if (path == texturePaths[i]) { return textureIDs[i]; }
+				if (path == texturePaths[i]) { cout << "--> Texture " << path << " has been found in tex cache" << endl; return textureIDs[i]; }
 			}
 		}
 		return -1;
@@ -25,5 +25,5 @@ public:
 private:
 	vector<GLuint> textureIDs; // textures ids
 	vector<string> texturePaths; // texture paths
-	//FIrst textureID correspond to first texturePaths
+	//First textureID corresponds to first texturePaths
 };

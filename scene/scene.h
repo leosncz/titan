@@ -118,19 +118,20 @@ public:
         {
             m_objectHolder[i]->render(&projection, &view, &model, m_actualCamera.getCameraPos(), lights,m_nbOfLight);
         }
-        //Then render the GUI
-        m_gui.update(&m_objectHolder);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         //Draw quad
         glUseProgram(m_hdrShader.getShaderID());
         glBindVertexArray(vao);
-        glUniform1i(glGetUniformLocation(m_hdrShader.getShaderID(), "hdrTexture"), 15);
         glUniform1f(glGetUniformLocation(m_hdrShader.getShaderID(), "gamma"), m_gamma);
         glUniform1f(glGetUniformLocation(m_hdrShader.getShaderID(), "exposure"), m_exposure);
-        glActiveTexture(GL_TEXTURE0+15);
+        glActiveTexture(GL_TEXTURE0+1);
         glBindTexture(GL_TEXTURE_2D, hdrTexture);
+        glUniform1i(glGetUniformLocation(m_hdrShader.getShaderID(), "hdrTexture"), 1);
         glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        //Then render the GUI
+        m_gui.update(&m_objectHolder);
     }
 
     void setGamma(float gamma) { m_gamma = gamma; }
