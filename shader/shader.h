@@ -156,7 +156,7 @@ public:
         "   vs_out.TexCoords = inputTexCoord;"
         "   vs_out.FragPosLightSpace = lightSpaceMatrix * vec4(vs_out.FragPos, 1.0);"
         "   vs_out.FragPosLightSpace1 = lightSpaceMatrix1 * vec4(vs_out.FragPos, 1.0);"
-        "   if(useNormalMap == 1){vec3 T = normalize(vec3(model * vec4(tangent, 0.0))); vec3 B = normalize(vec3(model * vec4(bitangent, 0.0))); vec3 N = normalize(vec3(model * vec4(aNormals, 0.0))); TBN = mat3(T, B, N);}"
+        "   if(useNormalMap == 1){vec3 T = normalize(vec3(model * vec4(tangent, 0.0))); vec3 N = normalize(vec3(model * vec4(aNormals, 0.0))); T = normalize(T - dot(T, N) * N); vec3 B = cross(N, T); TBN = mat3(T, B, N);}"
         "}";
 
         const char* fragment_shader =
