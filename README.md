@@ -3,9 +3,13 @@
 **Titan Engine** is a rendering engine (possibly also game engine in the future) which is small, lightweigth and easily customizable.
 
 ## Example
+Shadow example :
 ![Example](example3.png "Example of actual titan rendering")
+Normal mapping example :
 ![Example](example4.png "Example of actual titan rendering")
+Multiple light fading + specular map example :
 ![Example](example2.png "Example of actual titan rendering")
+More speaking specular map example :
 ![Example](example.png "Example of actual titan rendering")
 
 ## Actual supported features:
