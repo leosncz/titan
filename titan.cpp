@@ -43,7 +43,7 @@ int main()
     myscene.addDrawableObject(&triangle2);
     triangle2.moveObject(glm::vec3(5, 0.0, 2));
     triangle2.setSpecularStrenght(2.0);
-    triangle2.setAmbiantStrenght(0.0);
+    triangle2.setAmbiantStrenght(0.3);
     triangle2.addTexture("texture.jpg");
     triangle2.setNumberOfTextureToDraw(1);
     triangle2.setNormalMap("normalmap.jpg");

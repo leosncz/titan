@@ -24,7 +24,7 @@ public:
     }
     string getTag() { return tag; }
     shader* getShader() { return &m_shader; }
-    void setData(float* vertices, float* colors, float* texCoord, int nbOfPointToDraw, float* normals=0, texturePool* texturePool_=0, float* tangent=0,float* bitangent=0) // Use this methode to define the mesh by hand
+    void setData(float* vertices, float* colors, float* texCoord, int nbOfPointToDraw, float* normals=0, texturePool* texturePool_=0) // Use this methode to define the mesh by hand
     {
         m_nbOfPointToDraw = nbOfPointToDraw;
         modelMatrix = glm::mat4(1.0);
@@ -35,7 +35,7 @@ public:
         isInitialized = true;
         m_texturePool = texturePool_;
         //Set texcordds
-        if (texCoord != 0) { for (int i = 0; i < nbOfPointToDraw * 2; i++) { texCoords.push_back(texCoord[i]); } }
+        if (texCoord != 0) { for (int i = 0; i < nbOfPointToDraw * 2; i++) { m_texCoords.push_back(texCoord[i]); } }
 
         m_shader.compileDefaultShader();
         m_depthShader.compileDepthShader();
@@ -50,19 +50,43 @@ public:
 
         glGenBuffers(1, &vbo_texCoords);
         glBindBuffer(GL_ARRAY_BUFFER, vbo_texCoords);
-        glBufferData(GL_ARRAY_BUFFER, 2 * m_nbOfPointToDraw * sizeof(float), &texCoords[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, 2 * m_nbOfPointToDraw * sizeof(float), &m_texCoords[0], GL_STATIC_DRAW);
 
         glGenBuffers(1, &vbo_normals);
         glBindBuffer(GL_ARRAY_BUFFER, vbo_normals);
         glBufferData(GL_ARRAY_BUFFER, 3 * m_nbOfPointToDraw * sizeof(float), normals, GL_STATIC_DRAW);
 
+
+        //Compute tangent and bitangent
+        std::vector<glm::vec3> vertices_;
+        std::vector<glm::vec2> texCoord_;
+        std::vector<glm::vec3> normals_;
+        int i2 = 0;
+        for (int i = 0; i < m_nbOfPointToDraw; i++)
+        {
+            vertices_.push_back(glm::vec3(vertices[i2], vertices[i2 + 1], vertices[i2 + 2]));
+            normals_.push_back(glm::vec3(normals[i2], normals[i2 + 1], normals[i2 + 2]));
+            i2 += 3;
+        }
+        i2 = 0;
+        for (int i = 0; i < m_nbOfPointToDraw; i++)
+        {
+            texCoord_.push_back(glm::vec2(texCoord[i2], texCoord[i2 + 1]));
+            i2 += 2;
+        }
+
+        std::vector<glm::vec3> tangent;
+        std::vector<glm::vec3> bitangent;
+
+        computeTangent(vertices_, texCoord_, normals_, tangent, bitangent);
+
         glGenBuffers(1, &vbo_tangent);
         glBindBuffer(GL_ARRAY_BUFFER, vbo_tangent);
-        glBufferData(GL_ARRAY_BUFFER, 3 * m_nbOfPointToDraw * sizeof(float), tangent, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, tangent.size() * sizeof(glm::vec3), &tangent[0], GL_STATIC_DRAW);
 
         glGenBuffers(1, &vbo_bitangent);
         glBindBuffer(GL_ARRAY_BUFFER, vbo_bitangent);
-        glBufferData(GL_ARRAY_BUFFER, 3 * m_nbOfPointToDraw * sizeof(float), bitangent, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, bitangent.size() * sizeof(glm::vec3), &bitangent[0] , GL_STATIC_DRAW);
 
         glGenVertexArrays(1, &vao);
         glBindVertexArray(vao);
@@ -313,11 +337,11 @@ public:
 
         for(int i = 0;i<m_nbOfPointToDraw*2;i++)
         {
-            texCoords[i] = texCoords[i]*res;
+            m_texCoords[i] = m_texCoords[i]*res;
         }
 
         glBindBuffer(GL_ARRAY_BUFFER, vbo_texCoords);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, 2 * m_nbOfPointToDraw * sizeof(float), &texCoords[0]);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, 2 * m_nbOfPointToDraw * sizeof(float), &m_texCoords[0]);
     }
    
     void addTexture(const char* pathToTexture) // Returns the created texture (max 4)
@@ -397,7 +421,7 @@ protected:
 
     GLuint vbo, vbo_colors, vbo_texCoords, vbo_normals, vbo_tangent, vbo_bitangent;
 
-    vector<float> texCoords;
+    vector<float> m_texCoords;
 
     texturePool* m_texturePool; //Associated texture pool that contains cached texture
 
@@ -427,6 +451,44 @@ protected:
     GLuint specularTexture;
     GLuint normalTexture;
 
+    // Used to compute tangent and bitangent for normal mapping
+    void computeTangent(std::vector<glm::vec3>& vertices,std::vector<glm::vec2>& uvs,std::vector<glm::vec3>& normals,std::vector<glm::vec3>& tangents,std::vector<glm::vec3>& bitangents)
+    {
+        for (int i = 0; i < vertices.size(); i += 3) {
+            // Shortcuts for vertices
+            glm::vec3& v0 = vertices[i + 0];
+            glm::vec3& v1 = vertices[i + 1];
+            glm::vec3& v2 = vertices[i + 2];
+
+            // Shortcuts for UVs
+            glm::vec2& uv0 = uvs[i + 0];
+            glm::vec2& uv1 = uvs[i + 1];
+            glm::vec2& uv2 = uvs[i + 2];
+
+            // Edges of the triangle : position delta
+            glm::vec3 deltaPos1 = v1 - v0;
+            glm::vec3 deltaPos2 = v2 - v0;
+
+            // UV delta
+            glm::vec2 deltaUV1 = uv1 - uv0;
+            glm::vec2 deltaUV2 = uv2 - uv0;
+
+            float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+            glm::vec3 tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
+            glm::vec3 bitangent = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x) * r;
+
+            // Set the same tangent for all three vertices of the triangle.
+            // They will be merged later, in vboindexer.cpp
+            tangents.push_back(tangent);
+            tangents.push_back(tangent);
+            tangents.push_back(tangent);
+
+            // Same thing for binormals
+            bitangents.push_back(bitangent);
+            bitangents.push_back(bitangent);
+            bitangents.push_back(bitangent);
+        }
+    }
     void setTexture(GLuint *texture, const char* path, bool isDiffuseTexture=false)
     {
         //Check if texture is cached

@@ -130,6 +130,7 @@ public:
         "out vec3 aNormals;"
         "out vec3 fragPos;"
         "out vec2 texCoord;"
+        "out mat3 TBN;"
         "uniform mat4 model;"
         "uniform mat4 view;"
         "uniform mat4 projection;"
@@ -143,6 +144,7 @@ public:
         " } vs_out;"
         "uniform mat4 lightSpaceMatrix;"
         "uniform mat4 lightSpaceMatrix1;"
+        "uniform int useNormalMap;"
         "void main() {"
         "   gl_Position = projection * view * model * vec4(vp, 1.0);"
         "   aNormals = mat3(transpose(inverse(model))) * normals;"
@@ -154,6 +156,7 @@ public:
         "   vs_out.TexCoords = inputTexCoord;"
         "   vs_out.FragPosLightSpace = lightSpaceMatrix * vec4(vs_out.FragPos, 1.0);"
         "   vs_out.FragPosLightSpace1 = lightSpaceMatrix1 * vec4(vs_out.FragPos, 1.0);"
+        "   if(useNormalMap == 1){vec3 T = normalize(vec3(model * vec4(tangent, 0.0))); vec3 B = normalize(vec3(model * vec4(bitangent, 0.0))); vec3 N = normalize(vec3(model * vec4(aNormals, 0.0))); TBN = mat3(T, B, N);}"
         "}";
 
         const char* fragment_shader =
@@ -187,6 +190,7 @@ public:
         "in vec3 fragPos;"
         "in vec2 texCoord;"
         "uniform int howManyTex;"
+        "in mat3 TBN;"
         // TEXTURES
         "uniform sampler2D texture1;"
         "uniform sampler2D texture2;"
@@ -201,8 +205,8 @@ public:
         "uniform sampler2D textureDepthMap;"
         "uniform sampler2D textureDepthMap1;"
         "uniform sampler2D specularMap;"
-            "uniform sampler2D normalMap;"
-            "uniform int useNormalMap;"
+        "uniform sampler2D normalMap;"
+        "uniform int useNormalMap;"
         "uniform int useSpecularMap;"
         // METHODS
         "float ShadowCalculationPL(vec3 fragPos, vec3 lightPos, samplerCube tex)"
@@ -261,7 +265,7 @@ public:
         "    vec3 norm = vec3(0,0,0);"
         "    if(useNormalMap == 0){"
         "    norm = normalize(aNormals);}"
-        "    else{vec3 normal = texture(normalMap, texCoord).rgb; normal = normalize(normal * 2.0 - 1.0); norm = normal;}"
+        "    else{vec3 normal = texture(normalMap, texCoord).rgb; normal = normalize(normal * 2.0 - 1.0); normal = normalize(TBN * normal); norm = normal;}"
         "    vec3 lightDir;"
         "    float attenuation = 1.0;"
         "    float shadowCoeff = 1.0;"

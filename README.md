@@ -4,6 +4,7 @@
 
 ## Example
 ![Example](example3.png "Example of actual titan rendering")
+![Example](example4.png "Example of actual titan rendering")
 ![Example](example2.png "Example of actual titan rendering")
 ![Example](example.png "Example of actual titan rendering")
 
@@ -14,6 +15,7 @@
 - Blinn-Phong shading
 - Diffuse map (up to 3 textures on a single object)
 - Specular map
+- Normal map
 - Gamma correction
 - HDR (customizable exposure)
 - Dynamic shadows
@@ -25,7 +27,6 @@
 - Physics system
 - PBR
 - SSAO
-- Normal mapping (currently working on it)
 - Infinite number of shadows
 - Dynamic light frustrum
 - TitanScripting to enable users exporting their game using TitanEngine
