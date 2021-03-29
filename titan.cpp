@@ -10,7 +10,7 @@ using namespace std;
 int main()
 {
     display mainDisplay = display();
-    mainDisplay.init(1920, 1080, 4, true);
+    mainDisplay.init(1620, 780, 4, false);
 
     scene myscene = scene();
     myscene.setupDisplay(&mainDisplay);
@@ -59,6 +59,7 @@ int main()
     myplane.setNumberOfTextureToDraw(1);
     myplane.setTextureResolution(100);
     myplane.setAmbiantStrenght(0.1);
+    myplane.setNormalMap("normalmap.jpg");
 
 
     /*light mylight3 = light();

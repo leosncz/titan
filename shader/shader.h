@@ -125,6 +125,8 @@ public:
         "layout(location = 1) in vec3 color;"
         "layout(location = 2) in vec2 inputTexCoord;"
         "layout(location = 3) in vec3 normals;"
+        "layout(location = 4) in vec3 tangent;"
+        "layout(location = 5) in vec3 bitangent;"
         "out vec3 aNormals;"
         "out vec3 fragPos;"
         "out vec2 texCoord;"

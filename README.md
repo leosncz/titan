@@ -25,7 +25,7 @@
 - Physics system
 - PBR
 - SSAO
-- Normal mapping
+- Normal mapping (currently working on it)
 - Infinite number of shadows
 - Dynamic light frustrum
 - TitanScripting to enable users exporting their game using TitanEngine

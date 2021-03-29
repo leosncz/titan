@@ -24,7 +24,7 @@ public:
     }
     string getTag() { return tag; }
     shader* getShader() { return &m_shader; }
-    void setData(float* vertices, float* colors, float* texCoord, int nbOfPointToDraw, float* normals=0, texturePool* texturePool_=0) // Use this methode to define the mesh by hand
+    void setData(float* vertices, float* colors, float* texCoord, int nbOfPointToDraw, float* normals=0, texturePool* texturePool_=0, float* tangent=0,float* bitangent=0) // Use this methode to define the mesh by hand
     {
         m_nbOfPointToDraw = nbOfPointToDraw;
         modelMatrix = glm::mat4(1.0);
@@ -56,6 +56,14 @@ public:
         glBindBuffer(GL_ARRAY_BUFFER, vbo_normals);
         glBufferData(GL_ARRAY_BUFFER, 3 * m_nbOfPointToDraw * sizeof(float), normals, GL_STATIC_DRAW);
 
+        glGenBuffers(1, &vbo_tangent);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_tangent);
+        glBufferData(GL_ARRAY_BUFFER, 3 * m_nbOfPointToDraw * sizeof(float), tangent, GL_STATIC_DRAW);
+
+        glGenBuffers(1, &vbo_bitangent);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_bitangent);
+        glBufferData(GL_ARRAY_BUFFER, 3 * m_nbOfPointToDraw * sizeof(float), bitangent, GL_STATIC_DRAW);
+
         glGenVertexArrays(1, &vao);
         glBindVertexArray(vao);
 
@@ -74,6 +82,14 @@ public:
         glBindBuffer(GL_ARRAY_BUFFER, vbo_normals);
         glEnableVertexAttribArray(3);
         glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_tangent);
+        glEnableVertexAttribArray(4);
+        glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_bitangent);
+        glEnableVertexAttribArray(5);
+        glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
         modelID = glGetUniformLocation(m_shader.getShaderID(), "model");
         viewID = glGetUniformLocation(m_shader.getShaderID(), "view");
@@ -265,6 +281,11 @@ public:
         glDeleteTextures(1, &specularTexture);
         hasSpecularMap = false;
     }
+    void removeNormalMap()
+    {
+        glDeleteTextures(1, &normalTexture);
+        hasNormalMap = false;
+    }
     void setSpecularMap(const char* path)
     {
         setTexture(&specularTexture, path);
@@ -343,6 +364,8 @@ public:
             glDeleteBuffers(1, &vbo_colors);
             glDeleteBuffers(1, &vbo_texCoords);
             glDeleteBuffers(1, &vbo_normals);
+            glDeleteBuffers(1, &vbo_tangent);
+            glDeleteBuffers(1, &vbo_bitangent);
             glDeleteVertexArrays(1, &vao);
         }
     }
@@ -372,10 +395,7 @@ protected:
     int m_nbOfTexture; // Nb of texture created
     int m_nbOfTextureToDraw; // Nb of texture to draw
 
-    GLuint vbo;
-    GLuint vbo_colors;
-    GLuint vbo_texCoords;
-    GLuint vbo_normals;
+    GLuint vbo, vbo_colors, vbo_texCoords, vbo_normals, vbo_tangent, vbo_bitangent;
 
     vector<float> texCoords;
 
