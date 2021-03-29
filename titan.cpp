@@ -42,8 +42,8 @@ int main()
     triangle2.initPrefab(colors, myscene.getTexturePool());
     myscene.addDrawableObject(&triangle2);
     triangle2.moveObject(glm::vec3(5, 0.0, 2));
-    triangle2.setSpecularStrenght(2.0);
-    triangle2.setAmbiantStrenght(0.3);
+    triangle2.setSpecularStrenght(3.0);
+    triangle2.setAmbiantStrenght(0.0);
     triangle2.addTexture("texture.jpg");
     triangle2.setNumberOfTextureToDraw(1);
     triangle2.setNormalMap("normalmap.jpg");
@@ -75,7 +75,7 @@ int main()
     mylight4.quadratic = 0.032;*/
 
     light mylight5 = light();
-    mylight5.setData(glm::vec3(5, 1.0, 5.0), glm::vec3(1, 1, 1), glm::vec3(0, -1, -1), 1000.0f);
+    mylight5.setData(glm::vec3(3, 1.0, 0.0), glm::vec3(1, 1, 1), glm::vec3(0, -1, -1), 1000.0f);
     mylight5.type = POINT_LIGHT;
     myscene.addLight(&mylight5);
 
@@ -87,18 +87,20 @@ int main()
 
 
     renderObjectScene objScene = renderObjectScene(&myscene);
-    objScene.loadOBJFromFile("tree.obj");
-    objScene.scaleRenderObjectScene(glm::vec3(0.2, 0.2, 0.2));
-    objScene.moveRenderObjectScene(glm::vec3(0, -2.0, -2));
+    objScene.loadOBJFromFile("cottage_obj.obj");
+    /*objScene.scaleRenderObjectScene(glm::vec3(0.01, 0.01, 0.01));
+    objScene.moveRenderObjectScene(glm::vec3(0, -4.5, -2));
+    objScene.setRenderObjectSpecularStrenght(1.5f);
+  //  objScene.setRenderObjectNormalMap("normalmap.jpg");
+  // objScene.setRenderObjectTextureResolution(30);*/
 
     mainDisplay.hideCursor();
-
     while (!mainDisplay.shouldExit()) {
         myscene.clearScene();
         myscene.updateCamera();
         myscene.renderScene();
         myscene.refreshScene();
-    }
+    } 
 
     return 0;
 }

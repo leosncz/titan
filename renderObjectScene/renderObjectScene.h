@@ -44,21 +44,22 @@ public:
                 uv.push_back(curMesh.Vertices[j].TextureCoordinate.Y);
                 colors.push_back(curMesh.MeshMaterial.Kd.X); //r
                 colors.push_back(curMesh.MeshMaterial.Kd.Y); //g
-                colors.push_back(curMesh.MeshMaterial.Kd.Z); //b
-                
+                colors.push_back(curMesh.MeshMaterial.Kd.Z); //b  
             }
-            objects.push_back(new renderObject());
-            objects[objects.size() - 1]->setData(&vertices[0], &colors[0], &uv[0], curMesh.Vertices.size(), &normals[0],m_scene->getTexturePool());
+            renderObject* newObject = new renderObject();
+            newObject->setData(&vertices[0], &colors[0], &uv[0], curMesh.Vertices.size(), &normals[0], m_scene->getTexturePool());
+            objects.push_back(newObject);
+
+
             if (curMesh.MeshMaterial.map_Kd != "") // If there is a diffuse texture
             {
                 objects[objects.size() - 1]->addTexture(curMesh.MeshMaterial.map_Kd.c_str());
                 objects[objects.size() - 1]->setNumberOfTextureToDraw(1);
             }
-            if (curMesh.MeshMaterial.map_Ks != "") // If there is a specular texture
+            if (curMesh.MeshMaterial.map_bump != "") // If there is a normal map
             {
-                objects[objects.size() - 1]->setSpecularMap(curMesh.MeshMaterial.map_Ks.c_str());
+                objects[objects.size() - 1]->setNormalMap(curMesh.MeshMaterial.map_bump.c_str());
             }
-            objects[objects.size() - 1]->setSpecularStrenght((curMesh.MeshMaterial.Ks.X + curMesh.MeshMaterial.Ks.Y + curMesh.MeshMaterial.Ks.Z)/3);
             m_scene->addDrawableObject(objects[objects.size() - 1]);
         }
     }
@@ -90,6 +91,17 @@ public:
             }
         }
     }
+    void setRenderObjectTexture(string path)
+    {
+        if (objects.size() > 0)
+        {
+            for (int i = 0; i < objects.size(); i++)
+            {
+                objects[i]->addTexture(path.c_str());
+                objects[i]->setNumberOfTextureToDraw(1);
+            }
+        }
+    }
     void setRenderObjectAmbiantStrenght(float value)
     {
         if (objects.size() > 0)
@@ -97,6 +109,36 @@ public:
             for (int i = 0; i < objects.size(); i++)
             {
                 objects[i]->setAmbiantStrenght(value);
+            }
+        }
+    }
+    void setRenderObjectTextureResolution(int value)
+    {
+        if (objects.size() > 0)
+        {
+            for (int i = 0; i < objects.size(); i++)
+            {
+                objects[i]->setTextureResolution(value);
+            }
+        }
+    }
+    void setRenderObjectNormalMap(string path)
+    {
+        if (objects.size() > 0)
+        {
+            for (int i = 0; i < objects.size(); i++)
+            {
+                objects[i]->setNormalMap(path.c_str());
+            }
+        }
+    }
+    void removeRenderObjectNormalMap()
+    {
+        if (objects.size() > 0)
+        {
+            for (int i = 0; i < objects.size(); i++)
+            {
+                objects[i]->removeNormalMap();
             }
         }
     }
