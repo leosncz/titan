@@ -9,8 +9,6 @@ Normal mapping example :
 ![Example](example4.png "Example of actual titan rendering")
 Multiple light fading + specular map example :
 ![Example](example2.png "Example of actual titan rendering")
-More speaking specular map example :
-![Example](example.png "Example of actual titan rendering")
 
 ## Actual supported features:
 - Runs on Windows, Mac & Linux (32-64 bits)
