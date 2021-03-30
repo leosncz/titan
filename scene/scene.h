@@ -125,11 +125,11 @@ public:
         glBindVertexArray(vao);
         glUniform1f(glGetUniformLocation(m_hdrShader.getShaderID(), "gamma"), m_gamma);
         glUniform1f(glGetUniformLocation(m_hdrShader.getShaderID(), "exposure"), m_exposure);
-        glActiveTexture(GL_TEXTURE0+1);
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, hdrTexture);
-        glUniform1i(glGetUniformLocation(m_hdrShader.getShaderID(), "hdrTexture"), 1);
+        glUniform1i(glGetUniformLocation(m_hdrShader.getShaderID(), "hdrTexture"), 0);
         glDrawArrays(GL_TRIANGLES, 0, 6);
-
+        glBindTexture(GL_TEXTURE_2D, 0);
         //Then render the GUI
         m_gui.update(&m_objectHolder);
     }

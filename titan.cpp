@@ -91,20 +91,13 @@ int main()
     objScene.scaleRenderObjectScene(glm::vec3(0.09, 0.09, 0.09));
     objScene.moveRenderObjectScene(glm::vec3(0, -4.5, -2));
     objScene.setRenderObjectSpecularStrenght(1.5f);
-  // objScene.setRenderObjectTextureResolution(30);*/
-
-    bool test = true;
+    objScene.setRenderObjectNormalMap("Container LP Complekt_DefaultMaterial_Normal.png");
+    objScene.setRenderObjectTexture("Container LP Complekt_DefaultMaterial_AlbedoTransparency.png");
 
     mainDisplay.hideCursor();
     while (!mainDisplay.shouldExit()) {
         myscene.clearScene();
         myscene.updateCamera();
-        if (test)
-        {
-            test = false;
-            objScene.setRenderObjectNormalMap("Container LP Complekt_DefaultMaterial_Normal.png");
-            //objScene.setRenderObjectTextureResolution(2);
-        }
         myscene.renderScene();
         myscene.refreshScene();
     } 
