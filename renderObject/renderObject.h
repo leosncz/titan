@@ -24,109 +24,119 @@ public:
     }
     string getTag() { return tag; }
     shader* getShader() { return &m_shader; }
-    void setData(float* vertices, float* colors, float* texCoord, int nbOfPointToDraw, float* normals=0, texturePool* texturePool_=0) // Use this methode to define the mesh by hand
+    bool setData(float* vertices, float* colors, float* texCoord, int nbOfPointToDraw, float* normals=0, texturePool* texturePool_=0) // Use this methode to define the mesh by hand
     {
-        m_nbOfPointToDraw = nbOfPointToDraw;
-        modelMatrix = glm::mat4(1.0);
-        m_nbOfTexture = 0;
-        m_nbOfTextureToDraw = 0;
-        hasSpecularMap = false;
-        hasNormalMap = false;
-        isInitialized = true;
-        m_texturePool = texturePool_;
-        //Set texcordds
-        if (texCoord != 0) { for (int i = 0; i < nbOfPointToDraw * 2; i++) { m_texCoords.push_back(texCoord[i]); } }
+         m_nbOfPointToDraw = nbOfPointToDraw;
+         modelMatrix = glm::mat4(1.0);
+         m_nbOfTexture = 0;
+         m_nbOfTextureToDraw = 0;
+         hasSpecularMap = false;
+         hasNormalMap = false;
+         isInitialized = true;
+         m_texturePool = texturePool_;
+         //Set texcordds
+         if (texCoord != 0) { for (int i = 0; i < nbOfPointToDraw * 2; i++) { m_texCoords.push_back(texCoord[i]); } }
 
-        m_shader.compileDefaultShader();
-        m_depthShader.compileDepthShader();
+         m_shader.compileDefaultShader();
+         m_depthShader.compileDepthShader();
 
-        glGenBuffers(1, &vbo);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, 3 * m_nbOfPointToDraw * sizeof(float), vertices, GL_STATIC_DRAW);
+         glGenBuffers(1, &vbo);
+         glBindBuffer(GL_ARRAY_BUFFER, vbo);
+         glBufferData(GL_ARRAY_BUFFER, 3 * m_nbOfPointToDraw * sizeof(float), vertices, GL_STATIC_DRAW);
 
-        glGenBuffers(1, &vbo_colors);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo_colors);
-        glBufferData(GL_ARRAY_BUFFER, 3 * m_nbOfPointToDraw * sizeof(float), colors, GL_STATIC_DRAW);
+         glGenBuffers(1, &vbo_colors);
+         glBindBuffer(GL_ARRAY_BUFFER, vbo_colors);
+         glBufferData(GL_ARRAY_BUFFER, 3 * m_nbOfPointToDraw * sizeof(float), colors, GL_STATIC_DRAW);
 
-        glGenBuffers(1, &vbo_texCoords);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo_texCoords);
-        glBufferData(GL_ARRAY_BUFFER, 2 * m_nbOfPointToDraw * sizeof(float), &m_texCoords[0], GL_STATIC_DRAW);
+         glGenBuffers(1, &vbo_texCoords);
+         glBindBuffer(GL_ARRAY_BUFFER, vbo_texCoords);
+         glBufferData(GL_ARRAY_BUFFER, 2 * m_nbOfPointToDraw * sizeof(float), &m_texCoords[0], GL_STATIC_DRAW);
 
-        glGenBuffers(1, &vbo_normals);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo_normals);
-        glBufferData(GL_ARRAY_BUFFER, 3 * m_nbOfPointToDraw * sizeof(float), normals, GL_STATIC_DRAW);
+         glGenBuffers(1, &vbo_normals);
+         glBindBuffer(GL_ARRAY_BUFFER, vbo_normals);
+         glBufferData(GL_ARRAY_BUFFER, 3 * m_nbOfPointToDraw * sizeof(float), normals, GL_STATIC_DRAW);
 
 
-        //Compute tangent and bitangent
-        std::vector<glm::vec3> vertices_;
-        std::vector<glm::vec2> texCoord_;
-        std::vector<glm::vec3> normals_;
-        int i2 = 0;
-        for (int i = 0; i < m_nbOfPointToDraw; i++)
-        {
-            vertices_.push_back(glm::vec3(vertices[i2], vertices[i2 + 1], vertices[i2 + 2]));
-            normals_.push_back(glm::vec3(normals[i2], normals[i2 + 1], normals[i2 + 2]));
-            i2 += 3;
-        }
-        i2 = 0;
-        for (int i = 0; i < m_nbOfPointToDraw; i++)
-        {
-            texCoord_.push_back(glm::vec2(texCoord[i2], texCoord[i2 + 1]));
-            i2 += 2;
-        }
+         //Compute tangent and bitangent
+         std::vector<glm::vec3> vertices_;
+         std::vector<glm::vec2> texCoord_;
+         std::vector<glm::vec3> normals_;
+         int i2 = 0;
+         for (int i = 0; i < m_nbOfPointToDraw; i++)
+         {
+             vertices_.push_back(glm::vec3(vertices[i2], vertices[i2 + 1], vertices[i2 + 2]));
+             normals_.push_back(glm::vec3(normals[i2], normals[i2 + 1], normals[i2 + 2]));
+             i2 += 3;
+         }
+         i2 = 0;
+         for (int i = 0; i < m_nbOfPointToDraw; i++)
+         {
+             texCoord_.push_back(glm::vec2(texCoord[i2], texCoord[i2 + 1]));
+             i2 += 2;
+         }
+         
+         if (isMultipleOf3(vertices_.size()))
+         {
+             std::vector<glm::vec3> tangent;
+             std::vector<glm::vec3> bitangent;
 
-        std::vector<glm::vec3> tangent;
-        std::vector<glm::vec3> bitangent;
+             computeTangent(vertices_, texCoord_, normals_, tangent, bitangent);
 
-        computeTangent(vertices_, texCoord_, normals_, tangent, bitangent);
+             glGenBuffers(1, &vbo_tangent);
+             glBindBuffer(GL_ARRAY_BUFFER, vbo_tangent);
+             glBufferData(GL_ARRAY_BUFFER, tangent.size() * sizeof(glm::vec3), &tangent[0], GL_STATIC_DRAW);
 
-        glGenBuffers(1, &vbo_tangent);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo_tangent);
-        glBufferData(GL_ARRAY_BUFFER, tangent.size() * sizeof(glm::vec3), &tangent[0], GL_STATIC_DRAW);
+             glGenBuffers(1, &vbo_bitangent);
+             glBindBuffer(GL_ARRAY_BUFFER, vbo_bitangent);
+             glBufferData(GL_ARRAY_BUFFER, bitangent.size() * sizeof(glm::vec3), &bitangent[0], GL_STATIC_DRAW);
+         } 
+         else
+         {
+             std::cout << "--> Error : The mesh ID=" << id << " is probably not triangulated !" << std::endl;
+             return false;
+         }
 
-        glGenBuffers(1, &vbo_bitangent);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo_bitangent);
-        glBufferData(GL_ARRAY_BUFFER, bitangent.size() * sizeof(glm::vec3), &bitangent[0] , GL_STATIC_DRAW);
+         glGenVertexArrays(1, &vao);
+         glBindVertexArray(vao);
 
-        glGenVertexArrays(1, &vao);
-        glBindVertexArray(vao);
+         glBindBuffer(GL_ARRAY_BUFFER, vbo);
+         glEnableVertexAttribArray(0);
+         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+         glBindBuffer(GL_ARRAY_BUFFER, vbo_colors);
+         glEnableVertexAttribArray(1);
+         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
-        glBindBuffer(GL_ARRAY_BUFFER, vbo_colors);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+         glBindBuffer(GL_ARRAY_BUFFER, vbo_texCoords);
+         glEnableVertexAttribArray(2);
+         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 
-        glBindBuffer(GL_ARRAY_BUFFER, vbo_texCoords);
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+         glBindBuffer(GL_ARRAY_BUFFER, vbo_normals);
+         glEnableVertexAttribArray(3);
+         glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
-        glBindBuffer(GL_ARRAY_BUFFER, vbo_normals);
-        glEnableVertexAttribArray(3);
-        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+         glBindBuffer(GL_ARRAY_BUFFER, vbo_tangent);
+         glEnableVertexAttribArray(4);
+         glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
-        glBindBuffer(GL_ARRAY_BUFFER, vbo_tangent);
-        glEnableVertexAttribArray(4);
-        glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+         glBindBuffer(GL_ARRAY_BUFFER, vbo_bitangent);
+         glEnableVertexAttribArray(5);
+         glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
-        glBindBuffer(GL_ARRAY_BUFFER, vbo_bitangent);
-        glEnableVertexAttribArray(5);
-        glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+         modelID = glGetUniformLocation(m_shader.getShaderID(), "model");
+         viewID = glGetUniformLocation(m_shader.getShaderID(), "view");
+         projectionID = glGetUniformLocation(m_shader.getShaderID(), "projection");
+         viewPosID = glGetUniformLocation(m_shader.getShaderID(), "viewPos");
+         texture1ID = glGetUniformLocation(m_shader.getShaderID(), "texture1");
+         texture2ID = glGetUniformLocation(m_shader.getShaderID(), "texture2");
+         texture3ID = glGetUniformLocation(m_shader.getShaderID(), "texture3");
+         specularTextureID = glGetUniformLocation(m_shader.getShaderID(), "specularMap");
+         normalTextureID = glGetUniformLocation(m_shader.getShaderID(), "normalMap");
+         howManyTexID = glGetUniformLocation(m_shader.getShaderID(), "howManyTex");
+         useSpecularMapID = glGetUniformLocation(m_shader.getShaderID(), "useSpecularMap");
+         useNormalMapID = glGetUniformLocation(m_shader.getShaderID(), "useNormalMap");
 
-        modelID = glGetUniformLocation(m_shader.getShaderID(), "model");
-        viewID = glGetUniformLocation(m_shader.getShaderID(), "view");
-        projectionID = glGetUniformLocation(m_shader.getShaderID(), "projection");
-        viewPosID = glGetUniformLocation(m_shader.getShaderID(), "viewPos");
-        texture1ID = glGetUniformLocation(m_shader.getShaderID(), "texture1");
-        texture2ID = glGetUniformLocation(m_shader.getShaderID(), "texture2");
-        texture3ID = glGetUniformLocation(m_shader.getShaderID(), "texture3");
-        specularTextureID = glGetUniformLocation(m_shader.getShaderID(), "specularMap");
-        normalTextureID = glGetUniformLocation(m_shader.getShaderID(), "normalMap");
-        howManyTexID = glGetUniformLocation(m_shader.getShaderID(), "howManyTex");
-        useSpecularMapID = glGetUniformLocation(m_shader.getShaderID(), "useSpecularMap");
-        useNormalMapID = glGetUniformLocation(m_shader.getShaderID(), "useNormalMap");
+         return true;
     }
     void setTexturePool(texturePool* texPool)
     {
@@ -488,6 +498,36 @@ protected:
             bitangents.push_back(bitangent);
             bitangents.push_back(bitangent);
         }
+    }
+    int isMultipleOf3(int n) // Used to determine if a mesh is triangulated
+    {
+        int odd_count = 0;
+        int even_count = 0;
+
+        /* Make no positive if +n is multiple of 3
+        then is -n. We are doing this to avoid
+        stack overflow in recursion*/
+        if (n < 0)
+            n = -n;
+        if (n == 0)
+            return 1;
+        if (n == 1)
+            return 0;
+
+        while (n) {
+            /* If odd bit is set then
+            increment odd counter */
+            if (n & 1)
+                odd_count++;
+
+            /* If even bit is set then
+            increment even counter */
+            if (n & 2)
+                even_count++;
+            n = n >> 2;
+        }
+
+        return isMultipleOf3(abs(odd_count - even_count));
     }
     void setTexture(GLuint *texture, const char* path, bool isDiffuseTexture=false)
     {

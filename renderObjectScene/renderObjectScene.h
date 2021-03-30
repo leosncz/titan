@@ -47,22 +47,29 @@ public:
                 colors.push_back(curMesh.MeshMaterial.Kd.Z); //b  
             }
             renderObject* newObject = new renderObject();
-            newObject->setData(&vertices[0], &colors[0], &uv[0], curMesh.Vertices.size(), &normals[0], m_scene->getTexturePool());
-            objects.push_back(newObject);
-
-
-            if (curMesh.MeshMaterial.map_Kd != "") // If there is a diffuse texture
+            if (newObject->setData(&vertices[0], &colors[0], &uv[0], curMesh.Vertices.size(), &normals[0], m_scene->getTexturePool()))
             {
-                objects[objects.size() - 1]->addTexture(curMesh.MeshMaterial.map_Kd.c_str());
-                objects[objects.size() - 1]->setNumberOfTextureToDraw(1);
+                objects.push_back(newObject);
+                if (curMesh.MeshMaterial.map_Kd != "") // If there is a diffuse texture
+                {
+                    objects[objects.size() - 1]->addTexture(curMesh.MeshMaterial.map_Kd.c_str());
+                    objects[objects.size() - 1]->setNumberOfTextureToDraw(1);
+                }
+                if (curMesh.MeshMaterial.map_bump != "") // If there is a normal map
+                {
+                    objects[objects.size() - 1]->setNormalMap(curMesh.MeshMaterial.map_bump.c_str());
+                }
+                m_scene->addDrawableObject(objects[objects.size() - 1]);
             }
-            if (curMesh.MeshMaterial.map_bump != "") // If there is a normal map
+            else
             {
-                objects[objects.size() - 1]->setNormalMap(curMesh.MeshMaterial.map_bump.c_str());
+                delete newObject;
             }
-            m_scene->addDrawableObject(objects[objects.size() - 1]);
+            
         }
+    
     }
+
     void moveRenderObjectScene(glm::vec3 transation) {
         if (objects.size() > 0)
         {
