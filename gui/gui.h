@@ -52,12 +52,12 @@ public:
 				name = "TAG : ";
 				name.append(object->getTag());
 				ImGui::Text(name.c_str());
-				name = "AMBIANT : ";
-				float ambiant = object->getShader()->ambStrenght;
+				name = "METALLIC : ";
+				float ambiant = object->getShader()->metallic;
 				name.append(to_string(ambiant));
 				ImGui::Text(name.c_str());
-				name = "SPECULAR : ";
-				float specular = object->getShader()->specStrenght;
+				name = "ROUGHNESS : ";
+				float specular = object->getShader()->roughness;
 				name.append(to_string(specular));
 				ImGui::Text(name.c_str());
 				ImGui::Separator();

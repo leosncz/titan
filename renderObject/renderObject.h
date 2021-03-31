@@ -405,13 +405,17 @@ public:
     }
 
     //Material properties edition
-    void setSpecularStrenght(float intensity)
+    void setRoughness(float intensity)
     {
-        m_shader.specStrenght = intensity;
+        m_shader.roughness = intensity;
     }
-    void setAmbiantStrenght(float intensity)
+    void setMetallic(float intensity)
     {
-        m_shader.ambStrenght = intensity;
+        m_shader.metallic = intensity;
+    }
+    void setAmbient(float intensity)
+    {
+        m_shader.ambient = intensity;
     }
 
     int getID(){return id;}

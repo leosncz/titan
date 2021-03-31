@@ -17,8 +17,9 @@ class shader
 {
 public:
     //Material properties
-    float specStrenght = 0.5;
-    float ambStrenght = 0.1;
+    float metallic = 0.5f;
+    float roughness = 0.3f;
+    float ambient = 0.01f;
     //End material properties
 
     shader()
@@ -26,21 +27,13 @@ public:
         id = rand();
     }
 
-    void init_light_system() // Shouldnt be called unless u know what ur doin
-    {
-        numberOfLightID = glGetUniformLocation(m_shaderID,"numberOfLight");
-
-        //Material properties
-        specStrenghtID = glGetUniformLocation(m_shaderID,"specStrenght");
-        ambStrenghtID = glGetUniformLocation(m_shaderID,"ambStrenght");
-    }
-
     void registerLightToRender(vector<light*> sceneLights, int numberOfLight) // the shader chosen must support light
     {
         //Send material properties
-        glUniform1f(specStrenghtID, specStrenght);
-        glUniform1f(ambStrenghtID, ambStrenght);
-        glUniform1i(numberOfLightID, numberOfLight);
+        glUniform1i(glGetUniformLocation(m_shaderID, "numberOfLight"), numberOfLight);
+        glUniform1f(glGetUniformLocation(m_shaderID, "metallic"), metallic);
+        glUniform1f(glGetUniformLocation(m_shaderID, "roughness"), roughness);
+        glUniform1f(glGetUniformLocation(m_shaderID, "ambient"), ambient);
 
         for (int i = 0; i < sceneLights.size(); i++)
         {
@@ -120,7 +113,7 @@ public:
         std::cout << "---> Compiling lightBasicShader for shader ID=" << id << std::endl;
 
         const char* vertex_shader =
-        "#version 330\n"
+        "#version 330 core\n"
         "layout(location = 0) in vec3 vp;"
         "layout(location = 1) in vec3 color;"
         "layout(location = 2) in vec2 inputTexCoord;"
@@ -131,6 +124,7 @@ public:
         "out vec3 fragPos;"
         "out vec2 texCoord;"
         "out mat3 TBN;"
+        "out vec3 WorldPos;"
         "uniform mat4 model;"
         "uniform mat4 view;"
         "uniform mat4 projection;"
@@ -147,7 +141,8 @@ public:
         "uniform int useNormalMap;"
         "void main() {"
         "   gl_Position = projection * view * model * vec4(vp, 1.0);"
-        "   aNormals = mat3(transpose(inverse(model))) * normals;"
+        "   WorldPos = vec3(model * vec4(vp, 1.0));"
+        "   aNormals = mat3(model) * normals;"
         "   final_color = color;"
         "   fragPos = vec3(model * vec4(vp,1.0));"
         "   texCoord = inputTexCoord;"
@@ -160,10 +155,11 @@ public:
         "}";
 
         const char* fragment_shader =
-        "#version 330\n"
+        "#version 330 core\n"
         //MATERIAL PROPERTIES-----------------
-        "uniform float specStrenght;"
-        "uniform float ambStrenght;"
+        "uniform float metallic;"
+        "uniform float roughness;"
+        "uniform float ambient;"
         //END MATERIAL PROPERTIES-------------
         "uniform vec3 lightsColor[100];"
         "uniform vec3 lightsPosition[100];"
@@ -184,6 +180,7 @@ public:
         "uniform int numberOfLight;"
         // next important render things
         "uniform vec3 viewPos;"
+        "in vec3 WorldPos;"
         "out vec4 frag_colour;"
         "in vec3 final_color;"
         "in vec3 aNormals;"
@@ -208,6 +205,8 @@ public:
         "uniform sampler2D normalMap;"
         "uniform int useNormalMap;"
         "uniform int useSpecularMap;"
+
+        "const float PI = 3.14159265359;"
         // METHODS
         "float ShadowCalculationPL(vec3 fragPos, vec3 lightPos, samplerCube tex)"
         "{"
@@ -217,8 +216,8 @@ public:
         "float currentDepth = length(fragToLight);"
         // now test for shadows
         "float shadow = 0.0;"
-        "float bias = 0.05;"
-        "float samples = 4.0;"
+        "float bias = 0.07;"
+        "float samples = 3.0;"
         "float offset = 0.1;"
         "for (float x = -offset; x < offset; x += offset / (samples * 0.5))"
         "{"
@@ -259,72 +258,103 @@ public:
         "     shadow = 0.0;}"
         "return shadow;"
         "}"
-        "vec4 calculateLightOutput(){"
-        "  vec4 lightSummary = vec4(0,0,0,0);"
-        "  for(int i = 0;i<numberOfLight;i++){"
-        "    vec3 norm = vec3(0,0,0);"
-        "    if(useNormalMap == 0){"
-        "    norm = normalize(aNormals);}"
-        "    else{vec3 normal = texture(normalMap, texCoord).rgb; normal = normalize(normal * 2.0 - 1.0); normal = normalize(TBN * normal); norm = normal;}"
-        "    vec3 lightDir;"
-        "    float attenuation = 1.0;"
-        "    float shadowCoeff = 1.0;"
-        "  if(lightsType[i] == 1){" //directionnal
-        "    lightDir = normalize(-lightsDir[i]);"
-        "    if(i == 0){shadowCoeff = 1-ShadowCalculation(fs_in.FragPosLightSpace,textureDepthMap) * (1 - ambStrenght);}"
-        "    else if(i == 1){shadowCoeff = 1-ShadowCalculation(fs_in.FragPosLightSpace1,textureDepthMap1) * (1 - ambStrenght);}"
-        "  }"
-        "  else if(lightsType[i] == 0){"
-        "    lightDir = normalize(lightsPosition[i] - fragPos);" //point light
-        "    float distance    = length(lightsPosition[i] - fragPos);"
-        "    attenuation = 1.0 / (lightsConstant[i] + lightsLinear[i] * distance + lightsQuadratic[i] * (distance));"
-        "    if(i == 0){shadowCoeff = (1-ShadowCalculationPL(fs_in.FragPos,lightsPosition[i],textureDepthCubemap));}"
-        "    else if(i == 1){shadowCoeff = (1-ShadowCalculationPL(fs_in.FragPos,lightsPosition[i],textureDepthCubemap1));}"
-        "    else if(i == 2){shadowCoeff = (1-ShadowCalculationPL(fs_in.FragPos,lightsPosition[i],textureDepthCubemap2));}"
-        "    else if(i == 3){shadowCoeff = (1-ShadowCalculationPL(fs_in.FragPos,lightsPosition[i],textureDepthCubemap3));}"
-        "    else if(i == 4){shadowCoeff = (1-ShadowCalculationPL(fs_in.FragPos,lightsPosition[i],textureDepthCubemap4));}"
-        "    else if(i == 5){shadowCoeff = (1-ShadowCalculationPL(fs_in.FragPos,lightsPosition[i],textureDepthCubemap5));}"
-        "    else if(i == 6){shadowCoeff = (1-ShadowCalculationPL(fs_in.FragPos,lightsPosition[i],textureDepthCubemap6));}"
-        "    if(shadowCoeff < ambStrenght && distance > 25.0){shadowCoeff = 1.0;}"
-        "    if(shadowCoeff < ambStrenght){shadowCoeff = ambStrenght;}"
-        "  }"
-        "  else if(lightsType[i] == 2){" // spotlight
-        "    lightDir = normalize(lightsPosition[i] - fragPos);"
-        "    float theta = dot(normalize(lightsPosition[i] - fragPos), normalize(-lightsDir[i]));"
-        "    if(theta > lightsCutoff[i]){"
-        "      float distance = length(lightsPosition[i] - fragPos);"
-        "      attenuation = 1.0 / (lightsConstant[i] + lightsLinear[i] * distance + lightsQuadratic[i] * (distance * distance));"
-        "    }"
-        "    else{"
-        "       attenuation = 0.1;"
-        "    }"
-        "  }"
-        "  float diff = max(dot(norm, lightDir), 0.0);"
-        "  vec3 diffuse = diff * lightsColor[i];"
-        "  float ambiantStrength = ambStrenght;"
-        "  vec3 ambiant = ambiantStrength * lightsColor[i];"
-        "  float specularStrength = specStrenght;"
-        "  vec3 viewDir = normalize(viewPos - fragPos);"
-        "  vec3 reflectDir = reflect(-lightDir, norm);"
-        "  vec3 halfwayDir = normalize(lightDir + viewDir);"
-        "  float spec = pow(max(dot(norm, halfwayDir), 0.0), 32);"
-        "  vec3 specular = vec3(0,0,0);"
-        "  if(useSpecularMap == 1){specular = (specularStrength * spec) * lightsColor[i] * vec3(texture(specularMap, texCoord));}"
-        "  else{specular = (specularStrength * spec) * lightsColor[i];}"
-        "  lightSummary += vec4(((ambiant*=attenuation) + (diffuse*=attenuation) + (specular*=attenuation)) * shadowCoeff * final_color,1.0);"
-        "  }"
-        "  return lightSummary;"
+        "vec3 fresnelSchlick(float cosTheta, vec3 F0)"
+        "{"
+        "   return F0 + (1.0 - F0) * pow(max(1.0 - cosTheta, 0.0), 5.0);"
         "}"
+        "float DistributionGGX(vec3 N, vec3 H, float roughness)"
+        "{"
+        "    float a = roughness * roughness;"
+        "    float a2 = a * a;"
+        "    float NdotH = max(dot(N, H), 0.0);"
+        "    float NdotH2 = NdotH * NdotH;"
+
+        "    float num = a2;"
+        "    float denom = (NdotH2 * (a2 - 1.0) + 1.0);"
+        "    denom = PI * denom * denom;"
+
+        "    return num / denom;"
+        "}"
+
+        "float GeometrySchlickGGX(float NdotV, float roughness)"
+        "{"
+        "    float r = (roughness + 1.0);"
+        "    float k = (r * r) / 8.0;"
+
+        "    float num = NdotV;"
+        "    float denom = NdotV * (1.0 - k) + k;"
+
+        "    return num / denom;"
+        "}"
+        "float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)"
+        "{"
+        "    float NdotV = max(dot(N, V), 0.0);"
+        "    float NdotL = max(dot(N, L), 0.0);"
+        "    float ggx2 = GeometrySchlickGGX(NdotV, roughness);"
+        "    float ggx1 = GeometrySchlickGGX(NdotL, roughness);"
+
+        "    return ggx1 * ggx2;"
+        "}"
+ 
         //""
         "void main() {"
-        // APPLY LIGHT EFFECT
-        "  vec4 lightSummary = calculateLightOutput();"
-        // APPLY TEXTURE
-        "  vec4 textureResult = vec4(1,1,1,1);"
-        "  if(howManyTex >= 1){textureResult = texture(texture1,texCoord);}"
-        "  if(howManyTex >= 2){textureResult = textureResult * texture(texture2,texCoord);}"
-        "  if(howManyTex >= 3){textureResult = textureResult * texture(texture3,texCoord);}"
-        "  if(lightSummary == 0){frag_colour = ambStrenght * textureResult;}else{frag_colour = lightSummary * textureResult;}"
+        "vec3 N = vec3(0.0);"
+        " if(useNormalMap == 0){"
+        " N = normalize(aNormals);}"
+        " else{vec3 normal = texture(normalMap, texCoord).rgb; normal = normalize(normal * 2.0 - 1.0); normal = normalize(TBN * normal); N = normal;}"
+        " vec3 V = normalize(viewPos - WorldPos);"
+        " vec3 albedo = final_color;"
+        " if(howManyTex == 1){albedo = albedo * pow(texture(texture1, texCoord).rgb,vec3(2.2));}"
+        " if(howManyTex == 2){albedo = albedo * pow(texture(texture1, texCoord).rgb,vec3(2.2)) * pow(texture(texture2, texCoord).rgb,vec3(2.2));}"
+        " if(howManyTex == 3){albedo = albedo * pow(texture(texture1, texCoord).rgb,vec3(2.2)) * pow(texture(texture2, texCoord).rgb,vec3(2.2)) * pow(texture(texture3, texCoord).rgb,vec3(2.2));}"
+        " vec3 F0 = vec3(0.04);"
+        " F0 = mix(F0, albedo, metallic);"
+        // reflectance equation
+        "vec3 Lo = vec3(0.0);"
+        "int pixelInShadow=0;"
+        "float shadowValue=1.0;"
+        "for(int i = 0;i<numberOfLight;i++)"
+        "{"
+            // calculate per-light radiance
+        "    vec3 L = normalize(lightsPosition[i] - WorldPos);"
+        "    vec3 H = normalize(V + L);"
+        "    float distance = length(lightsPosition[i] - WorldPos);"
+        "    float attenuation = 1.0 / (distance * distance);"
+        "    vec3 radiance = lightsColor[i] * attenuation;"
+
+            // cook-torrance brdf
+        "    float NDF = DistributionGGX(N, H, roughness);"
+        "    float G = GeometrySmith(N, V, L, roughness);"
+        "    vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);"
+
+        "    vec3 kS = F;"
+        "    vec3 kD = vec3(1.0) - kS;"
+        "    kD *= 1.0 - metallic;"
+
+        "    vec3 numerator = NDF * G * F;"
+        "    float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);"
+        "    vec3 specular = numerator / max(denominator, 0.001);"
+
+            // add to outgoing radiance Lo
+        "    float NdotL = max(dot(N, L), 0.0);"
+        "    vec3 final = (kD * albedo / PI + specular) * radiance * NdotL;"
+        // SHADOWS
+        "    if(i == 0 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap); shadowValue=(1-shadowval); if(shadowValue < 0.4 && distance < 25.0){final = vec3(0,0,0);pixelInShadow=1;}}"
+        "    if(i == 1 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap1);shadowValue=(1-shadowval); if(shadowValue < 0.4 && distance < 25.0){final = vec3(0,0,0);pixelInShadow=1;}}"
+        "    if(i == 2 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap2);shadowValue=(1-shadowval); if(shadowValue < 0.4 && distance < 25.0){final = vec3(0,0,0);pixelInShadow=1;}}"
+        "    if(i == 3 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap3);shadowValue=(1-shadowval); if(shadowValue < 0.4 && distance < 25.0){final = vec3(0,0,0);pixelInShadow=1;}}"
+        "    if(i == 4 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap4);shadowValue=(1-shadowval); if(shadowValue < 0.4 && distance < 25.0){final = vec3(0,0,0);pixelInShadow=1;}}"
+        "    if(i == 5 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap5);shadowValue=(1-shadowval); if(shadowValue < 0.4 && distance < 25.0){final = vec3(0,0,0);pixelInShadow=1;}}"
+        "    if(i == 6 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap6);shadowValue=(1-shadowval); if(shadowValue < 0.4 && distance < 25.0){final = vec3(0,0,0);pixelInShadow=1;}}"
+        "    Lo += final;"
+        "}"
+
+        "vec3 ambient_ = vec3(ambient) * albedo;" //*ao
+        "vec3 color = ambient_ + Lo;"
+
+        "color = color / (color + vec3(1.0));"
+        "color = pow(color, vec3(1.0 / 2.2));"
+        "frag_colour = vec4(color, 1.0);"
         "}";
 
         GLuint vs = glCreateShader(GL_VERTEX_SHADER);
@@ -342,8 +372,6 @@ public:
 
         glDeleteShader(vs);
         glDeleteShader(fs);
-
-        init_light_system(); // MUST be called in order for the shader to work with light
     }
 
      void compileDepthShader()

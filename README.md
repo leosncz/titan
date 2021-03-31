@@ -5,7 +5,8 @@
 ## Example
 Shadow example :
 ![Example](example3.png "Example of actual titan rendering")
-Normal mapping example :
+PBR example :
+![Example](example5.png "Example of actual titan rendering")
 ![Example](example4.png "Example of actual titan rendering")
 Multiple light fading + specular map example :
 ![Example](example2.png "Example of actual titan rendering")
@@ -16,8 +17,8 @@ Multiple light fading + specular map example :
 - Directionnal, spot and point light supported
 - Blinn-Phong shading
 - Diffuse map (up to 3 textures on a single object)
-- Specular map
 - Normal map
+- PBR
 - Gamma correction
 - HDR (customizable exposure)
 - Dynamic shadows
@@ -25,13 +26,13 @@ Multiple light fading + specular map example :
 - Automatic texture cache
 - GUI
 
-## Currently working on :
+## Currently working on (top is prioritized) :
+- TitanScripting to enable users exporting their game using TitanEngine (priority)
+- Defered shading
 - Physics system
-- PBR
 - SSAO
 - Infinite number of shadows
 - Dynamic light frustrum
-- TitanScripting to enable users exporting their game using TitanEngine
 
 ## Build
 In order to use & build the project with this library, you must install the following libraries :

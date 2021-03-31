@@ -88,13 +88,13 @@ public:
             }
         }
     }
-    void setRenderObjectSpecularStrenght(float value)
+    void setRenderObjectRoughness(float value)
     {
         if (objects.size() > 0)
         {
             for (int i = 0; i < objects.size(); i++)
             {
-                objects[i]->setSpecularStrenght(value);
+                objects[i]->setRoughness(value);
             }
         }
     }
@@ -109,13 +109,23 @@ public:
             }
         }
     }
-    void setRenderObjectAmbiantStrenght(float value)
+    void setRenderObjectMetallic(float value)
     {
         if (objects.size() > 0)
         {
             for (int i = 0; i < objects.size(); i++)
             {
-                objects[i]->setAmbiantStrenght(value);
+                objects[i]->setMetallic(value);
+            }
+        }
+    }
+    void setRenderObjectAmbient(float value)
+    {
+        if (objects.size() > 0)
+        {
+            for (int i = 0; i < objects.size(); i++)
+            {
+                objects[i]->setAmbient(value);
             }
         }
     }
