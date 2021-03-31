@@ -30,7 +30,6 @@ public:
          modelMatrix = glm::mat4(1.0);
          m_nbOfTexture = 0;
          m_nbOfTextureToDraw = 0;
-         hasSpecularMap = false;
          hasNormalMap = false;
          isInitialized = true;
          m_texturePool = texturePool_;
@@ -130,10 +129,8 @@ public:
          texture1ID = glGetUniformLocation(m_shader.getShaderID(), "texture1");
          texture2ID = glGetUniformLocation(m_shader.getShaderID(), "texture2");
          texture3ID = glGetUniformLocation(m_shader.getShaderID(), "texture3");
-         specularTextureID = glGetUniformLocation(m_shader.getShaderID(), "specularMap");
          normalTextureID = glGetUniformLocation(m_shader.getShaderID(), "normalMap");
          howManyTexID = glGetUniformLocation(m_shader.getShaderID(), "howManyTex");
-         useSpecularMapID = glGetUniformLocation(m_shader.getShaderID(), "useSpecularMap");
          useNormalMapID = glGetUniformLocation(m_shader.getShaderID(), "useNormalMap");
 
          return true;
@@ -287,15 +284,6 @@ public:
                 glBindTexture(GL_TEXTURE_2D, texture3);
                 textureCount++;
             }
-            if (hasSpecularMap)
-            {
-                glUniform1i(specularTextureID, textureCount);
-                glActiveTexture(GL_TEXTURE0 + textureCount);
-                glBindTexture(GL_TEXTURE_2D, specularTexture);
-                glUniform1i(useSpecularMapID, 1);
-                textureCount++;
-            }
-            else { glUniform1i(useSpecularMapID, 0);}
             if (hasNormalMap)
             {
                 glUniform1i(normalTextureID, textureCount);
@@ -310,20 +298,10 @@ public:
 
             glDrawArrays(GL_TRIANGLES,0,m_nbOfPointToDraw);
     }
-    void removeSpecularMap()
-    {
-        glDeleteTextures(1, &specularTexture);
-        hasSpecularMap = false;
-    }
     void removeNormalMap()
     {
         glDeleteTextures(1, &normalTexture);
         hasNormalMap = false;
-    }
-    void setSpecularMap(const char* path)
-    {
-        setTexture(&specularTexture, path);
-        hasSpecularMap = true;
     }
     void setNormalMap(const char* path)
     {
@@ -429,7 +407,7 @@ protected:
 
     glm::mat4 modelMatrix;
 
-    int m_nbOfPointToDraw;
+    int m_nbOfPointToDraw; // Nb of point to draw
     int m_nbOfTexture; // Nb of texture created
     int m_nbOfTextureToDraw; // Nb of texture to draw
 
@@ -448,15 +426,12 @@ protected:
     GLuint viewPosID;
     GLuint projectionID;
     GLuint howManyTexID;
-    GLuint useSpecularMapID;
     GLuint useNormalMapID;
     GLuint texture1ID;
     GLuint texture2ID;
     GLuint texture3ID;
-    GLuint specularTextureID;
     GLuint normalTextureID;
 
-    bool hasSpecularMap;
     bool hasNormalMap;
 
     GLuint texture1;

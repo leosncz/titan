@@ -8,17 +8,14 @@ Shadow example :
 PBR example :
 ![Example](example5.png "Example of actual titan rendering")
 ![Example](example4.png "Example of actual titan rendering")
-Multiple light fading + specular map example :
-![Example](example2.png "Example of actual titan rendering")
 
 ## Actual supported features:
 - Runs on Windows, Mac & Linux (32-64 bits)
 - Infinite number of lights
 - Directionnal, spot and point light supported
-- Blinn-Phong shading
-- Diffuse map (up to 3 textures on a single object)
+- Physically Based Rendering (PBR)
+- Albedo map (up to 3 textures on a single object)
 - Normal map
-- PBR
 - Gamma correction
 - HDR (customizable exposure)
 - Dynamic shadows
@@ -27,7 +24,10 @@ Multiple light fading + specular map example :
 - GUI
 
 ## Currently working on (top is prioritized) :
-- TitanScripting to enable users exporting their game using TitanEngine (priority)
+- Metallic map (priority)
+- Roughness map (priority)
+- AO map (priority)
+- TitanScripting to enable users exporting their game using TitanEngine
 - Defered shading
 - Physics system
 - SSAO

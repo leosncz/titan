@@ -29,15 +29,6 @@ int main()
                     1.0,1.0,1.0,      1.0,1.0,1.0,     1.0,1.0,1.0,
                     1.0,1.0,1.0,       1.0,1.0,1.0,   1.0,1.0,1.0 };
 
-
-
-    /*cube triangle = cube();
-    triangle.initPrefab(colors,myscene.getTexturePool());
-    myscene.addDrawableObject(&triangle);
-    triangle.moveObject(glm::vec3(0, 0.0, -1));
-    triangle.setSpecularStrenght(1.0);
-    triangle.setAmbiantStrenght(0.0);*/
-
     cube triangle2 = cube();
     triangle2.initPrefab(colors, myscene.getTexturePool());
     myscene.addDrawableObject(&triangle2);
@@ -57,7 +48,6 @@ int main()
 
     plane myplane = plane();
     myplane.initPrefab(colors, myscene.getTexturePool());
-    myplane.setSpecularMap("specularmap.jpg");
     myscene.addDrawableObject(&myplane);
     myplane.moveObject(glm::vec3(0, -0.5, -2));
     myplane.scaleObject(glm::vec3(100, 1, 100));
@@ -65,6 +55,8 @@ int main()
     myplane.setNumberOfTextureToDraw(1);
     myplane.setTextureResolution(100);
     myplane.setNormalMap("normalmap.jpg");
+    myplane.setMetallic(0.5);
+    myplane.setRoughness(0.6);
 
 
     /*light mylight3 = light();

@@ -18,7 +18,7 @@ class shader
 public:
     //Material properties
     float metallic = 0.5f;
-    float roughness = 0.3f;
+    float roughness = 0.5f;
     float ambient = 0.01f;
     //End material properties
 
@@ -201,10 +201,8 @@ public:
         "uniform samplerCube textureDepthCubemap6;"
         "uniform sampler2D textureDepthMap;"
         "uniform sampler2D textureDepthMap1;"
-        "uniform sampler2D specularMap;"
         "uniform sampler2D normalMap;"
         "uniform int useNormalMap;"
-        "uniform int useSpecularMap;"
 
         "const float PI = 3.14159265359;"
         // METHODS
@@ -338,7 +336,7 @@ public:
             // add to outgoing radiance Lo
         "    float NdotL = max(dot(N, L), 0.0);"
         "    vec3 final = (kD * albedo / PI + specular) * radiance * NdotL;"
-        // SHADOWS
+            // SHADOWS
         "    if(i == 0 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap); shadowValue=(1-shadowval); if(shadowValue < 0.4 && distance < 25.0){final = vec3(0,0,0);pixelInShadow=1;}}"
         "    if(i == 1 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap1);shadowValue=(1-shadowval); if(shadowValue < 0.4 && distance < 25.0){final = vec3(0,0,0);pixelInShadow=1;}}"
         "    if(i == 2 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap2);shadowValue=(1-shadowval); if(shadowValue < 0.4 && distance < 25.0){final = vec3(0,0,0);pixelInShadow=1;}}"
