@@ -202,7 +202,11 @@ public:
         "uniform sampler2D textureDepthMap;"
         "uniform sampler2D textureDepthMap1;"
         "uniform sampler2D normalMap;"
+        "uniform sampler2D metallicMap;"
+        "uniform sampler2D roughnessMap;"
         "uniform int useNormalMap;"
+        "uniform int useRoughnessMap;"
+        "uniform int useMetallicMap;"
 
         "const float PI = 3.14159265359;"
         // METHODS
@@ -306,28 +310,35 @@ public:
         " if(howManyTex == 2){albedo = albedo * pow(texture(texture1, texCoord).rgb,vec3(2.2)) * pow(texture(texture2, texCoord).rgb,vec3(2.2));}"
         " if(howManyTex == 3){albedo = albedo * pow(texture(texture1, texCoord).rgb,vec3(2.2)) * pow(texture(texture2, texCoord).rgb,vec3(2.2)) * pow(texture(texture3, texCoord).rgb,vec3(2.2));}"
         " vec3 F0 = vec3(0.04);"
-        " F0 = mix(F0, albedo, metallic);"
+        " float metallic_ = metallic;"
+        " float roughness_ = roughness;"
+        " if(useRoughnessMap == 1){roughness_ = texture(roughnessMap, texCoord).r;}"
+        " if(useMetallicMap == 1){metallic_ = texture(metallicMap, texCoord).r;}"
+        " F0 = mix(F0, albedo, metallic_);"
         // reflectance equation
         "vec3 Lo = vec3(0.0);"
-        "int pixelInShadow=0;"
-        "float shadowValue=1.0;"
         "for(int i = 0;i<numberOfLight;i++)"
         "{"
+            // We assume its a point light by default
             // calculate per-light radiance
-        "    vec3 L = normalize(lightsPosition[i] - WorldPos);"
+        "    vec3 L = vec3(0.0);"
+        "    if(lightsType[i] == 1){L = -lightsDir[i];}" // directionnal light
+        "    else{L = normalize(lightsPosition[i] - WorldPos);}" // point light
         "    vec3 H = normalize(V + L);"
         "    float distance = length(lightsPosition[i] - WorldPos);"
         "    float attenuation = 1.0 / (distance * distance);"
-        "    vec3 radiance = lightsColor[i] * attenuation;"
+        "    vec3 radiance = vec3(0.0);"
+        "    if(lightsType[i] == 1){radiance = lightsColor[i];}" // directionnal light
+        "    else{radiance = lightsColor[i] * attenuation;}" // point light and spotlight
 
             // cook-torrance brdf
-        "    float NDF = DistributionGGX(N, H, roughness);"
-        "    float G = GeometrySmith(N, V, L, roughness);"
+        "    float NDF = DistributionGGX(N, H, roughness_);"
+        "    float G = GeometrySmith(N, V, L, roughness_);"
         "    vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);"
 
         "    vec3 kS = F;"
         "    vec3 kD = vec3(1.0) - kS;"
-        "    kD *= 1.0 - metallic;"
+        "    kD *= 1.0 - metallic_;"
 
         "    vec3 numerator = NDF * G * F;"
         "    float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);"
@@ -337,13 +348,15 @@ public:
         "    float NdotL = max(dot(N, L), 0.0);"
         "    vec3 final = (kD * albedo / PI + specular) * radiance * NdotL;"
             // SHADOWS
-        "    if(i == 0 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap); shadowValue=(1-shadowval); if(shadowValue < 0.4 && distance < 25.0){final = vec3(0,0,0);pixelInShadow=1;}}"
-        "    if(i == 1 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap1);shadowValue=(1-shadowval); if(shadowValue < 0.4 && distance < 25.0){final = vec3(0,0,0);pixelInShadow=1;}}"
-        "    if(i == 2 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap2);shadowValue=(1-shadowval); if(shadowValue < 0.4 && distance < 25.0){final = vec3(0,0,0);pixelInShadow=1;}}"
-        "    if(i == 3 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap3);shadowValue=(1-shadowval); if(shadowValue < 0.4 && distance < 25.0){final = vec3(0,0,0);pixelInShadow=1;}}"
-        "    if(i == 4 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap4);shadowValue=(1-shadowval); if(shadowValue < 0.4 && distance < 25.0){final = vec3(0,0,0);pixelInShadow=1;}}"
-        "    if(i == 5 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap5);shadowValue=(1-shadowval); if(shadowValue < 0.4 && distance < 25.0){final = vec3(0,0,0);pixelInShadow=1;}}"
-        "    if(i == 6 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap6);shadowValue=(1-shadowval); if(shadowValue < 0.4 && distance < 25.0){final = vec3(0,0,0);pixelInShadow=1;}}"
+        "    if(i == 0 && lightsType[i] == 1){float shadowval = ShadowCalculation(fs_in.FragPosLightSpace, textureDepthMap); if(1-shadowval < 0.4){final = vec3(0,0,0);}}"
+        "    if(i == 1 && lightsType[i] == 1){float shadowval = ShadowCalculation(fs_in.FragPosLightSpace, textureDepthMap1); if(1-shadowval < 0.4){final = vec3(0,0,0);}}"
+        "    if(i == 0 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap); if(1-shadowval < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
+        "    if(i == 1 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap1);if(1-shadowval < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
+        "    if(i == 2 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap2);if(1-shadowval < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
+        "    if(i == 3 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap3);if(1-shadowval < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
+        "    if(i == 4 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap4);if(1-shadowval < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
+        "    if(i == 5 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap5);if(1-shadowval < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
+        "    if(i == 6 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap6);if(1-shadowval < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
         "    Lo += final;"
         "}"
 

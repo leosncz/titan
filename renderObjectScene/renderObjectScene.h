@@ -149,6 +149,26 @@ public:
             }
         }
     }
+    void setRenderObjectRoughnessMap(string path)
+    {
+        if (objects.size() > 0)
+        {
+            for (int i = 0; i < objects.size(); i++)
+            {
+                objects[i]->setRoughnessMap(path.c_str());
+            }
+        }
+    }
+    void setRenderObjectMetallicMap(string path)
+    {
+        if (objects.size() > 0)
+        {
+            for (int i = 0; i < objects.size(); i++)
+            {
+                objects[i]->setMetallicMap(path.c_str());
+            }
+        }
+    }
     void removeRenderObjectNormalMap()
     {
         if (objects.size() > 0)
@@ -156,6 +176,26 @@ public:
             for (int i = 0; i < objects.size(); i++)
             {
                 objects[i]->removeNormalMap();
+            }
+        }
+    }
+    void removeRenderObjectRoughnessMap()
+    {
+        if (objects.size() > 0)
+        {
+            for (int i = 0; i < objects.size(); i++)
+            {
+                objects[i]->removeRoughnessMap();
+            }
+        }
+    }
+    void removeRenderObjectMetallicMap()
+    {
+        if (objects.size() > 0)
+        {
+            for (int i = 0; i < objects.size(); i++)
+            {
+                objects[i]->removeMetallicMap();
             }
         }
     }

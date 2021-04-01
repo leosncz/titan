@@ -15,6 +15,8 @@ PBR example :
 - Directionnal, spot and point light supported
 - Physically Based Rendering (PBR)
 - Albedo map (up to 3 textures on a single object)
+- Metallic map
+- Roughness map
 - Normal map
 - Gamma correction
 - HDR (customizable exposure)
@@ -24,13 +26,11 @@ PBR example :
 - GUI
 
 ## Currently working on (top is prioritized) :
-- Metallic map (priority)
-- Roughness map (priority)
 - AO map (priority)
+- SSAO (priority)
 - TitanScripting to enable users exporting their game using TitanEngine
 - Defered shading
 - Physics system
-- SSAO
 - Infinite number of shadows
 - Dynamic light frustrum
 

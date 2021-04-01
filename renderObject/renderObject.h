@@ -31,6 +31,8 @@ public:
          m_nbOfTexture = 0;
          m_nbOfTextureToDraw = 0;
          hasNormalMap = false;
+         hasRoughnessMap = false;
+         hasMetallicMap = false;
          isInitialized = true;
          m_texturePool = texturePool_;
          //Set texcordds
@@ -130,8 +132,12 @@ public:
          texture2ID = glGetUniformLocation(m_shader.getShaderID(), "texture2");
          texture3ID = glGetUniformLocation(m_shader.getShaderID(), "texture3");
          normalTextureID = glGetUniformLocation(m_shader.getShaderID(), "normalMap");
+         roughnessTextureID = glGetUniformLocation(m_shader.getShaderID(), "roughnessMap");
+         metallicTextureID = glGetUniformLocation(m_shader.getShaderID(), "metallicMap");
          howManyTexID = glGetUniformLocation(m_shader.getShaderID(), "howManyTex");
          useNormalMapID = glGetUniformLocation(m_shader.getShaderID(), "useNormalMap");
+         useRoughnessMapID = glGetUniformLocation(m_shader.getShaderID(), "useRoughnessMap");
+         useMetallicMapID = glGetUniformLocation(m_shader.getShaderID(), "useMetallicMap");
 
          return true;
     }
@@ -293,20 +299,28 @@ public:
                 textureCount++;
             }
             else { glUniform1i(useNormalMapID, 0); }
+            if (hasMetallicMap)
+            {
+                glUniform1i(metallicTextureID, textureCount);
+                glActiveTexture(GL_TEXTURE0 + textureCount);
+                glBindTexture(GL_TEXTURE_2D, metallicTexture);
+                glUniform1i(useMetallicMapID, 1);
+                textureCount++;
+            }
+            else { glUniform1i(useMetallicMapID, 0); }
+            if (hasRoughnessMap)
+            {
+                glUniform1i(roughnessTextureID, textureCount);
+                glActiveTexture(GL_TEXTURE0 + textureCount);
+                glBindTexture(GL_TEXTURE_2D, roughnessTexture);
+                glUniform1i(useRoughnessMapID, 1);
+                textureCount++;
+            }
+            else { glUniform1i(useRoughnessMapID, 0); }
 
             m_shader.registerLightToRender(sceneLights,numberOfLight); // MUST BE CALLED if you want lighting to work
 
             glDrawArrays(GL_TRIANGLES,0,m_nbOfPointToDraw);
-    }
-    void removeNormalMap()
-    {
-        glDeleteTextures(1, &normalTexture);
-        hasNormalMap = false;
-    }
-    void setNormalMap(const char* path)
-    {
-        setTexture(&normalTexture, path);
-        hasNormalMap = true;
     }
     void setNumberOfTextureToDraw(int howMany){ // Set how many texture should be reserved for drawing
         m_nbOfTextureToDraw = howMany;
@@ -371,7 +385,8 @@ public:
             glDeleteTextures(1, &texture2);
             glDeleteTextures(1, &texture3);
             glDeleteTextures(1, &normalTexture);
-            glDeleteTextures(1, &specularTexture);
+            glDeleteTextures(1, &metallicTexture);
+            glDeleteTextures(1, &roughnessTexture);
             glDeleteBuffers(1, &vbo);
             glDeleteBuffers(1, &vbo_colors);
             glDeleteBuffers(1, &vbo_texCoords);
@@ -394,6 +409,36 @@ public:
     void setAmbient(float intensity)
     {
         m_shader.ambient = intensity;
+    }
+    void removeNormalMap()
+    {
+        glDeleteTextures(1, &normalTexture);
+        hasNormalMap = false;
+    }
+    void setNormalMap(const char* path)
+    {
+        setTexture(&normalTexture, path);
+        hasNormalMap = true;
+    }
+    void removeMetallicMap()
+    {
+        glDeleteTextures(1, &metallicTexture);
+        hasMetallicMap = false;
+    }
+    void setMetallicMap(const char* path)
+    {
+        setTexture(&metallicTexture, path);
+        hasMetallicMap = true;
+    }
+    void removeRoughnessMap()
+    {
+        glDeleteTextures(1, &roughnessTexture);
+        hasRoughnessMap = false;
+    }
+    void setRoughnessMap(const char* path)
+    {
+        setTexture(&roughnessTexture, path);
+        hasRoughnessMap = true;
     }
 
     int getID(){return id;}
@@ -427,18 +472,24 @@ protected:
     GLuint projectionID;
     GLuint howManyTexID;
     GLuint useNormalMapID;
+    GLuint useMetallicMapID;
+    GLuint useRoughnessMapID;
     GLuint texture1ID;
     GLuint texture2ID;
     GLuint texture3ID;
     GLuint normalTextureID;
+    GLuint metallicTextureID, roughnessTextureID;
 
     bool hasNormalMap;
+    bool hasMetallicMap;
+    bool hasRoughnessMap;
 
     GLuint texture1;
     GLuint texture2;
     GLuint texture3;
-    GLuint specularTexture;
     GLuint normalTexture;
+    GLuint roughnessTexture;
+    GLuint metallicTexture;
 
     // Used to compute tangent and bitangent for normal mapping
     void computeTangent(std::vector<glm::vec3>& vertices,std::vector<glm::vec2>& uvs,std::vector<glm::vec3>& normals,std::vector<glm::vec3>& tangents,std::vector<glm::vec3>& bitangents)

@@ -58,7 +58,6 @@ int main()
     myplane.setMetallic(0.5);
     myplane.setRoughness(0.6);
 
-
     /*light mylight3 = light();
     mylight3.setData(glm::vec3(0.5,1,4), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, -1, -1), 1000.0f);
     mylight3.type = DIRECTIONNAL_LIGHT;
@@ -72,7 +71,7 @@ int main()
     mylight4.quadratic = 0.032;*/
 
     light mylight5 = light();
-    mylight5.setData(glm::vec3(3, 3.0, 0.0), glm::vec3(10, 10, 10), glm::vec3(0, -1, -1), 1000.0f);
+    mylight5.setData(glm::vec3(3, 1, 1.0), glm::vec3(10, 10, 10), glm::vec3(0, -1, -1), 1000.0f);
     mylight5.type = POINT_LIGHT;
     myscene.addLight(&mylight5);
 
@@ -85,9 +84,9 @@ int main()
 
     renderObjectScene objScene = renderObjectScene(&myscene);
     objScene.loadOBJFromFile("Container Games.obj");
-    objScene.scaleRenderObjectScene(glm::vec3(0.09, 0.09, 0.09));
-    objScene.moveRenderObjectScene(glm::vec3(0, -4.5, -2));
-    //objScene.setRenderObjectSpecularStrenght(1.5f);
+    objScene.scaleRenderObjectScene(glm::vec3(0.08, 0.08, 0.08));
+    objScene.moveRenderObjectScene(glm::vec3(0, -5.5, -2));
+    objScene.setRenderObjectMetallicMap("Container LP Complekt_DefaultMaterial_MetallicSmoothness.png");
     objScene.setRenderObjectNormalMap("Container LP Complekt_DefaultMaterial_Normal.png");
     objScene.setRenderObjectTexture("Container LP Complekt_DefaultMaterial_AlbedoTransparency.png");
 
