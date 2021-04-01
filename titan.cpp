@@ -33,28 +33,19 @@ int main()
     triangle2.initPrefab(colors, myscene.getTexturePool());
     myscene.addDrawableObject(&triangle2);
     triangle2.moveObject(glm::vec3(5, 0.0, 2));
-    triangle2.addTexture("texture.jpg");
+    triangle2.addTexture("graphicData/texture.jpg");
     triangle2.setNumberOfTextureToDraw(1);
-    triangle2.setNormalMap("normalmap.jpg");
-
-    cube triangle3 = cube();
-    triangle3.initPrefab(colors, myscene.getTexturePool());
-    myscene.addDrawableObject(&triangle3);
-    triangle3.moveObject(glm::vec3(5, 0.0, 25));
-    triangle3.addTexture("texture.jpg");
-    triangle3.setNumberOfTextureToDraw(1);
-    triangle3.setNormalMap("normalmap.jpg");
-
+    triangle2.setNormalMap("graphicData/normalmap.jpg");
 
     plane myplane = plane();
     myplane.initPrefab(colors, myscene.getTexturePool());
     myscene.addDrawableObject(&myplane);
     myplane.moveObject(glm::vec3(0, -0.5, -2));
     myplane.scaleObject(glm::vec3(100, 1, 100));
-    myplane.addTexture("texture.jpg");
+    myplane.addTexture("graphicData/texture.jpg");
     myplane.setNumberOfTextureToDraw(1);
     myplane.setTextureResolution(100);
-    myplane.setNormalMap("normalmap.jpg");
+    myplane.setNormalMap("graphicData/normalmap.jpg");
     myplane.setMetallic(0.5);
     myplane.setRoughness(0.6);
 
@@ -82,13 +73,36 @@ int main()
 
 
 
-    renderObjectScene objScene = renderObjectScene(&myscene);
+    /*renderObjectScene objScene = renderObjectScene(&myscene);
     objScene.loadOBJFromFile("Container Games.obj");
     objScene.scaleRenderObjectScene(glm::vec3(0.08, 0.08, 0.08));
     objScene.moveRenderObjectScene(glm::vec3(0, -5.5, -2));
     objScene.setRenderObjectMetallicMap("Container LP Complekt_DefaultMaterial_MetallicSmoothness.png");
     objScene.setRenderObjectNormalMap("Container LP Complekt_DefaultMaterial_Normal.png");
-    objScene.setRenderObjectTexture("Container LP Complekt_DefaultMaterial_AlbedoTransparency.png");
+    objScene.setRenderObjectTexture("Container LP Complekt_DefaultMaterial_AlbedoTransparency.png");*/
+
+    cube triangle3 = cube();
+    triangle3.initPrefab(colors, myscene.getTexturePool());
+    myscene.addDrawableObject(&triangle3);
+    triangle3.moveObject(glm::vec3(0, 0.0, 1));
+    triangle3.addTexture("graphicData/texturemetal.jpg");
+    triangle3.setNumberOfTextureToDraw(1);
+    triangle3.setNormalMap("graphicData/metalnormalmap.jpg");
+   // triangle3.setRoughness(0.4);
+   // triangle3.setMetallic(0.1);
+    //triangle3.setMetallicMap("graphicData/metalmap.jpg");
+    //triangle3.setMetallicMap("graphicData/metalmap.jpg");
+    //triangle3.setRoughness(0.1);
+
+    cube triangle4 = cube();
+    triangle4.initPrefab(colors, myscene.getTexturePool());
+    myscene.addDrawableObject(&triangle4);
+    triangle4.moveObject(glm::vec3(0, 0.0, 3));
+    triangle4.addTexture("graphicData/texturemetal.jpg");
+    triangle4.setNumberOfTextureToDraw(1);
+    triangle4.setNormalMap("graphicData/metalnormalmap.jpg");
+    //triangle4.setMetallicMap("graphicData/metalmap.jpg");
+    //triangle4.setRoughness(0.1);
 
     mainDisplay.hideCursor();
     while (!mainDisplay.shouldExit()) {

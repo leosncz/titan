@@ -60,7 +60,20 @@ public:
 				float specular = object->getShader()->roughness;
 				name.append(to_string(specular));
 				ImGui::Text(name.c_str());
+				name = "Use normal map : ";
+				if (object->doesMeshHasNormalMap()) { name.append("Yes"); }
+				else { name.append("No"); }
+				ImGui::Text(name.c_str());
+				name = "Use roughness map : ";
+				if (object->doesMeshHasRoughnessMap()) { name.append("Yes"); }
+				else { name.append("No"); }
+				ImGui::Text(name.c_str());
+				name = "Use metallic map : ";
+				if (object->doesMeshHasMetallicMap()) { name.append("Yes"); }
+				else { name.append("No"); }
+				ImGui::Text(name.c_str());
 				ImGui::Separator();
+
 			}
 			ImGui::End();
 

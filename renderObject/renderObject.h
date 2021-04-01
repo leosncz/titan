@@ -441,6 +441,10 @@ public:
         hasRoughnessMap = true;
     }
 
+    bool doesMeshHasNormalMap() { return hasNormalMap; }
+    bool doesMeshHasRoughnessMap() { return hasRoughnessMap; }
+    bool doesMeshHasMetallicMap() { return hasMetallicMap; }
+
     int getID(){return id;}
 
 protected:

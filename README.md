@@ -1,6 +1,6 @@
 # Titan Engine
 
-**Titan Engine** is a rendering engine (possibly also game engine in the future) which is small, lightweigth and easily customizable.
+**Titan Engine** is a powerfull & lightweight game engine.
 
 ## Example
 Shadow example :
