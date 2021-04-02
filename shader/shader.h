@@ -441,10 +441,9 @@ public:
             " gNormal = normalize(aNormals);}"
             " else{vec3 normal = texture(normalMap, texCoord).rgb; normal = normalize(normal * 2.0 - 1.0); normal = normalize(TBN * normal); gNormal = normal;}"
             " gAlbedoSpec = vec4(finalColor,1.0);"
-            " if(howManyTex == 1){gAlbedoSpec = gAlbedoSpec * vec4(pow(texture(texture1, texCoord).rgb,vec3(2.2)),1.0);}"
-            " if(howManyTex == 2){gAlbedoSpec = gAlbedoSpec * vec4(pow(texture(texture1, texCoord).rgb,vec3(2.2)),1.0) * vec4(pow(texture(texture2, texCoord).rgb,vec3(2.2)),1.0);}"
-            " if(howManyTex == 3){gAlbedoSpec = gAlbedoSpec * vec4(pow(texture(texture1, texCoord).rgb,vec3(2.2)),1.0) * vec4(pow(texture(texture2, texCoord).rgb,vec3(2.2)),1.0) * vec4(pow(texture(texture3, texCoord).rgb,vec3(2.2)),1.0);}"
-            
+            " if(howManyTex == 1){gAlbedoSpec = gAlbedoSpec * vec4(vec3(texture(texture1, texCoord)),1.0);}"
+            " if(howManyTex == 2){gAlbedoSpec = gAlbedoSpec * vec4(vec3(texture(texture1, texCoord)),1.0) * vec4(vec3(texture(texture2, texCoord)),1.0);}"
+            " if(howManyTex == 3){gAlbedoSpec = gAlbedoSpec * vec4(vec3(texture(texture1, texCoord)),1.0) * vec4(vec3(texture(texture2, texCoord)),1.0) * vec4(vec3(texture(texture3, texCoord)),1.0);}"
             " gPosition = fragPos;"
             "}";
 
