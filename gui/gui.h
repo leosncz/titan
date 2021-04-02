@@ -46,19 +46,19 @@ public:
 
 			ImGui::TextWrapped("Position: ");
 			IM_ASSERT(positionTexture);
-			ImGui::Image((void*)(intptr_t)positionTexture, ImVec2(300, 200), ImVec2(0, 1), ImVec2(1,0));
+			ImGui::Image((void*)(intptr_t)positionTexture, ImVec2(400, 300), ImVec2(0, 1), ImVec2(1,0));
 			
 			ImGui::Separator();
 
 			ImGui::TextWrapped("Normals: ");
 			IM_ASSERT(normalTexture);
-			ImGui::Image((void*)(intptr_t)normalTexture, ImVec2(300, 200), ImVec2(0, 1), ImVec2(1, 0));
+			ImGui::Image((void*)(intptr_t)normalTexture, ImVec2(400, 300), ImVec2(0, 1), ImVec2(1, 0));
 
 			ImGui::Separator();
 
 			ImGui::TextWrapped("AlbedoSpec: ");
 			IM_ASSERT(albedoSpecTexture);
-			ImGui::Image((void*)(intptr_t)albedoSpecTexture, ImVec2(300, 200), ImVec2(0, 1), ImVec2(1, 0));
+			ImGui::Image((void*)(intptr_t)albedoSpecTexture, ImVec2(400, 300), ImVec2(0, 1), ImVec2(1, 0));
 
 			ImGui::End();
 
