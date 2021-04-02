@@ -40,6 +40,7 @@ public:
 
          m_shader.compileDefaultShader();
          m_depthShader.compileDepthShader();
+         m_gShader.compileGShaderShader();
 
          glGenBuffers(1, &vbo);
          glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -196,22 +197,40 @@ public:
         
         glDrawArrays(GL_TRIANGLES, 0, m_nbOfPointToDraw);
     }
-    void render(glm::mat4* projection, glm::mat4* view, glm::mat4* model, glm::vec3 viewPos, vector<light*> sceneLights = {}, int numberOfLight = 0)
+    void render(glm::mat4* projection, glm::mat4* view, glm::mat4* model, glm::vec3 viewPos, vector<light*> sceneLights = {}, int numberOfLight = 0, bool isGPass=false)
     {
         //Update actual model matrix
         glm::mat4 customModelMatrix = *model * modelMatrix;
-
-        glUseProgram(m_shader.getShaderID());
+        if (!isGPass)
+        {
+            glUseProgram(m_shader.getShaderID());
+        }
+        else
+        {
+            glUseProgram(m_gShader.getShaderID()); 
+        }
 
         glBindVertexArray(vao);
 
             //Send object relative data to display the object
-            glUniformMatrix4fv(modelID, 1, GL_FALSE, glm::value_ptr(customModelMatrix));
-            glUniformMatrix4fv(viewID, 1, GL_FALSE, glm::value_ptr(*view));
-            glUniformMatrix4fv(projectionID, 1, GL_FALSE, glm::value_ptr(*projection));
-            glUniform3f(viewPosID,viewPos.x,viewPos.y,viewPos.z);
+            if (!isGPass)
+            {
+                glUniformMatrix4fv(modelID, 1, GL_FALSE, glm::value_ptr(customModelMatrix));
+                glUniformMatrix4fv(viewID, 1, GL_FALSE, glm::value_ptr(*view));
+                glUniformMatrix4fv(projectionID, 1, GL_FALSE, glm::value_ptr(*projection));
+                glUniform3f(viewPosID, viewPos.x, viewPos.y, viewPos.z);
 
-            glUniform1i(howManyTexID,m_nbOfTextureToDraw);
+                glUniform1i(howManyTexID, m_nbOfTextureToDraw);
+            }
+            else
+            {
+                glUniformMatrix4fv(glGetUniformLocation(m_gShader.getShaderID(),"model"), 1, GL_FALSE, glm::value_ptr(customModelMatrix));
+                glUniformMatrix4fv(glGetUniformLocation(m_gShader.getShaderID(), "view"), 1, GL_FALSE, glm::value_ptr(*view));
+                glUniformMatrix4fv(glGetUniformLocation(m_gShader.getShaderID(), "projection"), 1, GL_FALSE, glm::value_ptr(*projection));
+                glUniform3f(glGetUniformLocation(m_gShader.getShaderID(), "viewPos"), viewPos.x, viewPos.y, viewPos.z);
+
+                glUniform1i(glGetUniformLocation(m_gShader.getShaderID(), "howManyTex"), m_nbOfTextureToDraw);
+            }
 
             int dirLightID = 0;
             int ptLightID = 0;
@@ -271,31 +290,72 @@ public:
 
             if (glIsTexture(texture1))
             {
-                glUniform1i(texture1ID, textureCount);
-                glActiveTexture(GL_TEXTURE0 + textureCount);
-                glBindTexture(GL_TEXTURE_2D, texture1);
+                if (isGPass)
+                {
+                    glUniform1i(glGetUniformLocation(m_gShader.getShaderID(),"texture1"), textureCount);
+                    glActiveTexture(GL_TEXTURE0 + textureCount);
+                    glBindTexture(GL_TEXTURE_2D, texture1);
+                }
+                else
+                {
+                    glUniform1i(texture1ID, textureCount);
+                    glActiveTexture(GL_TEXTURE0 + textureCount);
+                    glBindTexture(GL_TEXTURE_2D, texture1);
+                }
+                
                 textureCount++;
             }
             if (glIsTexture(texture2))
             {
-                glUniform1i(texture2ID, textureCount);
-                glActiveTexture(GL_TEXTURE0 + textureCount);
-                glBindTexture(GL_TEXTURE_2D, texture2);
+                if (isGPass)
+                {
+                    glUniform1i(glGetUniformLocation(m_gShader.getShaderID(), "texture2"), textureCount);
+                    glActiveTexture(GL_TEXTURE0 + textureCount);
+                    glBindTexture(GL_TEXTURE_2D, texture2);
+                }
+                else
+                {
+                    glUniform1i(texture1ID, textureCount);
+                    glActiveTexture(GL_TEXTURE0 + textureCount);
+                    glBindTexture(GL_TEXTURE_2D, texture2);
+                }
+
                 textureCount++;
             }
             if (glIsTexture(texture3))
             {
-                glUniform1i(texture3ID, textureCount);
-                glActiveTexture(GL_TEXTURE0 + textureCount);
-                glBindTexture(GL_TEXTURE_2D, texture3);
+                if (isGPass)
+                {
+                    glUniform1i(glGetUniformLocation(m_gShader.getShaderID(), "texture3"), textureCount);
+                    glActiveTexture(GL_TEXTURE0 + textureCount);
+                    glBindTexture(GL_TEXTURE_2D, texture3);
+                }
+                else
+                {
+                    glUniform1i(texture1ID, textureCount);
+                    glActiveTexture(GL_TEXTURE0 + textureCount);
+                    glBindTexture(GL_TEXTURE_2D, texture3);
+                }
+
                 textureCount++;
             }
             if (hasNormalMap)
             {
-                glUniform1i(normalTextureID, textureCount);
-                glActiveTexture(GL_TEXTURE0 + textureCount);
-                glBindTexture(GL_TEXTURE_2D, normalTexture);
-                glUniform1i(useNormalMapID, 1);
+                if (isGPass)
+                {
+                    glUniform1i(glGetUniformLocation(m_gShader.getShaderID(),"normalMap"), textureCount);
+                    glActiveTexture(GL_TEXTURE0 + textureCount);
+                    glBindTexture(GL_TEXTURE_2D, normalTexture);
+                    glUniform1i(glGetUniformLocation(m_gShader.getShaderID(), "useNormalMap"), 1);
+                }
+                else
+                {
+                    glUniform1i(normalTextureID, textureCount);
+                    glActiveTexture(GL_TEXTURE0 + textureCount);
+                    glBindTexture(GL_TEXTURE_2D, normalTexture);
+                    glUniform1i(useNormalMapID, 1);
+                }
+                
                 textureCount++;
             }
             else { glUniform1i(useNormalMapID, 0); }
@@ -469,6 +529,7 @@ protected:
     GLuint vao;
     shader m_shader;
     shader m_depthShader;
+    shader m_gShader;
 
     GLuint modelID;
     GLuint viewID;

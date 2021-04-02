@@ -57,6 +57,54 @@ public:
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, hdrRBO);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+        int32 swizzleMask[] = { GL_RED, GL_GREEN, GL_BLUE, GL_ONE };
+
+        glGenFramebuffers(1, &gBuffer);
+        glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
+        glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, m_display->getDisWidth(), m_display->getDisHeight());
+        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, gRBO);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+        glGenTextures(1, &gPosition);
+        glBindTexture(GL_TEXTURE_2D, gPosition);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_display->getDisWidth(), m_display->getDisHeight(), 0, GL_RGBA, GL_FLOAT, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, &swizzleMask[0]);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPosition, 0);
+
+        // - normal color buffer
+        glGenTextures(1, &gNormal);
+        glBindTexture(GL_TEXTURE_2D, gNormal);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_display->getDisWidth(), m_display->getDisHeight(), 0, GL_RGBA, GL_FLOAT, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, &swizzleMask[0]);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal, 0);
+
+        // - color + specular color buffer
+        glGenTextures(1, &gAlbedoSpec);
+        glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_display->getDisWidth(), m_display->getDisHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, &swizzleMask[0]);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedoSpec, 0);
+       
+        glGenRenderbuffers(1, &gRBO);
+        glBindRenderbuffer(GL_RENDERBUFFER, gRBO);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_display->getDisWidth(), m_display->getDisHeight());
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, gRBO);
+
+        // - tell OpenGL which color attachments we'll use (of this framebuffer) for rendering 
+        unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+        glDrawBuffers(3, attachments);
+
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
         //Create quad to render HDR scene
         m_hdrShader.compileQuadRenderShader();
         float vertices[] = {-1.0,-1.0,0.0,    1.0,-1.0,0.0,      1.0,1.0,0.0,     1.0,1.0,0.0,   -1.0,1.0,0.0,    -1.0,-1.0,0.0};
@@ -109,8 +157,20 @@ public:
                 glCullFace(GL_BACK);
             }
         }
-        
-        //Generate the final scene onto a quad
+
+        //Generate GBuffer
+        glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
+        glClearColor(0.0, 0.0, 0.0, 1.0); // keep it black so it doesn't leak into g-buffer
+        glViewport(0, 0, m_display->getDisWidth(), m_display->getDisHeight());
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        for (int i = 0; i < m_objectHolder.size(); i++)
+        {
+            m_objectHolder[i]->render(&projection, &view, &model, m_actualCamera.getCameraPos(), lights, m_nbOfLight, true);
+        }
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        //Generate the final scene onto a quad and calculate lighting
         glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
         glViewport(0, 0, m_display->getDisWidth(), m_display->getDisHeight());
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -119,6 +179,7 @@ public:
             m_objectHolder[i]->render(&projection, &view, &model, m_actualCamera.getCameraPos(), lights,m_nbOfLight);
         }
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindTexture(GL_TEXTURE_2D, 0);
 
         //Draw quad
         glUseProgram(m_hdrShader.getShaderID());
@@ -130,8 +191,9 @@ public:
         glUniform1i(glGetUniformLocation(m_hdrShader.getShaderID(), "hdrTexture"), 0);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindTexture(GL_TEXTURE_2D, 0);
+
         //Then render the GUI
-        m_gui.update(&m_objectHolder);
+        m_gui.update(&m_objectHolder, lights, gAlbedoSpec, gNormal, gPosition);
     }
 
     void setGamma(float gamma) { m_gamma = gamma; }
@@ -219,8 +281,13 @@ public:
     ~scene()
     {
         glDeleteTextures(1, &hdrTexture);
+        glDeleteTextures(1, &gAlbedoSpec);
+        glDeleteTextures(1, &gNormal);
+        glDeleteTextures(1, &gPosition);
         glDeleteRenderbuffers(1, &hdrRBO);
+        glDeleteRenderbuffers(1, &gRBO);
         glDeleteFramebuffers(1, &hdrFBO);
+        glDeleteFramebuffers(1, &gBuffer);
         glDeleteBuffers(1, &vbo);
         glDeleteBuffers(1, &vbo_colors);
         glDeleteBuffers(1, &vbo_texCoords);
@@ -257,6 +324,8 @@ private:
     shader m_hdrShader;
     GLuint vbo, vbo_colors, vbo_texCoords, vao;
     float m_exposure;
+
+    GLuint gBuffer, gPosition, gNormal, gAlbedoSpec, gRBO;
 };
 
 #endif // SCENE_H_INCLUDED

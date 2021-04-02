@@ -105,6 +105,9 @@ int main()
     //triangle4.setRoughness(0.1);
 
     mainDisplay.hideCursor();
+
+    myscene.setExposure(3.0);
+
     while (!mainDisplay.shouldExit()) {
         myscene.clearScene();
         myscene.updateCamera();

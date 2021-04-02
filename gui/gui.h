@@ -23,7 +23,7 @@ public:
 		isVisible = false;
 	}
 	void setVisibility(bool isVisible_) { isVisible = isVisible_; }
-	void update(vector<renderObject*>* objectHolder)
+	void update(vector<renderObject*>* objectHolder, vector<light*> lights, GLuint albedoSpecTexture, GLuint normalTexture, GLuint positionTexture)
 	{
 		if(isVisible)
 		{
@@ -32,7 +32,8 @@ public:
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 
-			ImGui::Begin("Hello", &isVisible);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+			//Welcome
+			ImGui::Begin("Hello", &isVisible);   
 			ImGui::SetWindowFontScale(1.4);
 			ImGui::TextColored(ImVec4(0,1,0,1),"Welome to TITAN Engine !");
 			ImGui::TextWrapped("Keep in mind : This engine is still in early development !");
@@ -40,7 +41,29 @@ public:
 			ImGui::TextColored(ImVec4(1, 0, 0, 1), "From github.com/leosncz/titan");
 			ImGui::End();
 
-			ImGui::Begin("Scene informations", &isVisible);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+			ImGui::Begin("Rendering debug", &isVisible);
+			ImGui::SetWindowFontScale(1.4);
+
+			ImGui::TextWrapped("Position: ");
+			IM_ASSERT(positionTexture);
+			ImGui::Image((void*)(intptr_t)positionTexture, ImVec2(300, 200), ImVec2(0, 1), ImVec2(1,0));
+			
+			ImGui::Separator();
+
+			ImGui::TextWrapped("Normals: ");
+			IM_ASSERT(normalTexture);
+			ImGui::Image((void*)(intptr_t)normalTexture, ImVec2(300, 200), ImVec2(0, 1), ImVec2(1, 0));
+
+			ImGui::Separator();
+
+			ImGui::TextWrapped("AlbedoSpec: ");
+			IM_ASSERT(albedoSpecTexture);
+			ImGui::Image((void*)(intptr_t)albedoSpecTexture, ImVec2(300, 200), ImVec2(0, 1), ImVec2(1, 0));
+
+			ImGui::End();
+
+			//Scene information
+			ImGui::Begin("Scene informations", &isVisible);
 			ImGui::SetWindowFontScale(1.4);
 			for (int i = 0; i < objectHolder->size(); i++)
 			{

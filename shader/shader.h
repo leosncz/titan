@@ -385,6 +385,91 @@ public:
         glDeleteShader(fs);
     }
 
+    void compileGShaderShader() 
+    {
+        std::cout << "---> Compiling GShader for shader ID=" << id << std::endl;
+
+        const char* vertex_shader =
+            "#version 330 core\n"
+            "layout(location = 0) in vec3 vp;"
+            "layout(location = 1) in vec3 color;"
+            "layout(location = 2) in vec2 inputTexCoord;"
+            "layout(location = 3) in vec3 normals;"
+            "layout(location = 4) in vec3 tangent;"
+            "layout(location = 5) in vec3 bitangent;"
+            "out vec3 aNormals;"
+            "out vec3 fragPos;"
+            "out vec2 texCoord;"
+            "out vec3 finalColor;"
+            "out mat3 TBN;"
+            "uniform mat4 model;"
+            "uniform mat4 view;"
+            "uniform mat4 projection;"
+            "uniform int useNormalMap;"
+            "void main() {"
+            "   finalColor = color;"
+            "   gl_Position = projection * view * model * vec4(vp, 1.0);"
+            "   aNormals = mat3(transpose(inverse(model))) * normals;"
+            "   vec4 worldPos = model * vec4(vp, 1.0);"
+            "   fragPos = worldPos.xyz;"
+            "   texCoord = inputTexCoord;"
+            "   if(useNormalMap == 1){vec3 T = normalize(vec3(model * vec4(tangent, 0.0))); vec3 N = normalize(vec3(model * vec4(aNormals, 0.0))); T = normalize(T - dot(T, N) * N); vec3 B = cross(N, T); TBN = mat3(T, B, N);}"
+            "}";
+
+        const char* fragment_shader =
+            "#version 330 core\n"
+            "layout(location = 0) out vec3 gPosition;"
+            "layout(location = 1) out vec3 gNormal;"
+            "layout(location = 2) out vec4 gAlbedoSpec;"
+            "in vec3 aNormals;"
+            "in vec3 fragPos;"
+            "in vec2 texCoord;"
+            "in vec3 finalColor;"
+            "uniform int howManyTex;"
+            "in mat3 TBN;"
+            // TEXTURES
+            "uniform sampler2D texture1;"
+            "uniform sampler2D texture2;"
+            "uniform sampler2D texture3;"
+            "uniform sampler2D normalMap;"
+            "uniform sampler2D metallicMap;"
+            "uniform sampler2D roughnessMap;"
+            "uniform int useNormalMap;"
+            //""
+            "void main() {"
+            " if(useNormalMap == 0){"
+            " gNormal = normalize(aNormals);}"
+            " else{vec3 normal = texture(normalMap, texCoord).rgb; normal = normalize(normal * 2.0 - 1.0); normal = normalize(TBN * normal); gNormal = normal;}"
+            " gAlbedoSpec = vec4(finalColor,1.0);"
+            " if(howManyTex == 1){gAlbedoSpec = gAlbedoSpec * vec4(pow(texture(texture1, texCoord).rgb,vec3(2.2)),1.0);}"
+            " if(howManyTex == 2){gAlbedoSpec = gAlbedoSpec * vec4(pow(texture(texture1, texCoord).rgb,vec3(2.2)),1.0) * vec4(pow(texture(texture2, texCoord).rgb,vec3(2.2)),1.0);}"
+            " if(howManyTex == 3){gAlbedoSpec = gAlbedoSpec * vec4(pow(texture(texture1, texCoord).rgb,vec3(2.2)),1.0) * vec4(pow(texture(texture2, texCoord).rgb,vec3(2.2)),1.0) * vec4(pow(texture(texture3, texCoord).rgb,vec3(2.2)),1.0);}"
+            
+            " gPosition = fragPos;"
+            "}";
+
+        GLuint vs = glCreateShader(GL_VERTEX_SHADER);
+        glShaderSource(vs, 1, &vertex_shader, NULL);
+        glCompileShader(vs);
+
+        GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(fs, 1, &fragment_shader, NULL);
+        glCompileShader(fs);
+
+        m_shaderID = glCreateProgram();
+        glAttachShader(m_shaderID, fs);
+        glAttachShader(m_shaderID, vs);
+        glLinkProgram(m_shaderID);
+
+        GLenum err;
+        while ((err = glGetError()) != GL_NO_ERROR) {
+            std::cerr << "OpenGL error: " << err << std::endl;
+        }
+
+        glDeleteShader(vs);
+        glDeleteShader(fs);
+    }
+
      void compileDepthShader()
     {
         std::cout << "---> Compiling depthShader for shader ID=" << id << std::endl;
