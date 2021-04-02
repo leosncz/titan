@@ -84,7 +84,7 @@ int main()
     cube triangle3 = cube();
     triangle3.initPrefab(colors, myscene.getTexturePool());
     myscene.addDrawableObject(&triangle3);
-    triangle3.moveObject(glm::vec3(0, 0.0, 1));
+    triangle3.moveObject(glm::vec3(0,0,1)); // 0 0 1
     triangle3.addTexture("graphicData/texturemetal.jpg");
     triangle3.setNumberOfTextureToDraw(1);
     triangle3.setNormalMap("graphicData/metalnormalmap.jpg");
