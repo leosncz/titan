@@ -153,7 +153,7 @@ public:
                 glCullFace(GL_BACK);
             }
         }
-
+        freeTexturesSlot();
         //Generate GBuffer
         glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
         glClearColor(0.0, 0.0, 0.0, 1.0); // keep it black so it doesn't leak into g-buffer
@@ -161,10 +161,10 @@ public:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         for (int i = 0; i < m_objectHolder.size(); i++)
         {
-            m_objectHolder[i]->render(&projection, &view, &model, m_actualCamera.getCameraPos(), lights, m_nbOfLight, true);
+            m_objectHolder[i]->renderGBuffer(&projection, &view, &model, m_actualCamera.getCameraPos(), lights, m_nbOfLight, true);
         }
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glBindTexture(GL_TEXTURE_2D, 0);
+        freeTexturesSlot();
 
         //Generate the final scene onto a quad and calculate lighting
         glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
@@ -175,7 +175,7 @@ public:
             m_objectHolder[i]->render(&projection, &view, &model, m_actualCamera.getCameraPos(), lights,m_nbOfLight);
         }
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glBindTexture(GL_TEXTURE_2D, 0);
+        freeTexturesSlot();
 
         //Draw quad
         glUseProgram(m_hdrShader.getShaderID());
@@ -186,10 +186,16 @@ public:
         glBindTexture(GL_TEXTURE_2D, hdrTexture);
         glUniform1i(glGetUniformLocation(m_hdrShader.getShaderID(), "hdrTexture"), 0);
         glDrawArrays(GL_TRIANGLES, 0, 6);
-        glBindTexture(GL_TEXTURE_2D, 0);
+        freeTexturesSlot();
 
         //Then render the GUI
         m_gui.update(&m_objectHolder, lights, gAlbedoSpec, gNormal, gPosition);
+
+        //Check for errors
+        GLenum err;
+        while ((err = glGetError()) != GL_NO_ERROR) {
+            std::cerr << "OpenGL error: " << err << std::endl;
+        }
     }
 
     void setGamma(float gamma) { m_gamma = gamma; }
@@ -322,6 +328,16 @@ private:
     float m_exposure;
 
     GLuint gBuffer, gPosition, gNormal, gAlbedoSpec, gRBO;
+
+    void freeTexturesSlot() // Free all texture stuff related to binded texture or slot
+    {
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+        for (int i = 0; i < 20; i++)
+        {
+            glBindTextureUnit(i, 0);
+        }
+    }
 };
 
 #endif // SCENE_H_INCLUDED
