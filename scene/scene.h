@@ -56,14 +56,11 @@ public:
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, hdrRBO);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+        
         int32 swizzleMask[] = { GL_RED, GL_GREEN, GL_BLUE, GL_ONE };
 
         glGenFramebuffers(1, &gBuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
-        glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, m_display->getDisWidth(), m_display->getDisHeight());
-        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, gRBO);
-        glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
         glGenTextures(1, &gPosition);
         glBindTexture(GL_TEXTURE_2D, gPosition);

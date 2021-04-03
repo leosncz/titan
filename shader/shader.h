@@ -383,6 +383,11 @@ public:
 
         glDeleteShader(vs);
         glDeleteShader(fs);
+
+        GLenum err;
+        while ((err = glGetError()) != GL_NO_ERROR) {
+            std::cerr << "OpenGL error: " << err << std::endl;
+        }
     }
 
     void compileGShaderShader() 
@@ -457,11 +462,6 @@ public:
         glAttachShader(m_shaderID, fs);
         glAttachShader(m_shaderID, vs);
         glLinkProgram(m_shaderID);
-
-        GLenum err;
-        while ((err = glGetError()) != GL_NO_ERROR) {
-            std::cerr << "OpenGL error: " << err << std::endl;
-        }
 
         glDeleteShader(vs);
         glDeleteShader(fs);
