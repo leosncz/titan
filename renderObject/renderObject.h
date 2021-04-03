@@ -197,7 +197,7 @@ public:
         
         glDrawArrays(GL_TRIANGLES, 0, m_nbOfPointToDraw);
     }
-    void render(glm::mat4* projection, glm::mat4* view, glm::mat4* model, glm::vec3 viewPos, vector<light*> sceneLights = {}, int numberOfLight = 0, bool isGPass=false)
+    void render(glm::mat4* projection, glm::mat4* view, glm::mat4* model, glm::vec3 viewPos, vector<light*> sceneLights = {}, int numberOfLight = 0)
     {
         //Update actual model matrix
         glm::mat4 customModelMatrix = *model * modelMatrix;
@@ -324,40 +324,22 @@ public:
 
             glDrawArrays(GL_TRIANGLES,0,m_nbOfPointToDraw);
     }
-    void renderGBuffer(glm::mat4* projection, glm::mat4* view, glm::mat4* model, glm::vec3 viewPos, vector<light*> sceneLights = {}, int numberOfLight = 0, bool isGPass = false)
+    void renderGBuffer(glm::mat4* projection, glm::mat4* view, glm::mat4* model, glm::vec3 viewPos, vector<light*> sceneLights = {}, int numberOfLight = 0)
     {
         //Update actual model matrix
         glm::mat4 customModelMatrix = *model * modelMatrix;
-        if (!isGPass)
-        {
-            glUseProgram(m_shader.getShaderID());
-        }
-        else
-        {
-            glUseProgram(m_gShader.getShaderID());
-        }
+        
+        glUseProgram(m_gShader.getShaderID());
+        
 
         glBindVertexArray(vao);
 
         //Send object relative data to display the object
-        if (!isGPass)
-        {
-            glUniformMatrix4fv(modelID, 1, GL_FALSE, glm::value_ptr(customModelMatrix));
-            glUniformMatrix4fv(viewID, 1, GL_FALSE, glm::value_ptr(*view));
-            glUniformMatrix4fv(projectionID, 1, GL_FALSE, glm::value_ptr(*projection));
-            glUniform3f(viewPosID, viewPos.x, viewPos.y, viewPos.z);
-
-            glUniform1i(howManyTexID, m_nbOfTextureToDraw);
-        }
-        else
-        {
-            glUniformMatrix4fv(glGetUniformLocation(m_gShader.getShaderID(), "model"), 1, GL_FALSE, glm::value_ptr(customModelMatrix));
-            glUniformMatrix4fv(glGetUniformLocation(m_gShader.getShaderID(), "view"), 1, GL_FALSE, glm::value_ptr(*view));
-            glUniformMatrix4fv(glGetUniformLocation(m_gShader.getShaderID(), "projection"), 1, GL_FALSE, glm::value_ptr(*projection));
-            glUniform3f(glGetUniformLocation(m_gShader.getShaderID(), "viewPos"), viewPos.x, viewPos.y, viewPos.z);
-
-            glUniform1i(glGetUniformLocation(m_gShader.getShaderID(), "howManyTex"), m_nbOfTextureToDraw);
-        }
+        glUniformMatrix4fv(glGetUniformLocation(m_gShader.getShaderID(), "model"), 1, GL_FALSE, glm::value_ptr(customModelMatrix));
+        glUniformMatrix4fv(glGetUniformLocation(m_gShader.getShaderID(), "view"), 1, GL_FALSE, glm::value_ptr(*view));
+        glUniformMatrix4fv(glGetUniformLocation(m_gShader.getShaderID(), "projection"), 1, GL_FALSE, glm::value_ptr(*projection));
+        glUniform3f(glGetUniformLocation(m_gShader.getShaderID(), "viewPos"), viewPos.x, viewPos.y, viewPos.z);
+        glUniform1i(glGetUniformLocation(m_gShader.getShaderID(), "howManyTex"), m_nbOfTextureToDraw);
 
         int dirLightID = 0;
         int ptLightID = 0;

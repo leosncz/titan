@@ -161,7 +161,7 @@ public:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         for (int i = 0; i < m_objectHolder.size(); i++)
         {
-            m_objectHolder[i]->renderGBuffer(&projection, &view, &model, m_actualCamera.getCameraPos(), lights, m_nbOfLight, true);
+            m_objectHolder[i]->renderGBuffer(&projection, &view, &model, m_actualCamera.getCameraPos(), lights, m_nbOfLight);
         }
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         freeTexturesSlot();
