@@ -166,26 +166,14 @@ public:
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         freeTexturesSlot();
 
-        //Generate the final scene onto a quad and calculate lighting
+        //Generate the final scene onto a quad and calculate lighting using generated g buffer
         glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
-        glViewport(0, 0, m_display->getDisWidth(), m_display->getDisHeight());
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        for(int i = 0; i<m_objectHolder.size();i++)
-        {
-            m_objectHolder[i]->render(&projection, &view, &model, m_actualCamera.getCameraPos(), lights,m_nbOfLight, gPosition, gAlbedoSpec, gNormal);
-        }
+        drawDeferedQuad();
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         freeTexturesSlot();
 
-        //Draw quad
-        glUseProgram(m_hdrShader.getShaderID());
-        glBindVertexArray(vao);
-        glUniform1f(glGetUniformLocation(m_hdrShader.getShaderID(), "gamma"), m_gamma);
-        glUniform1f(glGetUniformLocation(m_hdrShader.getShaderID(), "exposure"), m_exposure);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, hdrTexture);
-        glUniform1i(glGetUniformLocation(m_hdrShader.getShaderID(), "hdrTexture"), 0);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        //Draw HDR quad
+        drawHDRQuad();
         freeTexturesSlot();
 
         //Then render the GUI
@@ -336,6 +324,30 @@ private:
         for (int i = 0; i < 20; i++)
         {
             glBindTextureUnit(i, 0);
+        }
+    }
+
+    void drawHDRQuad()
+    {
+        glViewport(0, 0, m_display->getDisWidth(), m_display->getDisHeight());
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glUseProgram(m_hdrShader.getShaderID());
+        glBindVertexArray(vao);
+        glUniform1f(glGetUniformLocation(m_hdrShader.getShaderID(), "gamma"), m_gamma);
+        glUniform1f(glGetUniformLocation(m_hdrShader.getShaderID(), "exposure"), m_exposure);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, hdrTexture);
+        glUniform1i(glGetUniformLocation(m_hdrShader.getShaderID(), "hdrTexture"), 0);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+    }
+
+    void drawDeferedQuad()
+    {
+        glViewport(0, 0, m_display->getDisWidth(), m_display->getDisHeight());
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        for(int i = 0; i<m_objectHolder.size();i++)
+        {
+            m_objectHolder[i]->render(&projection, &view, &model, m_actualCamera.getCameraPos(), lights,m_nbOfLight, gPosition, gAlbedoSpec, gNormal);
         }
     }
 };
