@@ -137,32 +137,12 @@ public:
     void renderScene()
     {
         // SHADOW PASSES
-        for (int i = 0; i < lights.size(); i++)
-        {
-            if (lights[i]->computeShadows)
-            {
-                glCullFace(GL_FRONT);
-                glViewport(0, 0, 1024, 1024);
-                glBindFramebuffer(GL_FRAMEBUFFER, lights[i]->depthMapFBO);
-                glClear(GL_DEPTH_BUFFER_BIT);
-                for (int i2 = 0; i2 < m_objectHolder.size(); i2++)
-                {
-                    m_objectHolder[i2]->renderDepth(&projection, &view, &model, lights[i]);
-                }
-                glBindFramebuffer(GL_FRAMEBUFFER, 0);
-                glCullFace(GL_BACK);
-            }
-        }
+        drawShadowPass();
         freeTexturesSlot();
+
         //Generate GBuffer
         glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
-        glClearColor(0.0, 0.0, 0.0, 1.0); // keep it black so it doesn't leak into g-buffer
-        glViewport(0, 0, m_display->getDisWidth(), m_display->getDisHeight());
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        for (int i = 0; i < m_objectHolder.size(); i++)
-        {
-            m_objectHolder[i]->renderGBuffer(&projection, &view, &model, m_actualCamera.getCameraPos(), lights, m_nbOfLight);
-        }
+        drawGBufferPass();
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         freeTexturesSlot();
 
@@ -348,6 +328,37 @@ private:
         for(int i = 0; i<m_objectHolder.size();i++)
         {
             m_objectHolder[i]->render(&projection, &view, &model, m_actualCamera.getCameraPos(), lights,m_nbOfLight, gPosition, gAlbedoSpec, gNormal);
+        }
+    }
+
+    void drawShadowPass()
+    {
+        for (int i = 0; i < lights.size(); i++)
+        {
+            if (lights[i]->computeShadows)
+            {
+                glCullFace(GL_FRONT);
+                glViewport(0, 0, 1024, 1024);
+                glBindFramebuffer(GL_FRAMEBUFFER, lights[i]->depthMapFBO);
+                glClear(GL_DEPTH_BUFFER_BIT);
+                for (int i2 = 0; i2 < m_objectHolder.size(); i2++)
+                {
+                    m_objectHolder[i2]->renderDepth(&projection, &view, &model, lights[i]);
+                }
+                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                glCullFace(GL_BACK);
+            }
+        }
+    }
+
+    void drawGBufferPass()
+    {
+        glClearColor(0.0, 0.0, 0.0, 1.0); // keep it black so it doesn't leak into g-buffer
+        glViewport(0, 0, m_display->getDisWidth(), m_display->getDisHeight());
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        for (int i = 0; i < m_objectHolder.size(); i++)
+        {
+            m_objectHolder[i]->renderGBuffer(&projection, &view, &model, m_actualCamera.getCameraPos(), lights, m_nbOfLight);
         }
     }
 };
