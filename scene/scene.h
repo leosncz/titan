@@ -172,7 +172,7 @@ public:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         for(int i = 0; i<m_objectHolder.size();i++)
         {
-            m_objectHolder[i]->render(&projection, &view, &model, m_actualCamera.getCameraPos(), lights,m_nbOfLight);
+            m_objectHolder[i]->render(&projection, &view, &model, m_actualCamera.getCameraPos(), lights,m_nbOfLight, gPosition, gAlbedoSpec, gNormal);
         }
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         freeTexturesSlot();
@@ -194,7 +194,7 @@ public:
         //Check for errors
         GLenum err;
         while ((err = glGetError()) != GL_NO_ERROR) {
-            std::cerr << "OpenGL error: " << err << std::endl;
+            std::cerr << "--> PIPELINE ERROR: " << err << std::endl;
         }
     }
 

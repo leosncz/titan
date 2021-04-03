@@ -197,7 +197,7 @@ public:
         
         glDrawArrays(GL_TRIANGLES, 0, m_nbOfPointToDraw);
     }
-    void render(glm::mat4* projection, glm::mat4* view, glm::mat4* model, glm::vec3 viewPos, vector<light*> sceneLights = {}, int numberOfLight = 0)
+    void render(glm::mat4* projection, glm::mat4* view, glm::mat4* model, glm::vec3 viewPos, vector<light*> sceneLights = {}, int numberOfLight = 0, GLuint gPosition = 0,GLuint gAlbedoSpec=0,GLuint gNormals=0)
     {
         //Update actual model matrix
         glm::mat4 customModelMatrix = *model * modelMatrix;
