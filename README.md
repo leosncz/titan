@@ -12,15 +12,16 @@ PBR example :
 ## Actual supported features:
 - Runs on Windows, Mac & Linux (32-64 bits)
 - Infinite number of lights
-- Directionnal, spot and point light supported
+- Directionnal, spot and point light supported (spot light broken now due to defered shading)
 - Physically Based Rendering (PBR)
 - Albedo map (up to 3 textures on a single object)
-- Metallic map
-- Roughness map
+- Metallic map (broken now due to defered shading, fixing it)
+- Roughness map (broken now due to defered shading, fixing it)
 - Normal map
 - Gamma correction
-- HDR (customizable exposure)
-- Dynamic shadows
+- HDR
+- Defered Shading
+- Dynamic shadows (broken now due to defered shading)
 - OBJ Model loader
 - Automatic texture cache
 - GUI
@@ -29,7 +30,6 @@ PBR example :
 - AO map (priority)
 - SSAO (priority)
 - TitanScripting to enable users exporting their game using TitanEngine
-- Defered shading
 - Physics system
 - Infinite number of shadows
 - Dynamic light frustrum

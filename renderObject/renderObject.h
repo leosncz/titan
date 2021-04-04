@@ -331,7 +331,6 @@ public:
         
         glUseProgram(m_gShader.getShaderID());
         
-
         glBindVertexArray(vao);
 
         //Send object relative data to display the object

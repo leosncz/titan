@@ -62,14 +62,14 @@ int main()
     mylight4.quadratic = 0.032;*/
 
     light mylight5 = light();
-    mylight5.setData(glm::vec3(3, 1, 1.0), glm::vec3(10, 10, 10), glm::vec3(0, -1, -1), 1000.0f);
+    mylight5.setData(glm::vec3(1, 1.0, 2), glm::vec3(10, 10, 10), glm::vec3(0, -1, -1), 1000.0f);
     mylight5.type = POINT_LIGHT;
     myscene.addLight(&mylight5);
 
-   /* light mylight6 = light();
+    light mylight6 = light();
     mylight6.setData(glm::vec3(10, 5, 30.0), glm::vec3(30, 30, 0), glm::vec3(0, -1, -1), 1000.0f);
     mylight6.type = POINT_LIGHT;
-    myscene.addLight(&mylight6);*/
+    myscene.addLight(&mylight6);
 
 
 
@@ -88,8 +88,8 @@ int main()
     triangle3.addTexture("graphicData/texturemetal.jpg");
     triangle3.setNumberOfTextureToDraw(1);
     triangle3.setNormalMap("graphicData/metalnormalmap.jpg");
-   // triangle3.setRoughness(0.4);
-   // triangle3.setMetallic(0.1);
+    triangle3.setRoughness(0.4);
+    triangle3.setMetallic(0.1);
     //triangle3.setMetallicMap("graphicData/metalmap.jpg");
     //triangle3.setMetallicMap("graphicData/metalmap.jpg");
     //triangle3.setRoughness(0.1);
@@ -102,11 +102,12 @@ int main()
     triangle4.setNumberOfTextureToDraw(1);
     triangle4.setNormalMap("graphicData/metalnormalmap.jpg");
     //triangle4.setMetallicMap("graphicData/metalmap.jpg");
-    //triangle4.setRoughness(0.1);
+    triangle4.setRoughness(0.1);
 
     mainDisplay.hideCursor();
 
-    myscene.setExposure(3.0);
+    //myscene.setExposure(3.0);
+    //myscene.setGamma(1.0);
 
     while (!mainDisplay.shouldExit()) {
         myscene.clearScene();
