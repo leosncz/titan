@@ -109,6 +109,16 @@ int main()
     //myscene.setExposure(3.0);
     //myscene.setGamma(1.0);
 
+    light light_[50];
+    int i2 = 0;
+    for (int i = -20; i < 20; i+=2)
+    {
+        light_[i2].setData(vec3(i, 1.0, 0.0), vec3(10.0, 10.0, 10.0), vec3(0.0, 0.0, 0.0));
+        light_[i2].type = POINT_LIGHT;
+        myscene.addLight(&light_[i2]);
+        i2++;
+    }
+    cout << i2;
     while (!mainDisplay.shouldExit()) {
         myscene.clearScene();
         myscene.updateCamera();

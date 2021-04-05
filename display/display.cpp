@@ -12,6 +12,7 @@ int display::init(int x, int y, int aa, bool fullscreen)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make apple happy
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // We are courageous
+    glfwWindowHint(GLFW_RESIZABLE, false);
 
     if (fullscreen)
     {

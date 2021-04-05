@@ -29,7 +29,6 @@ public:
     GLFWwindow *getGLFWWindow(){return m_window;}
     void hideCursor(){ glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); }
     void showCursor() { glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); }
-
     ~display()
     {
         std::cout << "--> Exiting Engine";
