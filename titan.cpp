@@ -83,11 +83,11 @@ int main()
     triangle3.initPrefab(colors, myscene.getTexturePool());
     myscene.addDrawableObject(&triangle3);
     triangle3.moveObject(glm::vec3(0,0,-2)); // 0 0 1
-    triangle3.addTexture("graphicData/PaintedPlaster013_1K_Color.jpg");
+    triangle3.addTexture("graphicData/PaintedMetal007_1K_Color.jpg");
     triangle3.setNumberOfTextureToDraw(1);
-    triangle3.setNormalMap("graphicData/PaintedPlaster013_1K_Normal.jpg");
-    triangle3.setRoughnessMap("graphicData/PaintedPlaster013_1K_Roughness.jpg");
-    triangle3.setMetallic(0.3);
+    triangle3.setNormalMap("graphicData/PaintedMetal007_1K_Normal.jpg");
+    triangle3.setRoughnessMap("graphicData/PaintedMetal007_1K_Roughness-min.jpg");
+    triangle3.setMetallicMap("graphicData/PaintedMetal007_1K_Metalness-min.jpg");
 
 
     cube triangle4 = cube();

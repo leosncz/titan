@@ -419,13 +419,6 @@ private:
             glBindTexture(GL_TEXTURE_2D, gNormal);
             textureCount++;
         }
-        if (glIsTexture(gAlbedoSpec))
-        {
-            glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(), "gAlbedoSpec"), textureCount);
-            glActiveTexture(GL_TEXTURE0 + textureCount);
-            glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
-            textureCount++;
-        }
         if (glIsTexture(gMetallic))
         {
             glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(), "gMetallic"), textureCount);
@@ -440,6 +433,14 @@ private:
             glBindTexture(GL_TEXTURE_2D, gRoughness);
             textureCount++;
         }
+        if (glIsTexture(gAlbedoSpec))
+        {
+            glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(), "gAlbedoSpec"), textureCount);
+            glActiveTexture(GL_TEXTURE0 + textureCount);
+            glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
+            textureCount++;
+        }
+       
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
