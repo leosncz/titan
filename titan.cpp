@@ -46,8 +46,6 @@ int main()
     myplane.setNumberOfTextureToDraw(1);
     myplane.setTextureResolution(100);
     myplane.setNormalMap("graphicData/normalmap.jpg");
-    myplane.setMetallic(0.0);
-    myplane.setRoughness(1.0);
 
     /*light mylight3 = light();
     mylight3.setData(glm::vec3(0.5,1,4), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, -1, -1), 1000.0f);
@@ -84,35 +82,30 @@ int main()
     cube triangle3 = cube();
     triangle3.initPrefab(colors, myscene.getTexturePool());
     myscene.addDrawableObject(&triangle3);
-    triangle3.moveObject(glm::vec3(0,0,1)); // 0 0 1
-    triangle3.addTexture("graphicData/texturemetal.jpg");
+    triangle3.moveObject(glm::vec3(0,0,-2)); // 0 0 1
+    triangle3.addTexture("graphicData/PaintedPlaster013_1K_Color.jpg");
     triangle3.setNumberOfTextureToDraw(1);
-    triangle3.setNormalMap("graphicData/metalnormalmap.jpg");
-    triangle3.setRoughness(0.4);
-    triangle3.setMetallic(0.1);
-    //triangle3.setMetallicMap("graphicData/metalmap.jpg");
-    //triangle3.setMetallicMap("graphicData/metalmap.jpg");
-    //triangle3.setRoughness(0.1);
+    triangle3.setNormalMap("graphicData/PaintedPlaster013_1K_Normal.jpg");
+    triangle3.setRoughnessMap("graphicData/PaintedPlaster013_1K_Roughness.jpg");
+    triangle3.setMetallic(0.3);
+
 
     cube triangle4 = cube();
     triangle4.initPrefab(colors, myscene.getTexturePool());
     myscene.addDrawableObject(&triangle4);
-    triangle4.moveObject(glm::vec3(0, 0.0, 3));
+    triangle4.moveObject(glm::vec3(3, 0.0, -2));
     triangle4.addTexture("graphicData/texturemetal.jpg");
     triangle4.setNumberOfTextureToDraw(1);
     triangle4.setNormalMap("graphicData/metalnormalmap.jpg");
-    triangle4.setRoughness(0.1);
 
     mainDisplay.hideCursor();
 
-    //myscene.setExposure(3.0);
-    //myscene.setGamma(1.0);
 
     light light_[50];
     int i2 = 0;
     for (int i = -20; i < 20; i+=2)
     {
-        light_[i2].setData(vec3(i, 1.0, 0.0), vec3(10.0, 10.0, 10.0), vec3(0.0, 0.0, 0.0));
+        light_[i2].setData(vec3(i, 0.5, 0.0), vec3(10.0, 10.0, 10.0), vec3(0.0, 0.0, 0.0));
         light_[i2].type = POINT_LIGHT;
         myscene.addLight(&light_[i2]);
         i2++;
