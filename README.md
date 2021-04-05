@@ -20,7 +20,7 @@ PBR example :
 - Normal map
 - Gamma correction
 - HDR
-- Defered Shading
+- Deferred Shading
 - Dynamic shadows
 - OBJ Model loader
 - Automatic texture cache

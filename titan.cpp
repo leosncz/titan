@@ -101,7 +101,6 @@ int main()
     triangle4.addTexture("graphicData/texturemetal.jpg");
     triangle4.setNumberOfTextureToDraw(1);
     triangle4.setNormalMap("graphicData/metalnormalmap.jpg");
-    triangle4.setMetallicMap("graphicData/metalmap.jpg");
     triangle4.setRoughness(0.1);
 
     mainDisplay.hideCursor();
