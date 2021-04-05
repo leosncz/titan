@@ -185,8 +185,68 @@ public:
         "uniform sampler2D gAlbedoSpec;"
         "uniform sampler2D gNormals;"
         "uniform sampler2D gPosition;"
+        "uniform samplerCube textureDepthCubemap;"
+        "uniform samplerCube textureDepthCubemap1;"
+        "uniform samplerCube textureDepthCubemap2;"
+        "uniform samplerCube textureDepthCubemap3;"
+        "uniform samplerCube textureDepthCubemap4;"
+        "uniform samplerCube textureDepthCubemap5;"
+        "uniform samplerCube textureDepthCubemap6;"
+        "uniform sampler2D textureDepthMap;"
+        "uniform sampler2D textureDepthMap1;"
+
         "const float PI = 3.14159265359;"
         //
+            "float ShadowCalculationPL(vec3 fragPos_, vec3 lightPos, samplerCube tex)"
+            "{"
+            // get vector between fragment position and light position
+            "vec3 fragToLight = fragPos_ - lightPos;"
+            // now get current linear depth as the length between the fragment and light position
+            "float currentDepth = length(fragToLight);"
+            // now test for shadows
+            "float shadow = 0.0;"
+            "float bias = 0.07;"
+            "float samples = 3.0;"
+            "float offset = 0.1;"
+            "for (float x = -offset; x < offset; x += offset / (samples * 0.5))"
+            "{"
+            "    for (float y = -offset; y < offset; y += offset / (samples * 0.5))"
+            "    {"
+            "        for (float z = -offset; z < offset; z += offset / (samples * 0.5))"
+            "        {"
+            "            float closestDepth = texture(tex, fragToLight + vec3(x, y, z)).r;"
+            "            closestDepth *= 25.0;"   // undo mapping [0;1]
+            "            if (currentDepth - bias > closestDepth){"
+            "                shadow += 1.0;}"
+            "        }"
+            "    }"
+            "}"
+            "shadow /= (samples * samples * samples);"
+            "return shadow;"
+            "}"
+            "float ShadowCalculation(vec4 fragPosLightSpace, sampler2D texture_)"
+            "{"
+            // perform perspective divide
+            "vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;"
+            // transform to [0,1] range
+            "projCoords = projCoords * 0.5 + 0.5;"
+            "float shadow = 0.0;"
+            "float bias = 0.001;"
+            "vec2 texelSize = 1.0 / textureSize(texture_, 0);"
+            "float currentDepth = projCoords.z;"
+            "for (int x = -1; x <= 1; ++x)"
+            "{"
+            "    for (int y = -1; y <= 1; ++y)"
+            "    {"
+            "        float pcfDepth = texture(texture_, projCoords.xy + vec2(x, y) * texelSize).r;"
+            "        shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;"
+            "    }"
+            "}"
+            "shadow /= 9.0;"
+            "if (projCoords.z > 1.0){"
+            "     shadow = 0.0;}"
+            "return shadow;"
+            "}"
             "vec3 fresnelSchlick(float cosTheta, vec3 F0)"
             "{"
             "   return F0 + (1.0 - F0) * pow(max(1.0 - cosTheta, 0.0), 5.0);"
@@ -242,6 +302,7 @@ public:
             " F0 = mix(F0, albedo, metallic_);"
             // reflectance equation
             "vec3 Lo = vec3(0.0);"
+            "int test = 1;"
             "for(int i = 0;i<numberOfLight;i++)"
             "{"
             // We assume its a point light by default
@@ -273,24 +334,22 @@ public:
             "    float NdotL = max(dot(N, L), 0.0);"
             "    vec3 final = (kD * albedo / PI + specular) * radiance * NdotL;"
             // SHADOWS
-      /*      "    if(i == 0 && lightsType[i] == 1){float shadowval = ShadowCalculation(fs_in.FragPosLightSpace, textureDepthMap); if(1-shadowval < 0.4){final = vec3(0,0,0);}}"
+            "    if(i == 0 && lightsType[i] == 1){float shadowval = ShadowCalculation(fs_in.FragPosLightSpace, textureDepthMap); if(1-shadowval < 0.4){final = vec3(0,0,0);}}"
             "    if(i == 1 && lightsType[i] == 1){float shadowval = ShadowCalculation(fs_in.FragPosLightSpace, textureDepthMap1); if(1-shadowval < 0.4){final = vec3(0,0,0);}}"
-            "    if(i == 0 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap); if(1-shadowval < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
-            "    if(i == 1 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap1);if(1-shadowval < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
+            "    if(i == 0 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(FragPos, lightsPosition[i], textureDepthCubemap); if((1-shadowval) < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
+            "    if(i == 1 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(FragPos, lightsPosition[i], textureDepthCubemap1);if((1-shadowval) < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
             "    if(i == 2 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap2);if(1-shadowval < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
             "    if(i == 3 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap3);if(1-shadowval < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
             "    if(i == 4 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap4);if(1-shadowval < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
             "    if(i == 5 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap5);if(1-shadowval < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
-            "    if(i == 6 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap6);if(1-shadowval < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"*/
+            "    if(i == 6 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap6);if(1-shadowval < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
             "    Lo += final;"
             "}"
 
             "vec3 ambient_ = vec3(ambient) * albedo;" //*ao
             "vec3 color = ambient_ + Lo;"
-
-            "color = color / (color + vec3(1.0));"
-            "color = pow(color, vec3(1.0 / 2.2));"
             "frag_colour = vec4(color, 1.0);"
+            "if(test == 0){frag_colour = vec4(0,0,0,0);}"
             "}";
             
             ;

@@ -21,7 +21,7 @@ PBR example :
 - Gamma correction
 - HDR
 - Defered Shading
-- Dynamic shadows (broken now due to defered shading)
+- Dynamic shadows
 - OBJ Model loader
 - Automatic texture cache
 - GUI
