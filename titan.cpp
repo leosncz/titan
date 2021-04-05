@@ -10,7 +10,7 @@ using namespace std;
 int main()
 {
     display mainDisplay = display();
-    mainDisplay.init(1620, 780, 4, false);
+    mainDisplay.init(1620, 880, 4, false);
 
     scene myscene = scene();
     myscene.setupDisplay(&mainDisplay);
@@ -59,25 +59,10 @@ int main()
     /*mylight4.linear = 0.09;
     mylight4.quadratic = 0.032;*/
 
-    light mylight5 = light();
-    mylight5.setData(glm::vec3(1, 1.0, 2), glm::vec3(10, 10, 10), glm::vec3(0, -1, -1), 1000.0f);
-    mylight5.type = POINT_LIGHT;
-    myscene.addLight(&mylight5);
-
-    light mylight6 = light();
-    mylight6.setData(glm::vec3(10, 5, 30.0), glm::vec3(30, 30, 0), glm::vec3(0, -1, -1), 1000.0f);
-    mylight6.type = POINT_LIGHT;
-    myscene.addLight(&mylight6);
-
-
-
     /*renderObjectScene objScene = renderObjectScene(&myscene);
-    objScene.loadOBJFromFile("Container Games.obj");
+    objScene.loadOBJFromFile("graphicData/tree.obj");
     objScene.scaleRenderObjectScene(glm::vec3(0.08, 0.08, 0.08));
-    objScene.moveRenderObjectScene(glm::vec3(0, -5.5, -2));
-    objScene.setRenderObjectMetallicMap("Container LP Complekt_DefaultMaterial_MetallicSmoothness.png");
-    objScene.setRenderObjectNormalMap("Container LP Complekt_DefaultMaterial_Normal.png");
-    objScene.setRenderObjectTexture("Container LP Complekt_DefaultMaterial_AlbedoTransparency.png");*/
+    objScene.moveRenderObjectScene(glm::vec3(-3.0, -5.5, -2));*/
 
     cube triangle3 = cube();
     triangle3.initPrefab(colors, myscene.getTexturePool());

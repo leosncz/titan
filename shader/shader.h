@@ -437,7 +437,7 @@ public:
             //""
             "void main() {"
             " if(useNormalMap == 0){"
-            " gNormal = normalize(mat3(transpose(inverse(model))) * aNormals);}"  // TODO OPTIMIZATION
+            " gNormal = normalize(mat3(transpose(inversedModel)) * aNormals);}"  // TODO OPTIMIZATION
             " else{vec3 normal = texture(normalMap, texCoord).rgb; normal = normalize(normal * 2.0 - 1.0); normal = normalize(TBN * normal); gNormal = normal;}"
             " gAlbedoSpec = vec4(finalColor,1.0);"
             " if(howManyTex == 1){gAlbedoSpec = gAlbedoSpec * vec4(vec3(texture(texture1, texCoord)),1.0);}"
