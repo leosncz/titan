@@ -197,6 +197,8 @@ public:
         
         glDrawArrays(GL_TRIANGLES, 0, m_nbOfPointToDraw);
     }
+
+    //Should NOT be called unless for forward rendering
     void render(glm::mat4* projection, glm::mat4* view, glm::mat4* model, glm::vec3 viewPos, vector<light*> sceneLights = {}, int numberOfLight = 0, GLuint gPosition = 0,GLuint gAlbedoSpec=0,GLuint gNormals=0)
     {
         //Update actual model matrix
@@ -339,6 +341,8 @@ public:
         glUniformMatrix4fv(glGetUniformLocation(m_gShader.getShaderID(), "projection"), 1, GL_FALSE, glm::value_ptr(*projection));
         glUniform3f(glGetUniformLocation(m_gShader.getShaderID(), "viewPos"), viewPos.x, viewPos.y, viewPos.z);
         glUniform1i(glGetUniformLocation(m_gShader.getShaderID(), "howManyTex"), m_nbOfTextureToDraw);
+        glm::mat4 inversedModel = glm::inverse(customModelMatrix);
+        glUniformMatrix4fv(glGetUniformLocation(m_gShader.getShaderID(), "inversedModel"), 1, GL_FALSE, glm::value_ptr(inversedModel));
 
         int dirLightID = 0;
         int ptLightID = 0;

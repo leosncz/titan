@@ -417,6 +417,7 @@ public:
             "in vec3 wpos;"
             "uniform int howManyTex;"
             "uniform mat4 model;"
+            "uniform mat4 inversedModel;"
             "in mat3 TBN;"
             // TEXTURES
             "uniform sampler2D texture1;"
@@ -427,7 +428,7 @@ public:
             //""
             "void main() {"
             " if(useNormalMap == 0){"
-            " gNormal = normalize(transpose(inverse(mat3(model))) * aNormals);}"
+            " gNormal = normalize(mat3(transpose(inversedModel)) * aNormals);}" 
             " else{vec3 normal = texture(normalMap, texCoord).rgb; normal = normalize(normal * 2.0 - 1.0); normal = normalize(TBN * normal); gNormal = normal;}"
             " gAlbedoSpec = vec4(finalColor,1.0);"
             " if(howManyTex == 1){gAlbedoSpec = gAlbedoSpec * vec4(vec3(texture(texture1, texCoord)),1.0);}"
