@@ -23,7 +23,7 @@ public:
         tag = "Custom Object";
     }
     string getTag() { return tag; }
-    shader* getShader() { return &m_shader; }
+    shader* getShader() { return &m_gShader; }
     bool setData(float* vertices, float* colors, float* texCoord, int nbOfPointToDraw, float* normals=0, texturePool* texturePool_=0) // Use this methode to define the mesh by hand
     {
          m_nbOfPointToDraw = nbOfPointToDraw;
@@ -344,6 +344,9 @@ public:
         glm::mat4 inversedModel = glm::inverse(customModelMatrix);
         glUniformMatrix4fv(glGetUniformLocation(m_gShader.getShaderID(), "inversedModel"), 1, GL_FALSE, glm::value_ptr(inversedModel));
 
+        glUniform1f(glGetUniformLocation(m_gShader.getShaderID(), "metallic"), m_gShader.metallic);
+        glUniform1f(glGetUniformLocation(m_gShader.getShaderID(), "roughness"), m_gShader.roughness);
+
         int dirLightID = 0;
         int ptLightID = 0;
         int textureCount = 0; // 0 is hdr texture
@@ -378,6 +381,24 @@ public:
             textureCount++;
         }
         else { glUniform1i(glGetUniformLocation(m_gShader.getShaderID(), "useNormalMap"), 0); }
+        if (hasRoughnessMap)
+        {
+            glUniform1i(glGetUniformLocation(m_gShader.getShaderID(), "roughnessMap"), textureCount);
+            glActiveTexture(GL_TEXTURE0 + textureCount);
+            glBindTexture(GL_TEXTURE_2D, roughnessTexture);
+            glUniform1i(glGetUniformLocation(m_gShader.getShaderID(), "useRoughnessMap"), 1);
+            textureCount++;
+        }
+        else { glUniform1i(glGetUniformLocation(m_gShader.getShaderID(), "useRoughnessMap"), 0); }
+        if (hasMetallicMap)
+        {
+            glUniform1i(glGetUniformLocation(m_gShader.getShaderID(), "metallicMap"), textureCount);
+            glActiveTexture(GL_TEXTURE0 + textureCount);
+            glBindTexture(GL_TEXTURE_2D, metallicTexture);
+            glUniform1i(glGetUniformLocation(m_gShader.getShaderID(), "useMetallicMap"), 1);
+            textureCount++;
+        }
+        else { glUniform1i(glGetUniformLocation(m_gShader.getShaderID(), "useMetallicMap"), 0); }
         
         glDrawArrays(GL_TRIANGLES, 0, m_nbOfPointToDraw);
     }
@@ -459,15 +480,15 @@ public:
     //Material properties edition
     void setRoughness(float intensity)
     {
-        m_shader.roughness = intensity;
+        m_gShader.roughness = intensity;
     }
     void setMetallic(float intensity)
     {
-        m_shader.metallic = intensity;
+        m_gShader.metallic = intensity;
     }
     void setAmbient(float intensity)
     {
-        m_shader.ambient = intensity;
+        m_gShader.ambient = intensity;
     }
     void removeNormalMap()
     {

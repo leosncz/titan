@@ -87,6 +87,22 @@ public:
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, &swizzleMask[0]);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedoSpec, 0);
+
+        glGenTextures(1, &gRoughness);
+        glBindTexture(GL_TEXTURE_2D, gRoughness);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, m_display->getDisWidth(), m_display->getDisHeight(), 0, GL_RGBA, GL_FLOAT, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, &swizzleMask[0]);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, gRoughness, 0);
+
+        glGenTextures(1, &gMetallic);
+        glBindTexture(GL_TEXTURE_2D, gMetallic);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, m_display->getDisWidth(), m_display->getDisHeight(), 0, GL_RGBA, GL_FLOAT, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, &swizzleMask[0]);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, gMetallic, 0);
        
         glGenRenderbuffers(1, &gRBO);
         glBindRenderbuffer(GL_RENDERBUFFER, gRBO);
@@ -95,8 +111,8 @@ public:
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, gRBO);
 
         // - tell OpenGL which color attachments we'll use (of this framebuffer) for rendering 
-        unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
-        glDrawBuffers(3, attachments);
+        unsigned int attachments[5] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4 };
+        glDrawBuffers(5, attachments);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glBindTexture(GL_TEXTURE_2D, 0);
@@ -157,7 +173,7 @@ public:
         freeTexturesSlot();
 
         //Then render the GUI
-        m_gui.update(&m_objectHolder, lights, gAlbedoSpec, gNormal, gPosition);
+        m_gui.update(&m_objectHolder, lights, gAlbedoSpec, gNormal, gPosition, gRoughness, gMetallic);
 
         //Check for errors
         GLenum err;
@@ -254,6 +270,8 @@ public:
         glDeleteTextures(1, &gAlbedoSpec);
         glDeleteTextures(1, &gNormal);
         glDeleteTextures(1, &gPosition);
+        glDeleteTextures(1, &gRoughness);
+        glDeleteTextures(1, &gMetallic);
         glDeleteRenderbuffers(1, &hdrRBO);
         glDeleteRenderbuffers(1, &gRBO);
         glDeleteFramebuffers(1, &hdrFBO);
@@ -295,7 +313,7 @@ private:
     GLuint vbo, vbo_colors, vbo_texCoords, vao;
     float m_exposure;
 
-    GLuint gBuffer, gPosition, gNormal, gAlbedoSpec, gRBO;
+    GLuint gBuffer, gPosition, gNormal, gAlbedoSpec, gRoughness, gMetallic, gRBO;
     shader m_deferedShader;
 
     void freeTexturesSlot() // Free all texture stuff related to binded texture or slot
@@ -408,12 +426,22 @@ private:
             glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
             textureCount++;
         }
+        if (glIsTexture(gMetallic))
+        {
+            glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(), "gMetallic"), textureCount);
+            glActiveTexture(GL_TEXTURE0 + textureCount);
+            glBindTexture(GL_TEXTURE_2D, gMetallic);
+            textureCount++;
+        }
+        if (glIsTexture(gRoughness))
+        {
+            glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(), "gRoughness"), textureCount);
+            glActiveTexture(GL_TEXTURE0 + textureCount);
+            glBindTexture(GL_TEXTURE_2D, gRoughness);
+            textureCount++;
+        }
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
-        /*for(int i = 0; i<m_objectHolder.size();i++)
-        {
-            m_objectHolder[i]->render(&projection, &view, &model, m_actualCamera.getCameraPos(), lights,m_nbOfLight, gPosition, gAlbedoSpec, gNormal);
-        }*/
     }
 
     void drawShadowPass()

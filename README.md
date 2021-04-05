@@ -15,8 +15,8 @@ PBR example :
 - Directionnal, spot and point light supported (spot light broken now due to defered shading)
 - Physically Based Rendering (PBR)
 - Albedo map (up to 3 textures on a single object)
-- Metallic map (broken now due to defered shading, fixing it)
-- Roughness map (broken now due to defered shading, fixing it)
+- Metallic map
+- Roughness map
 - Normal map
 - Gamma correction
 - HDR

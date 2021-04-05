@@ -23,7 +23,7 @@ public:
 		isVisible = false;
 	}
 	void setVisibility(bool isVisible_) { isVisible = isVisible_; }
-	void update(vector<renderObject*>* objectHolder, vector<light*> lights, GLuint albedoSpecTexture, GLuint normalTexture, GLuint positionTexture)
+	void update(vector<renderObject*>* objectHolder, vector<light*> lights, GLuint albedoSpecTexture, GLuint normalTexture, GLuint positionTexture, GLuint roughnessTexture, GLuint metallicTexture)
 	{
 		if(isVisible)
 		{
@@ -56,9 +56,21 @@ public:
 
 			ImGui::Separator();
 
-			ImGui::TextWrapped("AlbedoSpec: ");
+			ImGui::TextWrapped("Albedo: ");
 			IM_ASSERT(albedoSpecTexture);
 			ImGui::Image((void*)(intptr_t)albedoSpecTexture, ImVec2(400, 300), ImVec2(0, 1), ImVec2(1, 0));
+
+			ImGui::Separator();
+
+			ImGui::TextWrapped("Roughness: ");
+			IM_ASSERT(roughnessTexture);
+			ImGui::Image((void*)(intptr_t)roughnessTexture, ImVec2(400, 300), ImVec2(0, 1), ImVec2(1, 0));
+
+			ImGui::Separator();
+
+			ImGui::TextWrapped("Metallic: ");
+			IM_ASSERT(metallicTexture);
+			ImGui::Image((void*)(intptr_t)metallicTexture, ImVec2(400, 300), ImVec2(0, 1), ImVec2(1, 0));
 
 			ImGui::End();
 

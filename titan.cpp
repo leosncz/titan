@@ -46,8 +46,8 @@ int main()
     myplane.setNumberOfTextureToDraw(1);
     myplane.setTextureResolution(100);
     myplane.setNormalMap("graphicData/normalmap.jpg");
-    myplane.setMetallic(0.5);
-    myplane.setRoughness(0.6);
+    myplane.setMetallic(0.0);
+    myplane.setRoughness(1.0);
 
     /*light mylight3 = light();
     mylight3.setData(glm::vec3(0.5,1,4), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, -1, -1), 1000.0f);
@@ -101,7 +101,7 @@ int main()
     triangle4.addTexture("graphicData/texturemetal.jpg");
     triangle4.setNumberOfTextureToDraw(1);
     triangle4.setNormalMap("graphicData/metalnormalmap.jpg");
-    //triangle4.setMetallicMap("graphicData/metalmap.jpg");
+    triangle4.setMetallicMap("graphicData/metalmap.jpg");
     triangle4.setRoughness(0.1);
 
     mainDisplay.hideCursor();
@@ -118,7 +118,7 @@ int main()
         myscene.addLight(&light_[i2]);
         i2++;
     }
-    cout << i2;
+
     while (!mainDisplay.shouldExit()) {
         myscene.clearScene();
         myscene.updateCamera();

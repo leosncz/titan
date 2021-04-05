@@ -27,12 +27,17 @@ public:
         id = rand();
     }
 
-    void registerLightToRender(vector<light*> sceneLights, int numberOfLight) // the shader chosen must support light
+    void registerLightToRender(vector<light*> sceneLights, int numberOfLight, bool forwardRendering=false) // the shader chosen must support light
     {
         //Send material properties
         glUniform1i(glGetUniformLocation(m_shaderID, "numberOfLight"), numberOfLight);
-        glUniform1f(glGetUniformLocation(m_shaderID, "metallic"), metallic);
-        glUniform1f(glGetUniformLocation(m_shaderID, "roughness"), roughness);
+        if (forwardRendering)
+        {
+             glUniform1f(glGetUniformLocation(m_shaderID, "metallic"), metallic);
+             glUniform1f(glGetUniformLocation(m_shaderID, "roughness"), roughness);
+             glUniform1f(glGetUniformLocation(m_shaderID, "ambient"), ambient);
+        }
+
         glUniform1f(glGetUniformLocation(m_shaderID, "ambient"), ambient);
 
         for (int i = 0; i < sceneLights.size(); i++)
@@ -154,8 +159,6 @@ public:
         const char* fragment_shader =
         "#version 330 core\n"
         //MATERIAL PROPERTIES
-        "uniform float metallic;"
-        "uniform float roughness;"
         "uniform float ambient;"
         //END MATERIAL PROPERTIES-------------
         "uniform vec3 lightsColor[100];"
@@ -185,6 +188,8 @@ public:
         "uniform sampler2D gAlbedoSpec;"
         "uniform sampler2D gNormals;"
         "uniform sampler2D gPosition;"
+        "uniform sampler2D gMetallic;"
+        "uniform sampler2D gRoughness;"
         "uniform samplerCube textureDepthCubemap;"
         "uniform samplerCube textureDepthCubemap1;"
         "uniform samplerCube textureDepthCubemap2;"
@@ -288,7 +293,9 @@ public:
             "void main() {"
             "vec3 FragPos = texture(gPosition, texCoord).rgb;"
             "vec3 Normal = texture(gNormals, texCoord).rgb;"
-            "vec3 Diffuse = texture(gAlbedoSpec, texCoord).rgb;"
+            "vec3 Diffuse = texture(gAlbedoSpec, texCoord).rgb;" 
+            "float metallic = texture(gMetallic, texCoord).r;"
+            "float roughness = texture(gRoughness, texCoord).r;" 
 
             " vec3 N = Normal;"
             " vec3 WorldPos = FragPos;"
@@ -302,7 +309,6 @@ public:
             " F0 = mix(F0, albedo, metallic_);"
             // reflectance equation
             "vec3 Lo = vec3(0.0);"
-            "int test = 1;"
             "for(int i = 0;i<numberOfLight;i++)"
             "{"
             // We assume its a point light by default
@@ -349,7 +355,6 @@ public:
             "vec3 ambient_ = vec3(ambient) * albedo;" //*ao
             "vec3 color = ambient_ + Lo;"
             "frag_colour = vec4(color, 1.0);"
-            "if(test == 0){frag_colour = vec4(0,0,0,0);}"
             "}";
             
             ;
@@ -388,7 +393,6 @@ public:
             "out vec2 texCoord;"
             "out vec3 finalColor;"
             "out mat3 TBN;"
-            "out vec3 wpos;"
             "uniform mat4 model;"
             "uniform mat4 view;"
             "uniform mat4 projection;"
@@ -400,7 +404,6 @@ public:
             "   vec4 worldPos = model * vec4(vp, 1.0);"
             "   fragPos = worldPos.xyz;"
             "   texCoord = inputTexCoord;"
-            "   wpos = vec3(model * vec4(vp, 1.0));"
             "   if(useNormalMap == 1){vec3 T = normalize(vec3(model * vec4(tangent, 0.0))); vec3 N = normalize(vec3(model * vec4(aNormals, 0.0))); T = normalize(T - dot(T, N) * N); vec3 B = cross(N, T); TBN = mat3(T, B, N);}"
             "}";
 
@@ -409,33 +412,42 @@ public:
             "layout(location = 0) out vec3 gPosition;"
             "layout(location = 1) out vec3 gNormal;"
             "layout(location = 2) out vec4 gAlbedoSpec;"
-            "layout(location = 3) out vec3 gWorldPos;"
+            "layout(location = 3) out vec3 gRoughness;"
+            "layout(location = 4) out vec3 gMetallic;"
             "in vec3 aNormals;"
             "in vec3 fragPos;"
             "in vec2 texCoord;"
             "in vec3 finalColor;"
-            "in vec3 wpos;"
             "uniform int howManyTex;"
             "uniform mat4 model;"
             "uniform mat4 inversedModel;"
             "in mat3 TBN;"
+            "uniform float metallic;"
+            "uniform float roughness;"
             // TEXTURES
             "uniform sampler2D texture1;"
             "uniform sampler2D texture2;"
             "uniform sampler2D texture3;"
             "uniform sampler2D normalMap;"
             "uniform int useNormalMap;"
+            "uniform sampler2D roughnessMap;"
+            "uniform int useRoughnessMap;"
+            "uniform sampler2D metallicMap;"
+            "uniform int useMetallicMap;"
             //""
             "void main() {"
             " if(useNormalMap == 0){"
-            " gNormal = normalize(mat3(transpose(inversedModel)) * aNormals);}" 
+            " gNormal = normalize(mat3(transpose(inverse(model))) * aNormals);}"  // TODO OPTIMIZATION
             " else{vec3 normal = texture(normalMap, texCoord).rgb; normal = normalize(normal * 2.0 - 1.0); normal = normalize(TBN * normal); gNormal = normal;}"
             " gAlbedoSpec = vec4(finalColor,1.0);"
             " if(howManyTex == 1){gAlbedoSpec = gAlbedoSpec * vec4(vec3(texture(texture1, texCoord)),1.0);}"
             " if(howManyTex == 2){gAlbedoSpec = gAlbedoSpec * vec4(vec3(texture(texture1, texCoord)),1.0) * vec4(vec3(texture(texture2, texCoord)),1.0);}"
             " if(howManyTex == 3){gAlbedoSpec = gAlbedoSpec * vec4(vec3(texture(texture1, texCoord)),1.0) * vec4(vec3(texture(texture2, texCoord)),1.0) * vec4(vec3(texture(texture3, texCoord)),1.0);}"
             " gPosition = fragPos;"
-            " gWorldPos = wpos;"
+            " if(useMetallicMap == 0){gMetallic = vec3(metallic,metallic,metallic);}else{gMetallic = vec3(texture(metallicMap,texCoord));}"
+            " if(useRoughnessMap == 0){gRoughness = vec3(roughness,roughness,roughness);}else{gRoughness = vec3(texture(roughnessMap,texCoord));}"
+            " "
+            " "
             "}";
 
         GLuint vs = glCreateShader(GL_VERTEX_SHADER);
