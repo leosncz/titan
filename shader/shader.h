@@ -185,20 +185,15 @@ public:
         "in vec3 final_color;"
         "in vec3 fragPos;"
         "in vec2 texCoord;"
+        "uniform mat4 lightSpaceMatrix;"
+        "uniform mat4 lightSpaceMatrix1;"
         "uniform sampler2D gAlbedoSpec;"
         "uniform sampler2D gNormals;"
         "uniform sampler2D gPosition;"
         "uniform sampler2D gMetallic;"
         "uniform sampler2D gRoughness;"
-        "uniform samplerCube textureDepthCubemap[10];"
-        /*"uniform samplerCube textureDepthCubemap1;"
-        "uniform samplerCube textureDepthCubemap2;"
-        "uniform samplerCube textureDepthCubemap3;"
-        "uniform samplerCube textureDepthCubemap4;"
-        "uniform samplerCube textureDepthCubemap5;"
-        "uniform samplerCube textureDepthCubemap6;"*/
-        "uniform sampler2D textureDepthMap;"
-        "uniform sampler2D textureDepthMap1;"
+        "uniform samplerCube textureDepthCubemap[20];"
+        "uniform sampler2D textureDepthMap[20];"
 
         "const float PI = 3.14159265359;"
         //
@@ -236,7 +231,7 @@ public:
             // transform to [0,1] range
             "projCoords = projCoords * 0.5 + 0.5;"
             "float shadow = 0.0;"
-            "float bias = 0.001;"
+            "float bias = 0.0001;"
             "vec2 texelSize = 1.0 / textureSize(texture_, 0);"
             "float currentDepth = projCoords.z;"
             "for (int x = -1; x <= 1; ++x)"
@@ -321,7 +316,7 @@ public:
             "    float attenuation = 1.0 / (distance * distance);"
             "    vec3 radiance = vec3(0.0);"
             "    if(lightsType[i] == 1){radiance = lightsColor[i];}" // directionnal light
-            "    else{radiance = lightsColor[i] * attenuation;}" // point light and spotlight
+            "    else{radiance = lightsColor[i] * attenuation;}" // point light
 
                 // cook-torrance brdf
             "    float NDF = DistributionGGX(N, H, roughness_);"
@@ -340,9 +335,8 @@ public:
             "    float NdotL = max(dot(N, L), 0.0);"
             "    vec3 final = (kD * albedo / PI + specular) * radiance * NdotL;"
             // SHADOWS
-            "    if(i == 0 && lightsType[i] == 1){float shadowval = ShadowCalculation(fs_in.FragPosLightSpace, textureDepthMap); if(1-shadowval < 0.4){final = vec3(0,0,0);}}"
-            "    if(i == 1 && lightsType[i] == 1){float shadowval = ShadowCalculation(fs_in.FragPosLightSpace, textureDepthMap1); if(1-shadowval < 0.4){final = vec3(0,0,0);}}"
-            "    if(lightsType[i] == 0){float shadowval = ShadowCalculationPL(FragPos, lightsPosition[i], textureDepthCubemap[i]); if((1-shadowval) < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
+            "    if(lightsType[i] == 1){float shadowval = ShadowCalculation(lightSpaceMatrix*vec4(FragPos,1.0), textureDepthMap[i]); final *= (1-shadowval);}"
+            "    else if(lightsType[i] == 0){float shadowval = ShadowCalculationPL(FragPos, lightsPosition[i], textureDepthCubemap[i]); if((1-shadowval) < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
             "    Lo += final;"
             "}"
 

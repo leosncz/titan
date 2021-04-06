@@ -36,7 +36,7 @@ int display::init(int x, int y, int aa, bool fullscreen)
         return -3;
     }
     glfwSetInputMode(m_window, GLFW_STICKY_KEYS, GL_TRUE); // Ensure we will be able to capture all our keys
-    glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+    glClearColor(0.0, 0.0, 0.0, 1.0);
     glEnable(GL_DEPTH_TEST); // enable depth-testing
     glEnable(GL_MULTISAMPLE);  // Ensure the AA is on
     glDepthFunc(GL_LESS);

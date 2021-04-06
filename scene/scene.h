@@ -199,7 +199,6 @@ public:
     void addLight(light* thelight)
     {
         lights.push_back(thelight);
-
         if (thelight->type == POINT_LIGHT)
         {
             glGenFramebuffers(1, &thelight->depthMapFBO);
@@ -393,15 +392,16 @@ private:
 
                 if (dirLightID == 0)
                 {
-                    glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(), "textureDepthMap"), 0);
+                    glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(), "textureDepthMap[0]"), 0);
                     glActiveTexture(GL_TEXTURE0);
                     glBindTexture(GL_TEXTURE_2D, lights[i]->textureDepthMap);
                     dirLightID++;
                 }
                 else
                 {
-                    string name = "textureDepthMap";
+                    string name = "textureDepthMap[";
                     name.append(to_string(dirLightID));
+                    name.append("]");
                     glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(), name.c_str()), textureCount);
                     glActiveTexture(GL_TEXTURE0 + textureCount);
                     glBindTexture(GL_TEXTURE_2D, lights[i]->textureDepthMap);
@@ -447,7 +447,6 @@ private:
             textureCount++;
         }
        
-
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 

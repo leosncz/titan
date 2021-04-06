@@ -59,7 +59,7 @@ public:
 					m_showRenderingDebug = true;
 					ImGui::EndMenu();
 				}
-				if (ImGui::BeginMenu("Lighting debug"))
+				if (ImGui::BeginMenu("Lighting shadow debug"))
 				{
 					m_showLightingDebug = true;
 					ImGui::EndMenu();
@@ -90,7 +90,7 @@ private:
 
 	void showLightingDebug(vector<GLuint> dirLightTextures)
 	{
-		ImGui::Begin("Lighting map debug", &isVisible);
+		ImGui::Begin("Lighting shadow map debug", &isVisible);
 		ImGui::SetWindowFontScale(1.1);
 		for (int i = 0; i < dirLightTextures.size(); i++)
 		{
