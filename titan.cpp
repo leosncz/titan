@@ -99,6 +99,7 @@ int main()
     light mylight4 = light();
     mylight4.setData(glm::vec3(0.5, 2, 3), glm::vec3(10,10,10), glm::vec3(0, -0.5, -1), 1000.0f);
     mylight4.type = DIRECTIONNAL_LIGHT;
+    mylight4.shadowResolution = 6024;
     myscene.addLight(&mylight4);
 
     while (!mainDisplay.shouldExit()) {
