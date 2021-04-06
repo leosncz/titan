@@ -17,18 +17,18 @@ public:
     void exitEngine();
     bool shouldExit()
     {
-        if(glfwWindowShouldClose(m_window))
+        if(glfwWindowShouldClose(m_window) || m_shouldExit == true)
         {
             return true;
         }
         return false;
     }
-
     int getDisHeight(){return m_disHeight;}
     int getDisWidth(){return m_disWidth;}
     GLFWwindow *getGLFWWindow(){return m_window;}
     void hideCursor(){ glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); }
     void showCursor() { glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); }
+    void setExitStatus(bool shouldQuit) { m_shouldExit = shouldQuit; }
     ~display()
     {
         std::cout << "--> Exiting Engine";
@@ -38,5 +38,6 @@ private:
     GLFWwindow* m_window;
     int m_disWidth;
     int m_disHeight;
+    bool m_shouldExit;
 };
 #endif // DISPLAY_H_INCLUDED

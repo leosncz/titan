@@ -47,7 +47,7 @@ int display::init(int x, int y, int aa, bool fullscreen)
 
     m_disHeight = y;
     m_disWidth = x;
-
+    m_shouldExit = false;
     std::cout << "---> Titan Engine successfuly created OpenGL Context" << std::endl;
 
     return 0;

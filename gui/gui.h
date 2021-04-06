@@ -71,7 +71,8 @@ public:
 				}
 				if (ImGui::BeginMenu("Quit"))
 				{
-					
+					m_display->setExitStatus(true);
+					ImGui::EndMenu();
 				}
 				ImGui::EndMainMenuBar();
 			}
@@ -96,6 +97,8 @@ private:
 		{
 			IM_ASSERT(dirLightTextures[i]);
 			string content = "Light " + to_string(i);
+			ImGui::TextWrapped(content.c_str());
+			content = "ShadowMap (if enabled): ";
 			ImGui::TextWrapped(content.c_str());
 			ImGui::Image((void*)(intptr_t)dirLightTextures[i], ImVec2(400, 300), ImVec2(0, 1), ImVec2(1, 0));
 
@@ -163,6 +166,7 @@ private:
 		//Scene information
 		ImGui::Begin("Scene informations", &isVisible);
 		ImGui::SetWindowFontScale(1.1);
+		float value;
 		for (int i = 0; i < objectHolder->size(); i++)
 		{
 			vector<renderObject*>* test = objectHolder;
@@ -170,32 +174,40 @@ private:
 			string name = "ID : ";
 			name.append(to_string(object->getID()));
 			ImGui::Text(name.c_str());
+
 			name = "TAG : ";
 			name.append(object->getTag());
 			ImGui::Text(name.c_str());
+
 			name = "METALLIC : ";
 			float ambiant = object->getShader()->metallic;
 			name.append(to_string(ambiant));
 			ImGui::Text(name.c_str());
+
 			name = "ROUGHNESS : ";
 			float specular = object->getShader()->roughness;
 			name.append(to_string(specular));
 			ImGui::Text(name.c_str());
+
 			name = "Use normal map : ";
 			if (object->doesMeshHasNormalMap()) { name.append("Yes"); }
 			else { name.append("No"); }
 			ImGui::Text(name.c_str());
+
 			name = "Use roughness map : ";
 			if (object->doesMeshHasRoughnessMap()) { name.append("Yes"); }
 			else { name.append("No"); }
 			ImGui::Text(name.c_str());
+
 			name = "Use metallic map : ";
 			if (object->doesMeshHasMetallicMap()) { name.append("Yes"); }
 			else { name.append("No"); }
 			ImGui::Text(name.c_str());
+
 			string buttonName = "Delete ";
 			buttonName.append(to_string(object->getID()));
 			if (ImGui::Button(buttonName.c_str())) { objectHolder->erase(objectHolder->begin() + i); }
+
 			ImGui::Separator();
 
 		}
