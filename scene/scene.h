@@ -24,6 +24,7 @@ public:
         std::cout << "--> Creating new scene ID=" << id << std::endl;
 
         m_display = customDisplay;
+        m_shadowResolution = 1024;
         m_nbOfLight = 0;
 
         // Setup ogl matrix
@@ -218,7 +219,7 @@ public:
             glTexParameterfv(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_BORDER_COLOR, borderColor);
             for (unsigned int i = 0; i < 6; ++i)
             {
-                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, m_shadowResolution, m_shadowResolution, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
             }
             glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -244,7 +245,7 @@ public:
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
             float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
             glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, m_shadowResolution, m_shadowResolution, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
             glBindFramebuffer(GL_FRAMEBUFFER, thelight->depthMapFBO);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, thelight->textureDepthMap, 0);
             glDrawBuffer(GL_NONE);
@@ -319,6 +320,8 @@ private:
 
     vector<light*> lights; 
     int m_nbOfLight;
+
+    float m_shadowResolution;
 
     camera *m_actualCamera;
 
@@ -475,7 +478,7 @@ private:
             if (lights[i]->computeShadows)
             {
                 glCullFace(GL_FRONT);
-                glViewport(0, 0, 1024, 1024);
+                glViewport(0, 0, m_shadowResolution, m_shadowResolution);
                 glBindFramebuffer(GL_FRAMEBUFFER, lights[i]->depthMapFBO);
                 glClear(GL_DEPTH_BUFFER_BIT);
                 for (int i2 = 0; i2 < m_objectHolder.size(); i2++)
