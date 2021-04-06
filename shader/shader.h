@@ -152,8 +152,8 @@ public:
         "   vs_out.FragPos = fragPos;"
         "   vs_out.Normal = aNormals;"
         "   vs_out.TexCoords = inputTexCoord;"
-        "   vs_out.FragPosLightSpace = lightSpaceMatrix * vec4(vs_out.FragPos, 1.0);"
-        "   vs_out.FragPosLightSpace1 = lightSpaceMatrix1 * vec4(vs_out.FragPos, 1.0);"
+        "   vs_out.FragPosLightSpace = lightSpaceMatrix * vec4(fragPos, 1.0);"
+        "   vs_out.FragPosLightSpace1 = lightSpaceMatrix1 * vec4(fragPos, 1.0);"
         "}";
 
         const char* fragment_shader =
@@ -190,13 +190,13 @@ public:
         "uniform sampler2D gPosition;"
         "uniform sampler2D gMetallic;"
         "uniform sampler2D gRoughness;"
-        "uniform samplerCube textureDepthCubemap;"
-        "uniform samplerCube textureDepthCubemap1;"
+        "uniform samplerCube textureDepthCubemap[10];"
+        /*"uniform samplerCube textureDepthCubemap1;"
         "uniform samplerCube textureDepthCubemap2;"
         "uniform samplerCube textureDepthCubemap3;"
         "uniform samplerCube textureDepthCubemap4;"
         "uniform samplerCube textureDepthCubemap5;"
-        "uniform samplerCube textureDepthCubemap6;"
+        "uniform samplerCube textureDepthCubemap6;"*/
         "uniform sampler2D textureDepthMap;"
         "uniform sampler2D textureDepthMap1;"
 
@@ -342,13 +342,7 @@ public:
             // SHADOWS
             "    if(i == 0 && lightsType[i] == 1){float shadowval = ShadowCalculation(fs_in.FragPosLightSpace, textureDepthMap); if(1-shadowval < 0.4){final = vec3(0,0,0);}}"
             "    if(i == 1 && lightsType[i] == 1){float shadowval = ShadowCalculation(fs_in.FragPosLightSpace, textureDepthMap1); if(1-shadowval < 0.4){final = vec3(0,0,0);}}"
-            "    if(i == 0 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(FragPos, lightsPosition[i], textureDepthCubemap); if((1-shadowval) < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
-            "    if(i == 1 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(FragPos, lightsPosition[i], textureDepthCubemap1);if((1-shadowval) < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
-            "    if(i == 2 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap2);if(1-shadowval < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
-            "    if(i == 3 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap3);if(1-shadowval < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
-            "    if(i == 4 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap4);if(1-shadowval < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
-            "    if(i == 5 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap5);if(1-shadowval < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
-            "    if(i == 6 && lightsType[i] == 0){float shadowval = ShadowCalculationPL(fragPos, lightsPosition[i], textureDepthCubemap6);if(1-shadowval < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
+            "    if(lightsType[i] == 0){float shadowval = ShadowCalculationPL(FragPos, lightsPosition[i], textureDepthCubemap[i]); if((1-shadowval) < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
             "    Lo += final;"
             "}"
 
@@ -437,7 +431,7 @@ public:
             //""
             "void main() {"
             " if(useNormalMap == 0){"
-            " gNormal = normalize(mat3(transpose(inversedModel)) * aNormals);}"  // TODO OPTIMIZATION
+            " gNormal = normalize(mat3(transpose(inversedModel)) * aNormals);}"  
             " else{vec3 normal = texture(normalMap, texCoord).rgb; normal = normalize(normal * 2.0 - 1.0); normal = normalize(TBN * normal); gNormal = normal;}"
             " gAlbedoSpec = vec4(finalColor,1.0);"
             " if(howManyTex == 1){gAlbedoSpec = gAlbedoSpec * vec4(vec3(texture(texture1, texCoord)),1.0);}"

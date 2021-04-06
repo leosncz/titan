@@ -24,10 +24,11 @@ public:
 		isVisible = false;
 		m_showSceneInformations = false;
 		m_showRenderingDebug = false;
+		m_showLightingDebug = false;
 		setupUIStyle();
 	}
 	void setVisibility(bool isVisible_) { isVisible = isVisible_; }
-	void update(vector<renderObject*>* objectHolder, vector<light*> lights, GLuint albedoSpecTexture, GLuint normalTexture, GLuint positionTexture, GLuint roughnessTexture, GLuint metallicTexture)
+	void update(vector<renderObject*>* objectHolder, vector<light*> lights, GLuint albedoSpecTexture, GLuint normalTexture, GLuint positionTexture, GLuint roughnessTexture, GLuint metallicTexture, vector<GLuint>lightMapTextures)
 	{
 		if(isVisible)
 		{
@@ -46,12 +47,21 @@ public:
 			{
 				showSceneInformations(objectHolder);
 			}
+			if (m_showLightingDebug)
+			{
+				showLightingDebug(lightMapTextures);
+			}
 
 			if (ImGui::BeginMainMenuBar())
 			{
 				if (ImGui::BeginMenu("Rendering debug"))
 				{
 					m_showRenderingDebug = true;
+					ImGui::EndMenu();
+				}
+				if (ImGui::BeginMenu("Lighting debug"))
+				{
+					m_showLightingDebug = true;
 					ImGui::EndMenu();
 				}
 				if (ImGui::BeginMenu("Scene informations"))
@@ -76,7 +86,21 @@ private:
 	display* m_display;
 	bool isVisible;
 
-	bool m_showRenderingDebug, m_showSceneInformations;
+	bool m_showRenderingDebug, m_showSceneInformations, m_showLightingDebug;
+
+	void showLightingDebug(vector<GLuint> dirLightTextures)
+	{
+		ImGui::Begin("Lighting map debug", &isVisible);
+		ImGui::SetWindowFontScale(1.1);
+		for (int i = 0; i < dirLightTextures.size(); i++)
+		{
+			IM_ASSERT(dirLightTextures[i]);
+			ImGui::Image((void*)(intptr_t)dirLightTextures[i], ImVec2(400, 300), ImVec2(0, 1), ImVec2(1, 0));
+
+			ImGui::Separator();
+		}
+		ImGui::End();
+	}
 
 	void showRenderingDebug(GLuint positionTexture, GLuint normalTexture, GLuint albedoSpecTexture, GLuint roughnessTexture, GLuint metallicTexture)
 	{

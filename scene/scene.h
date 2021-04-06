@@ -173,7 +173,12 @@ public:
         freeTexturesSlot();
 
         //Then render the GUI
-        m_gui.update(&m_objectHolder, lights, gAlbedoSpec, gNormal, gPosition, gRoughness, gMetallic);
+        vector<GLuint> dirLightMaps;
+        for (int i = 0; i < lights.size(); i++)
+        {
+            dirLightMaps.push_back(lights[i]->textureDepthMap);
+        }
+        m_gui.update(&m_objectHolder, lights, gAlbedoSpec, gNormal, gPosition, gRoughness, gMetallic,dirLightMaps);
 
         //Check for errors
         GLenum err;
@@ -358,15 +363,16 @@ private:
             {
                 if (ptLightID == 0)
                 {
-                    glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(), "textureDepthCubemap"), 0);
+                    glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(), "textureDepthCubemap[0]"), 0);
                     glActiveTexture(GL_TEXTURE0);
                     glBindTexture(GL_TEXTURE_CUBE_MAP, lights[i]->textureDepthMap);
                     ptLightID++;
                 }
                 else
                 {
-                    string name = "textureDepthCubemap";
+                    string name = "textureDepthCubemap[";
                     name.append(to_string(ptLightID));
+                    name.append("]");
                     glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(), name.c_str()), textureCount);
                     glActiveTexture(GL_TEXTURE0 + textureCount);
                     glBindTexture(GL_TEXTURE_CUBE_MAP, lights[i]->textureDepthMap);

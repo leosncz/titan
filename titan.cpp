@@ -88,13 +88,18 @@ int main()
 
     light light_[50];
     int i2 = 0;
-    for (int i = -20; i < 20; i+=2)
+    for (int i = -2; i < 2; i+=2)
     {
         light_[i2].setData(vec3(i, 0.5, 0.0), vec3(10.0, 10.0, 10.0), vec3(0.0, 0.0, 0.0));
         light_[i2].type = POINT_LIGHT;
         myscene.addLight(&light_[i2]);
         i2++;
     }
+
+   /*light mylight;
+    mylight.setData(vec3(0, 0.0, -1.0), vec3(1.0, 1.0, 1.0), vec3(0.0, -1.0, -1.0));
+    mylight.type = DIRECTIONNAL_LIGHT;
+    myscene.addLight(&mylight);*/
 
     while (!mainDisplay.shouldExit()) {
         myscene.clearScene();
