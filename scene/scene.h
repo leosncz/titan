@@ -256,6 +256,22 @@ public:
         m_nbOfLight++;
     }
 
+    void deleteLight(int id)
+    {
+        if (lights.size() > id)
+        {
+            lights.erase(lights.begin() + id);
+        }
+    }
+
+    void deleteRenderObject(int id)
+    {
+        if (m_objectHolder.size() > id)
+        {
+            m_objectHolder.erase(m_objectHolder.begin() + id);
+        }
+    }
+
     void clearScene()
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

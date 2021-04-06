@@ -191,6 +191,9 @@ private:
 			if (object->doesMeshHasMetallicMap()) { name.append("Yes"); }
 			else { name.append("No"); }
 			ImGui::Text(name.c_str());
+			string buttonName = "Delete ";
+			buttonName.append(to_string(object->getID()));
+			if (ImGui::Button(buttonName.c_str())) { objectHolder->erase(objectHolder->begin() + i); }
 			ImGui::Separator();
 
 		}
