@@ -19,7 +19,7 @@ Handles everything related to scenes and object rendering loop in scenes
 class scene
 {
 public:
-    void setupDisplay(display* customDisplay) // Set the display that will be used to render the scene
+    void setupDisplay(display* customDisplay, camera* camera=0) // Set the display that will be used to render the scene
     {
         std::cout << "--> Creating new scene ID=" << id << std::endl;
 
@@ -33,7 +33,17 @@ public:
 
         id = rand();
 
-        m_actualCamera.init(m_display, &m_gui);
+        if (camera != 0)
+        {
+            m_actualCamera = camera;
+            m_actualCamera->init(m_display, &m_gui);
+        }
+        else
+        {
+            m_actualCamera = new cameraFPS();
+            m_actualCamera->init(m_display, &m_gui);
+        }
+        
 
         m_gui.init(m_display);
 
@@ -254,7 +264,7 @@ public:
 
     void updateCamera(bool isAzerty=true)
     {
-        m_actualCamera.update(m_display, &view, &isAzerty);
+        m_actualCamera->update(m_display, &view, &isAzerty);
     }
 
     void refreshScene()
@@ -267,6 +277,12 @@ public:
     int getNbOfLight(){return m_nbOfLight;}
 
     texturePool* getTexturePool(){ return &m_texturePool; }
+
+    void setCamera(camera* cam)
+    {
+        delete m_actualCamera; // Ensure there is no memory link
+        m_actualCamera = cam;
+    }
 
     ~scene()
     {
@@ -288,6 +304,8 @@ public:
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
+
+        delete m_actualCamera;
     }
 
 private:
@@ -302,7 +320,7 @@ private:
     vector<light*> lights; 
     int m_nbOfLight;
 
-    cameraFPS m_actualCamera;
+    camera *m_actualCamera;
 
     texturePool m_texturePool; // All scenes have their own texture pool (for now)
 
@@ -351,7 +369,7 @@ private:
         glUseProgram(m_deferedShader.getShaderID());
         glBindVertexArray(vao);
 
-        glUniform3f(glGetUniformLocation(m_deferedShader.getShaderID(), "viewPos"), m_actualCamera.getCameraPos().x, m_actualCamera.getCameraPos().y, m_actualCamera.getCameraPos().z);
+        glUniform3f(glGetUniformLocation(m_deferedShader.getShaderID(), "viewPos"), m_actualCamera->getCameraPos().x, m_actualCamera->getCameraPos().y, m_actualCamera->getCameraPos().z);
 
         int dirLightID = 0;
         int ptLightID = 0;
@@ -477,7 +495,7 @@ private:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         for (int i = 0; i < m_objectHolder.size(); i++)
         {
-            m_objectHolder[i]->renderGBuffer(&projection, &view, &model, m_actualCamera.getCameraPos(), lights, m_nbOfLight);
+            m_objectHolder[i]->renderGBuffer(&projection, &view, &model, m_actualCamera->getCameraPos(), lights, m_nbOfLight);
         }
     }
 };

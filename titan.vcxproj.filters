@@ -17,6 +17,9 @@
     <Filter Include="scene">
       <UniqueIdentifier>{a9b2894a-42a8-47ab-a4df-4ee68828b7b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="physicsEngine">
+      <UniqueIdentifier>{c4967171-e203-4b56-82f4-bf0f2cd0e1a5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="titan.cpp">
@@ -45,6 +48,51 @@
     </ClCompile>
     <ClCompile Include="gui\imgui\imgui_impl_opengl3.cpp">
       <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="physicsEngine\qu3e\broadphase\q3BroadPhase.cpp">
+      <Filter>physicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="physicsEngine\qu3e\broadphase\q3DynamicAABBTree.cpp">
+      <Filter>physicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="physicsEngine\qu3e\collision\q3Box.cpp">
+      <Filter>physicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="physicsEngine\qu3e\collision\q3Collide.cpp">
+      <Filter>physicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="physicsEngine\qu3e\common\q3Geometry.cpp">
+      <Filter>physicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="physicsEngine\qu3e\common\q3Memory.cpp">
+      <Filter>physicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="physicsEngine\qu3e\dynamics\q3Body.cpp">
+      <Filter>physicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="physicsEngine\qu3e\dynamics\q3Contact.cpp">
+      <Filter>physicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="physicsEngine\qu3e\dynamics\q3ContactManager.cpp">
+      <Filter>physicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="physicsEngine\qu3e\dynamics\q3ContactSolver.cpp">
+      <Filter>physicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="physicsEngine\qu3e\dynamics\q3Island.cpp">
+      <Filter>physicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="physicsEngine\qu3e\math\q3Mat3.cpp">
+      <Filter>physicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="physicsEngine\qu3e\math\q3Quaternion.cpp">
+      <Filter>physicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="physicsEngine\qu3e\math\q3Vec3.cpp">
+      <Filter>physicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="physicsEngine\qu3e\scene\q3Scene.cpp">
+      <Filter>physicsEngine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -117,5 +165,94 @@
     <ClInclude Include="gui\gui.h">
       <Filter>gui</Filter>
     </ClInclude>
+    <ClInclude Include="physicsEngine\qu3e\broadphase\q3BroadPhase.h">
+      <Filter>physicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="physicsEngine\qu3e\broadphase\q3DynamicAABBTree.h">
+      <Filter>physicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="physicsEngine\qu3e\collision\q3Box.h">
+      <Filter>physicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="physicsEngine\qu3e\collision\q3Collide.h">
+      <Filter>physicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="physicsEngine\qu3e\common\q3Geometry.h">
+      <Filter>physicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="physicsEngine\qu3e\common\q3Memory.h">
+      <Filter>physicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="physicsEngine\qu3e\common\q3Settings.h">
+      <Filter>physicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="physicsEngine\qu3e\common\q3Types.h">
+      <Filter>physicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="physicsEngine\qu3e\debug\q3Render.h">
+      <Filter>physicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="physicsEngine\qu3e\dynamics\q3Body.h">
+      <Filter>physicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="physicsEngine\qu3e\dynamics\q3Contact.h">
+      <Filter>physicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="physicsEngine\qu3e\dynamics\q3ContactManager.h">
+      <Filter>physicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="physicsEngine\qu3e\dynamics\q3ContactSolver.h">
+      <Filter>physicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="physicsEngine\qu3e\dynamics\q3Island.h">
+      <Filter>physicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="physicsEngine\qu3e\math\q3Mat3.h">
+      <Filter>physicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="physicsEngine\qu3e\math\q3Math.h">
+      <Filter>physicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="physicsEngine\qu3e\math\q3Quaternion.h">
+      <Filter>physicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="physicsEngine\qu3e\math\q3Transform.h">
+      <Filter>physicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="physicsEngine\qu3e\math\q3Vec3.h">
+      <Filter>physicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="physicsEngine\qu3e\q3.h">
+      <Filter>physicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="physicsEngine\qu3e\scene\q3Scene.h">
+      <Filter>physicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="physicsEngine\physicsEngine.h">
+      <Filter>physicsEngine</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="physicsEngine\qu3e\broadphase\q3DynamicAABBTree.inl">
+      <Filter>physicsEngine</Filter>
+    </None>
+    <None Include="physicsEngine\qu3e\collision\q3Box.inl">
+      <Filter>physicsEngine</Filter>
+    </None>
+    <None Include="physicsEngine\qu3e\common\q3Geometry.inl">
+      <Filter>physicsEngine</Filter>
+    </None>
+    <None Include="physicsEngine\qu3e\math\q3Mat3.inl">
+      <Filter>physicsEngine</Filter>
+    </None>
+    <None Include="physicsEngine\qu3e\math\q3Math.inl">
+      <Filter>physicsEngine</Filter>
+    </None>
+    <None Include="physicsEngine\qu3e\math\q3Transform.inl">
+      <Filter>physicsEngine</Filter>
+    </None>
+    <None Include="physicsEngine\qu3e\math\q3Vec3.inl">
+      <Filter>physicsEngine</Filter>
+    </None>
   </ItemGroup>
 </Project>
