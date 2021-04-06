@@ -29,9 +29,8 @@ PBR example :
 ## Currently working on (top is prioritized) :
 - AO map (priority)
 - SSAO (priority)
-- TitanScripting to enable users exporting their game using TitanEngine
+- TitanScripting to enable users exporting their game using TitanEngine (priority)
 - Physics system
-- Infinite number of shadows
 - Dynamic light frustrum
 
 ## Build
