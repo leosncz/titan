@@ -13,6 +13,7 @@ int main()
     mainDisplay.init(1620, 880, 4, false);
 
     scene myscene = scene();
+
     myscene.setupDisplay(&mainDisplay);
 
 

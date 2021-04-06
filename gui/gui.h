@@ -59,7 +59,7 @@ public:
 					m_showRenderingDebug = true;
 					ImGui::EndMenu();
 				}
-				if (ImGui::BeginMenu("Lighting shadow debug"))
+				if (ImGui::BeginMenu("Lighting & shadow debug"))
 				{
 					m_showLightingDebug = true;
 					ImGui::EndMenu();
@@ -90,11 +90,13 @@ private:
 
 	void showLightingDebug(vector<GLuint> dirLightTextures)
 	{
-		ImGui::Begin("Lighting shadow map debug", &isVisible);
+		ImGui::Begin("Lighting & shadow debug", &isVisible);
 		ImGui::SetWindowFontScale(1.1);
 		for (int i = 0; i < dirLightTextures.size(); i++)
 		{
 			IM_ASSERT(dirLightTextures[i]);
+			string content = "Light " + to_string(i);
+			ImGui::TextWrapped(content.c_str());
 			ImGui::Image((void*)(intptr_t)dirLightTextures[i], ImVec2(400, 300), ImVec2(0, 1), ImVec2(1, 0));
 
 			ImGui::Separator();

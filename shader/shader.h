@@ -185,8 +185,7 @@ public:
         "in vec3 final_color;"
         "in vec3 fragPos;"
         "in vec2 texCoord;"
-        "uniform mat4 lightSpaceMatrix;"
-        "uniform mat4 lightSpaceMatrix1;"
+        "uniform mat4 lightSpaceMatrix[20];"
         "uniform sampler2D gAlbedoSpec;"
         "uniform sampler2D gNormals;"
         "uniform sampler2D gPosition;"
@@ -335,7 +334,7 @@ public:
             "    float NdotL = max(dot(N, L), 0.0);"
             "    vec3 final = (kD * albedo / PI + specular) * radiance * NdotL;"
             // SHADOWS
-            "    if(lightsType[i] == 1){float shadowval = ShadowCalculation(lightSpaceMatrix*vec4(FragPos,1.0), textureDepthMap[i]); final *= (1-shadowval);}"
+            "    if(lightsType[i] == 1){float shadowval = ShadowCalculation(lightSpaceMatrix[i]*vec4(FragPos,1.0), textureDepthMap[i]); final *= (1-shadowval);}"
             "    else if(lightsType[i] == 0){float shadowval = ShadowCalculationPL(FragPos, lightsPosition[i], textureDepthCubemap[i]); if((1-shadowval) < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
             "    Lo += final;"
             "}"
