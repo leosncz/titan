@@ -280,7 +280,7 @@ public:
 
     void setCamera(camera* cam)
     {
-        delete m_actualCamera; // Ensure there is no memory link
+        delete m_actualCamera; // Ensure there is no memory leaks
         m_actualCamera = cam;
     }
 
