@@ -154,7 +154,7 @@ private:
 		ImGui::Begin("Hello", &isVisible);
 		ImGui::SetWindowSize(ImVec2(600, 200));
 		ImGui::SetWindowFontScale(1.1);
-		ImGui::TextColored(ImVec4(0, 1, 0, 1), "Welome to TITAN Engine !");
+		ImGui::TextColored(ImVec4(0, 1, 0, 1), "Welcome to TITAN Engine !");
 		ImGui::TextWrapped("Keep in mind : This engine is still in early development !");
 		ImGui::TextWrapped("The 'scene informations' panel only prints active objects");
 		ImGui::TextColored(ImVec4(1, 0, 0, 1), "From github.com/leosncz/titan");
