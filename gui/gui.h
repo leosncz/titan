@@ -20,7 +20,7 @@ public:
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 		ImGui::StyleColorsClassic();
 		ImGui_ImplGlfw_InitForOpenGL(m_display->getGLFWWindow(), true);
-		ImGui_ImplOpenGL3_Init("#version 330");
+		ImGui_ImplOpenGL3_Init("#version 330 core");
 		isVisible = false;
 		m_showSceneInformations = false;
 		m_showRenderingDebug = false;
