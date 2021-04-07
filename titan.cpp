@@ -106,11 +106,14 @@ int main()
     cameraEngine camEngine;
     myscene.setCamera(&camEngine);
 
+    float i = 0.0f;
     while (!mainDisplay.shouldExit()) {
         myscene.clearScene();
         myscene.updateCamera();
         myscene.renderScene();
         myscene.refreshScene();
+        i += 0.001f;
+        triangle4.rotateObject(0.01, glm::vec3(0, i, 0));
     } 
 
     return 0;
