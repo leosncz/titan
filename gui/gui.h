@@ -28,7 +28,7 @@ public:
 		setupUIStyle();
 	}
 	void setVisibility(bool isVisible_) { isVisible = isVisible_; }
-	void update(vector<renderObject*>* objectHolder, vector<light*> lights, GLuint albedoSpecTexture, GLuint normalTexture, GLuint positionTexture, GLuint roughnessTexture, GLuint metallicTexture, vector<GLuint>lightMapTextures)
+	void update(vector<renderObject*>* objectHolder, vector<light*> lights, GLuint albedoSpecTexture, GLuint normalTexture, GLuint positionTexture, GLuint roughnessTexture, GLuint metallicTexture)
 	{
 		if(isVisible)
 		{
@@ -49,7 +49,7 @@ public:
 			}
 			if (m_showLightingDebug)
 			{
-				showLightingDebug(lightMapTextures);
+				showLightingDebug(lights);
 			}
 
 			if (ImGui::BeginMainMenuBar())
@@ -89,18 +89,18 @@ private:
 
 	bool m_showRenderingDebug, m_showSceneInformations, m_showLightingDebug;
 
-	void showLightingDebug(vector<GLuint> dirLightTextures)
+	void showLightingDebug(vector<light*> lights)
 	{
 		ImGui::Begin("Lighting & shadow debug", &isVisible);
 		ImGui::SetWindowFontScale(1.1);
-		for (int i = 0; i < dirLightTextures.size(); i++)
+		for (int i = 0; i < lights.size(); i++)
 		{
-			IM_ASSERT(dirLightTextures[i]);
-			string content = "Light " + to_string(i);
+			IM_ASSERT(lights[i]->textureDepthMap);
+			string content = "Light " + i;
 			ImGui::TextWrapped(content.c_str());
 			content = "ShadowMap (if enabled): ";
 			ImGui::TextWrapped(content.c_str());
-			ImGui::Image((void*)(intptr_t)dirLightTextures[i], ImVec2(400, 300), ImVec2(0, 1), ImVec2(1, 0));
+			ImGui::Image((void*)(intptr_t)lights[i]->textureDepthMap, ImVec2(400, 300), ImVec2(0, 1), ImVec2(1, 0));
 
 			ImGui::Separator();
 		}
@@ -217,6 +217,8 @@ private:
 	void setupUIStyle()
 	{
 		ImGuiStyle* style = &ImGui::GetStyle();
+		ImGuiIO& io = ImGui::GetIO();
+		io.Fonts->AddFontFromFileTTF("graphicData/OpenSans-Light.ttf", 20);
 
 		style->WindowPadding = ImVec2(15, 15);
 		style->WindowRounding = 5.0f;

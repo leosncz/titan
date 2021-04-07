@@ -180,7 +180,7 @@ public:
         {
             dirLightMaps.push_back(lights[i]->textureDepthMap);
         }
-        m_gui.update(&m_objectHolder, lights, gAlbedoSpec, gNormal, gPosition, gRoughness, gMetallic,dirLightMaps);
+        m_gui.update(&m_objectHolder, lights, gAlbedoSpec, gNormal, gPosition, gRoughness, gMetallic);
 
         //Check for errors
         GLenum err;
