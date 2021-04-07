@@ -231,6 +231,9 @@
     <ClInclude Include="physicsEngine\physicsEngine.h">
       <Filter>physicsEngine</Filter>
     </ClInclude>
+    <ClInclude Include="cameraEngine\cameraEngine.h">
+      <Filter>scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="physicsEngine\qu3e\broadphase\q3DynamicAABBTree.inl">

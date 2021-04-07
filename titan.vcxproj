@@ -177,6 +177,7 @@
     <ClCompile Include="titan.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cameraEngine\cameraEngine.h" />
     <ClInclude Include="cameraFPS\cameraFPS.h" />
     <ClInclude Include="camera\camera.h" />
     <ClInclude Include="display\display.h" />

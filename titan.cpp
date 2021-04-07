@@ -5,6 +5,7 @@
 #include "light/light.h"
 #include "scene/scene.h"
 #include "renderObjectScene/renderObjectScene.h"
+#include "cameraEngine/cameraEngine.h"
 using namespace std;
 
 int main()
@@ -86,7 +87,6 @@ int main()
 
     mainDisplay.hideCursor();
 
-
     /*light light_[50];
     int i2 = 0;
     for (int i = -2; i < 6; i+=2)
@@ -102,6 +102,9 @@ int main()
     mylight4.type = DIRECTIONNAL_LIGHT;
     mylight4.shadowResolution = 6024;
     myscene.addLight(&mylight4);
+
+    cameraEngine camEngine;
+    myscene.setCamera(&camEngine);
 
     while (!mainDisplay.shouldExit()) {
         myscene.clearScene();
