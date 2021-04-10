@@ -21,8 +21,13 @@ public:
     }
 
     glm::vec3 getCameraPos() { return cameraPos; }
+    void updateGUI()
+    {
+        std::vector<light*> null;
+        m_gui.update(0,null, 0, 0, 0, 0, 0);
+    }
 
-    virtual void update(display* display, glm::mat4* viewMatrix, bool isAzerty = true) = 0;
+    virtual void update(glm::mat4* viewMatrix, bool isAzerty = true) = 0;
     virtual void init(display* display_) = 0;
     virtual void pauseControls() = 0;
     virtual void resumeControls() = 0;

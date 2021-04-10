@@ -25,7 +25,7 @@ public:
     {
         isPaused = false;
     }
-    void update(display* display, glm::mat4* viewMatrix, bool isAzerty = true)
+    void update(glm::mat4* viewMatrix, bool isAzerty = true)
     {
         if (glfwGetMouseButton(m_display->getGLFWWindow(), GLFW_MOUSE_BUTTON_1))
         {
@@ -88,6 +88,7 @@ public:
         m_display->showCursor();
         glfwSetWindowUserPointer(display_->getGLFWWindow(), this);
         glfwSetCursorPosCallback(m_display->getGLFWWindow(), mouse_callback);
+        m_gui.init(m_display);
         m_gui.setVisibility(true);
     }
 

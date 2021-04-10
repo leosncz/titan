@@ -260,7 +260,8 @@ public:
 
     void updateCamera(bool isAzerty=true)
     {
-        m_actualCamera->update(m_display, &view, isAzerty);
+        m_actualCamera->update(&view, isAzerty);
+        m_actualCamera->updateGUI();
     }
 
     void refreshScene()

@@ -14,8 +14,7 @@ int main()
     mainDisplay.init(1620, 880, 4, false);
 
     scene myscene = scene();
-    cameraEngine cam;
-    gui gui_ = gui();
+    cameraFPS cam;
     myscene.init(&mainDisplay,&cam);
 
 
@@ -104,14 +103,11 @@ int main()
     mylight4.shadowResolution = 6024;
     myscene.addLight(&mylight4);
 
-    cameraEngine camEngine;
-    myscene.setCamera(&camEngine);
-
     float i = 0.0f;
     while (!mainDisplay.shouldExit()) {
         myscene.clearScene();
-        myscene.updateCamera();
         myscene.renderScene();
+        myscene.updateCamera();
         myscene.refreshScene();
         i += 0.001f;
         triangle4.rotateObject(0.01, glm::vec3(0, i, 0));
