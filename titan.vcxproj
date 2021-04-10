@@ -159,21 +159,6 @@
     <ClCompile Include="gui\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="gui\imgui\imgui_tables.cpp" />
     <ClCompile Include="gui\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="physicsEngine\qu3e\broadphase\q3BroadPhase.cpp" />
-    <ClCompile Include="physicsEngine\qu3e\broadphase\q3DynamicAABBTree.cpp" />
-    <ClCompile Include="physicsEngine\qu3e\collision\q3Box.cpp" />
-    <ClCompile Include="physicsEngine\qu3e\collision\q3Collide.cpp" />
-    <ClCompile Include="physicsEngine\qu3e\common\q3Geometry.cpp" />
-    <ClCompile Include="physicsEngine\qu3e\common\q3Memory.cpp" />
-    <ClCompile Include="physicsEngine\qu3e\dynamics\q3Body.cpp" />
-    <ClCompile Include="physicsEngine\qu3e\dynamics\q3Contact.cpp" />
-    <ClCompile Include="physicsEngine\qu3e\dynamics\q3ContactManager.cpp" />
-    <ClCompile Include="physicsEngine\qu3e\dynamics\q3ContactSolver.cpp" />
-    <ClCompile Include="physicsEngine\qu3e\dynamics\q3Island.cpp" />
-    <ClCompile Include="physicsEngine\qu3e\math\q3Mat3.cpp" />
-    <ClCompile Include="physicsEngine\qu3e\math\q3Quaternion.cpp" />
-    <ClCompile Include="physicsEngine\qu3e\math\q3Vec3.cpp" />
-    <ClCompile Include="physicsEngine\qu3e\scene\q3Scene.cpp" />
     <ClCompile Include="titan.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -192,28 +177,6 @@
     <ClInclude Include="gui\imgui\imstb_truetype.h" />
     <ClInclude Include="light\light.h" />
     <ClInclude Include="modelLoaders\objLoader\objLoader.h" />
-    <ClInclude Include="physicsEngine\physicsEngine.h" />
-    <ClInclude Include="physicsEngine\qu3e\broadphase\q3BroadPhase.h" />
-    <ClInclude Include="physicsEngine\qu3e\broadphase\q3DynamicAABBTree.h" />
-    <ClInclude Include="physicsEngine\qu3e\collision\q3Box.h" />
-    <ClInclude Include="physicsEngine\qu3e\collision\q3Collide.h" />
-    <ClInclude Include="physicsEngine\qu3e\common\q3Geometry.h" />
-    <ClInclude Include="physicsEngine\qu3e\common\q3Memory.h" />
-    <ClInclude Include="physicsEngine\qu3e\common\q3Settings.h" />
-    <ClInclude Include="physicsEngine\qu3e\common\q3Types.h" />
-    <ClInclude Include="physicsEngine\qu3e\debug\q3Render.h" />
-    <ClInclude Include="physicsEngine\qu3e\dynamics\q3Body.h" />
-    <ClInclude Include="physicsEngine\qu3e\dynamics\q3Contact.h" />
-    <ClInclude Include="physicsEngine\qu3e\dynamics\q3ContactManager.h" />
-    <ClInclude Include="physicsEngine\qu3e\dynamics\q3ContactSolver.h" />
-    <ClInclude Include="physicsEngine\qu3e\dynamics\q3Island.h" />
-    <ClInclude Include="physicsEngine\qu3e\math\q3Mat3.h" />
-    <ClInclude Include="physicsEngine\qu3e\math\q3Math.h" />
-    <ClInclude Include="physicsEngine\qu3e\math\q3Quaternion.h" />
-    <ClInclude Include="physicsEngine\qu3e\math\q3Transform.h" />
-    <ClInclude Include="physicsEngine\qu3e\math\q3Vec3.h" />
-    <ClInclude Include="physicsEngine\qu3e\q3.h" />
-    <ClInclude Include="physicsEngine\qu3e\scene\q3Scene.h" />
     <ClInclude Include="prefab\cube\cube.h" />
     <ClInclude Include="prefab\plane\plane.h" />
     <ClInclude Include="renderObjectScene\renderObjectScene.h" />
@@ -223,15 +186,6 @@
     <ClInclude Include="stb_image\stb_image.h" />
     <ClInclude Include="texturePool\texturePool.h" />
     <ClInclude Include="version\version.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="physicsEngine\qu3e\broadphase\q3DynamicAABBTree.inl" />
-    <None Include="physicsEngine\qu3e\collision\q3Box.inl" />
-    <None Include="physicsEngine\qu3e\common\q3Geometry.inl" />
-    <None Include="physicsEngine\qu3e\math\q3Mat3.inl" />
-    <None Include="physicsEngine\qu3e\math\q3Math.inl" />
-    <None Include="physicsEngine\qu3e\math\q3Transform.inl" />
-    <None Include="physicsEngine\qu3e\math\q3Vec3.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

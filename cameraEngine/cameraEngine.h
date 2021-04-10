@@ -82,14 +82,13 @@ public:
         getThis->cameraFront = glm::normalize(direction);
     }
 
-    void init(display* display_, gui* gui_)
+    void init(display* display_)
     {
         m_display = display_;
         m_display->showCursor();
-        m_gui = gui_;
         glfwSetWindowUserPointer(display_->getGLFWWindow(), this);
         glfwSetCursorPosCallback(m_display->getGLFWWindow(), mouse_callback);
-        m_gui->setVisibility(true);
+        m_gui.setVisibility(true);
     }
 
 private:

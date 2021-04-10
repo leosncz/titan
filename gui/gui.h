@@ -11,8 +11,13 @@
 class gui
 {
 public:
+	gui()
+	{
+		m_isInitialized = false;
+	}
 	void init(display* display_)
 	{
+		m_isInitialized = true;
 		m_id = rand();
 		m_display = display_;
 		IMGUI_CHECKVERSION();
@@ -82,10 +87,21 @@ public:
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		}
 	}
+
+	~gui()
+	{
+		if (m_isInitialized)
+		{
+			ImGui_ImplOpenGL3_Shutdown();
+			ImGui_ImplGlfw_Shutdown();
+			ImGui::DestroyContext();
+		}
+	}
 private:
 	int m_id;
 	display* m_display;
 	bool isVisible;
+	bool m_isInitialized;
 
 	bool m_showRenderingDebug, m_showSceneInformations, m_showLightingDebug;
 

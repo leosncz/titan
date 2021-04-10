@@ -14,8 +14,9 @@ int main()
     mainDisplay.init(1620, 880, 4, false);
 
     scene myscene = scene();
-
-    myscene.setupDisplay(&mainDisplay);
+    cameraEngine cam;
+    gui gui_ = gui();
+    myscene.init(&mainDisplay,&cam);
 
 
     float colors[] = { 1.0,1.0,1.0,   1.0,1.0,1.0,     1.0,1.0,1.0,

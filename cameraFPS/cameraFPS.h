@@ -32,8 +32,8 @@ public:
         {
             if (escapeLastState == GLFW_RELEASE)
             {
-                if (isPaused == true) { isPaused = false; m_gui->setVisibility(false); m_display->hideCursor(); }
-                else if (isPaused == false) { isPaused = true; m_gui->setVisibility(true); m_display->showCursor(); }
+                if (isPaused == true) { isPaused = false; m_gui.setVisibility(false); m_display->hideCursor(); }
+                else if (isPaused == false) { isPaused = true; m_gui.setVisibility(true); m_display->showCursor(); }
             }
             escapeLastState = GLFW_PRESS;
         }
@@ -96,7 +96,6 @@ public:
     void init(display* display_, gui* gui_)
     {
         m_display = display_;
-        m_gui = gui_;
         glfwSetWindowUserPointer(display_->getGLFWWindow(), this);
         glfwSetCursorPosCallback(m_display->getGLFWWindow(), mouse_callback);
     }

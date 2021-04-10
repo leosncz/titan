@@ -23,7 +23,7 @@ public:
     glm::vec3 getCameraPos() { return cameraPos; }
 
     virtual void update(display* display, glm::mat4* viewMatrix, bool isAzerty = true) = 0;
-    virtual void init(display* display_, gui* gui_) = 0;
+    virtual void init(display* display_) = 0;
     virtual void pauseControls() = 0;
     virtual void resumeControls() = 0;
 
@@ -40,6 +40,6 @@ protected:
 
     int id;
 
-    gui* m_gui;
+    gui m_gui;
 
 };
