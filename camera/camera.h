@@ -22,12 +22,12 @@ public:
     }
 
     glm::vec3 getCameraPos() { return cameraPos; }
-    void updateGUI()
+    void updateGUI(vector<renderObject*>* objectHolder, vector<light*> lights, GLuint albedoSpecTexture, GLuint normalTexture, GLuint positionTexture, GLuint roughnessTexture, GLuint metallicTexture)
     {
         if (m_gui != 0)
         {
             std::vector<light*> null;
-            m_gui->update(0, null, 0, 0, 0, 0, 0);
+            m_gui->update(objectHolder,lights,albedoSpecTexture,normalTexture,positionTexture,roughnessTexture,metallicTexture);
         }
     }
     void setGUI(gui* gui_)

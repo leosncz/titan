@@ -15,7 +15,6 @@ public:
         std::cout << "--> Creating camera Engine id=" << id << std::endl;
         firstMouse = true;
         yaw = -90.0f;
-        escapeLastState = GLFW_RELEASE;
     }
     void pauseControls()
     {
@@ -27,7 +26,7 @@ public:
     }
     void update(glm::mat4* viewMatrix, bool isAzerty = true)
     {
-        if (glfwGetMouseButton(m_display->getGLFWWindow(), GLFW_MOUSE_BUTTON_1))
+        if (glfwGetMouseButton(m_display->getGLFWWindow(), GLFW_MOUSE_BUTTON_1) && !isPaused)
         {
             if (isAzerty)
             {
@@ -85,7 +84,6 @@ public:
     void init(display* display_)
     {
         m_display = display_;
-        m_display->showCursor();
         glfwSetWindowUserPointer(display_->getGLFWWindow(), this);
         glfwSetCursorPosCallback(m_display->getGLFWWindow(), mouse_callback);
     }
@@ -95,6 +93,4 @@ private:
 
     bool firstMouse;
     float yaw, pitch, lastX, lastY;
-
-    int escapeLastState;
 };

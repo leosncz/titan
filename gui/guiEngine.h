@@ -6,23 +6,32 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "../display/display.h"
 #include "../renderObject/renderObject.h"
-#include "../shader/shader.h"
+#include "../camera/camera.h"
 #include <iostream>
 #include <vector>
 class guiEngine : public gui
 {
 public:
-	guiEngine()
+	guiEngine(camera* cam)
 	{
 		m_showLightingDebug = false;
 		m_showRenderingDebug = false;
 		m_showSceneInformations = false;
+		m_camera = cam;
 	}
 	void update(vector<renderObject*>* objectHolder, vector<light*> lights, GLuint albedoSpecTexture, GLuint normalTexture, GLuint positionTexture, GLuint roughnessTexture, GLuint metallicTexture)
 	{
 		if (glfwGetKey(m_display->getGLFWWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		{
 			isVisible = !isVisible;
+			if (isVisible == true)
+			{
+				m_camera->pauseControls();
+			}
+			else
+			{
+				m_camera->resumeControls();
+			}
 		}
 		if (isVisible)
 		{
@@ -71,13 +80,13 @@ public:
 				ImGui::EndMainMenuBar();
 			}
 
-
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		}
 	}
 private:
 	bool m_showRenderingDebug, m_showSceneInformations, m_showLightingDebug;
+	camera* m_camera;
 
 	void showLightingDebug(vector<light*> lights)
 	{

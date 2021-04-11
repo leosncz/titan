@@ -33,7 +33,6 @@ public:
         id = rand();
 
         m_actualCamera = cam;
-        m_actualCamera->init(m_display);
 
         m_gamma = 2.2;
 
@@ -261,7 +260,7 @@ public:
     void updateCamera(bool isAzerty=true)
     {
         m_actualCamera->update(&view, isAzerty);
-        m_actualCamera->updateGUI();
+        m_actualCamera->updateGUI(&m_objectHolder,lights,gAlbedoSpec,gNormal,gPosition,gRoughness,gMetallic);
     }
 
     void refreshScene()
@@ -278,7 +277,6 @@ public:
     void setCamera(camera* cam)
     {
         m_actualCamera = cam;
-        m_actualCamera->init(m_display);
     }
 
     ~scene()
