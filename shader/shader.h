@@ -204,7 +204,7 @@ public:
             "float currentDepth = length(fragToLight);"
             // now test for shadows
             "float shadow = 0.0;"
-            "float bias = 0.07;"
+            "float bias = 0.0001;"
             "float samples = 3.0;"
             "float offset = 0.1;"
             "for (float x = -offset; x < offset; x += offset / (samples * 0.5))"

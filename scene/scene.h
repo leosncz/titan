@@ -259,6 +259,7 @@ public:
 
     void updateCamera(bool isAzerty=true)
     {
+        glfwPollEvents();
         m_actualCamera->update(&view, isAzerty);
         m_actualCamera->updateGUI(&m_objectHolder,lights,gAlbedoSpec,gNormal,gPosition,gRoughness,gMetallic);
     }

@@ -38,8 +38,14 @@ public:
     }
     virtual void update(glm::mat4* viewMatrix, bool isAzerty = true) = 0;
     virtual void init(display* display_) = 0;
-    virtual void pauseControls() = 0;
-    virtual void resumeControls() = 0;
+    void pauseControls()
+    {
+        isPaused = true;
+    }
+    void resumeControls()
+    {
+        isPaused = false;
+    }
 
     bool getIsPaused() { return isPaused; }
 

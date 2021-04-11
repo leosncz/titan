@@ -90,25 +90,25 @@ int main()
     triangle4.setNumberOfTextureToDraw(1);
     triangle4.setNormalMap("graphicData/metalnormalmap.jpg");
 
-    /*light light_[50];
+   /* light light_[50];
     int i2 = 0;
-    for (int i = -2; i < 6; i+=2)
+    for (int i = -4; i < 4; i+=1)
     {
         light_[i2].setData(vec3(i, 0.5, 0.0), vec3(10.0, 10.0, 10.0), vec3(0.0, 0.0, 0.0));
         light_[i2].type = POINT_LIGHT;
+        light_[i2].shadowResolution = 500;
         myscene.addLight(&light_[i2]);
         i2++;
     }*/
 
     light mylight4 = light();
-    mylight4.setData(glm::vec3(0.5, 2, 3), glm::vec3(10,10,10), glm::vec3(0, -0.5, -1), 1000.0f);
+    mylight4.setData(glm::vec3(0.5, 2, 3), glm::vec3(10,10,10), glm::vec3(0, -0.3, -1), 1000.0f);
     mylight4.type = DIRECTIONNAL_LIGHT;
     mylight4.shadowResolution = 6024;
     myscene.addLight(&mylight4);
 
     float i = 0.0f;
     while (!mainDisplay.shouldExit()) {
-        myscene.clearScene();
         myscene.renderScene();
         myscene.updateCamera();
         myscene.refreshScene();

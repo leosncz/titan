@@ -16,14 +16,6 @@ public:
         firstMouse = true;
         yaw = -90.0f;
     }
-    void pauseControls()
-    {
-        isPaused = true;
-    }
-    void resumeControls()
-    {
-        isPaused = false;
-    }
     void update(glm::mat4* viewMatrix, bool isAzerty = true)
     {
         if (glfwGetMouseButton(m_display->getGLFWWindow(), GLFW_MOUSE_BUTTON_1) && !isPaused)

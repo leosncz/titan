@@ -17,6 +17,7 @@ public:
 		m_showLightingDebug = false;
 		m_showRenderingDebug = false;
 		m_showSceneInformations = false;
+		m_showHelloMessage = true;
 		m_camera = cam;
 	}
 	void update(vector<renderObject*>* objectHolder, vector<light*> lights, GLuint albedoSpecTexture, GLuint normalTexture, GLuint positionTexture, GLuint roughnessTexture, GLuint metallicTexture)
@@ -40,8 +41,10 @@ public:
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 
-			showWelcome();
-
+			if (m_showHelloMessage)
+			{
+				showWelcome();
+			}
 			if (m_showRenderingDebug)
 			{
 				showRenderingDebug(positionTexture, normalTexture, albedoSpecTexture, roughnessTexture, metallicTexture);
@@ -85,12 +88,12 @@ public:
 		}
 	}
 private:
-	bool m_showRenderingDebug, m_showSceneInformations, m_showLightingDebug;
+	bool m_showRenderingDebug, m_showSceneInformations, m_showLightingDebug, m_showHelloMessage;
 	camera* m_camera;
 
 	void showLightingDebug(vector<light*> lights)
 	{
-		ImGui::Begin("Lighting & shadow debug", &isVisible);
+		ImGui::Begin("Lighting & shadow debug", &m_showLightingDebug);
 		ImGui::SetWindowFontScale(1.1);
 		for (int i = 0; i < lights.size(); i++)
 		{
@@ -108,7 +111,7 @@ private:
 
 	void showRenderingDebug(GLuint positionTexture, GLuint normalTexture, GLuint albedoSpecTexture, GLuint roughnessTexture, GLuint metallicTexture)
 	{
-		ImGui::Begin("Deferred rendering debug", &isVisible);
+		ImGui::Begin("Deferred rendering debug", &m_showRenderingDebug);
 		ImGui::SetWindowFontScale(1.1);
 
 		char* renderer = (char*)glGetString(GL_RENDERER);
@@ -150,7 +153,7 @@ private:
 	void showWelcome()
 	{
 		//Welcome
-		ImGui::Begin("Hello", &isVisible);
+		ImGui::Begin("Hello", &m_showHelloMessage);
 		ImGui::SetWindowSize(ImVec2(600, 200));
 		ImGui::SetWindowFontScale(1.1);
 		ImGui::TextColored(ImVec4(0, 1, 0, 1), "Welcome to TITAN Engine !");
@@ -164,7 +167,7 @@ private:
 	void showSceneInformations(vector<renderObject*>* objectHolder)
 	{
 		//Scene information
-		ImGui::Begin("Scene informations", &isVisible);
+		ImGui::Begin("Scene informations", &m_showSceneInformations);
 		ImGui::SetWindowFontScale(1.1);
 		float value;
 		for (int i = 0; i < objectHolder->size(); i++)
