@@ -115,7 +115,7 @@ public:
     }
     void compileDefaultShader() //For now handles directionnal, spot and point lights
     {
-        std::cout << "---> Compiling lightBasicShader for shader ID=" << id << std::endl;
+        std::cout << "---> Compiling PBR shader ID=" << id << std::endl;
 
         const char* vertex_shader =
         "#version 330 core\n"

@@ -18,15 +18,24 @@ public:
         cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
         cameraSpeed = 0.1f;
         isPaused = false;
+        m_gui = 0;
     }
 
     glm::vec3 getCameraPos() { return cameraPos; }
     void updateGUI()
     {
-        std::vector<light*> null;
-        m_gui.update(0,null, 0, 0, 0, 0, 0);
+        if (m_gui != 0)
+        {
+            std::vector<light*> null;
+            m_gui->update(0, null, 0, 0, 0, 0, 0);
+        }
     }
-
+    void setGUI(gui* gui_)
+    {
+        m_gui = gui_;
+        m_gui->init(m_display);
+        m_gui->setVisibility(false);
+    }
     virtual void update(glm::mat4* viewMatrix, bool isAzerty = true) = 0;
     virtual void init(display* display_) = 0;
     virtual void pauseControls() = 0;
@@ -45,6 +54,6 @@ protected:
 
     int id;
 
-    gui m_gui;
+    gui *m_gui;
 
 };

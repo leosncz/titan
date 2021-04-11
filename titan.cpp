@@ -6,6 +6,7 @@
 #include "scene/scene.h"
 #include "renderObjectScene/renderObjectScene.h"
 #include "cameraEngine/cameraEngine.h"
+#include "gui/guiEngine.h"
 using namespace std;
 
 int main()
@@ -13,10 +14,12 @@ int main()
     display mainDisplay = display();
     mainDisplay.init(1620, 880, 4, false);
 
-    scene myscene = scene();
+    scene myscene;
     cameraFPS cam;
     myscene.init(&mainDisplay,&cam);
 
+    guiEngine gui_;
+    cam.setGUI(&gui_);
 
     float colors[] = { 1.0,1.0,1.0,   1.0,1.0,1.0,     1.0,1.0,1.0,
                       1.0,1.0,1.0,    1.0,1.0,1.0,    1.0,1.0,1.0,
@@ -84,8 +87,6 @@ int main()
     triangle4.addTexture("graphicData/texturemetal.jpg");
     triangle4.setNumberOfTextureToDraw(1);
     triangle4.setNormalMap("graphicData/metalnormalmap.jpg");
-
-    mainDisplay.hideCursor();
 
     /*light light_[50];
     int i2 = 0;

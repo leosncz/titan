@@ -167,6 +167,7 @@
     <ClInclude Include="camera\camera.h" />
     <ClInclude Include="display\display.h" />
     <ClInclude Include="gui\gui.h" />
+    <ClInclude Include="gui\guiEngine.h" />
     <ClInclude Include="gui\imgui\imconfig.h" />
     <ClInclude Include="gui\imgui\imgui.h" />
     <ClInclude Include="gui\imgui\imgui_impl_glfw.h" />

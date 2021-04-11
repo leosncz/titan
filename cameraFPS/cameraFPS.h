@@ -15,7 +15,6 @@ public:
         std::cout << "--> Creating camera FPS id=" << id << std::endl;
         firstMouse = true;
         yaw = -90.0f;
-        escapeLastState = GLFW_RELEASE;
     }
     void pauseControls()
     {
@@ -27,17 +26,6 @@ public:
     }
     void update(glm::mat4* viewMatrix, bool isAzerty = true)
     {
-        if (glfwGetKey(m_display->getGLFWWindow(), GLFW_KEY_ESCAPE) == GLFW_RELEASE) { escapeLastState = GLFW_RELEASE; }
-        if (glfwGetKey(m_display->getGLFWWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        {
-            if (escapeLastState == GLFW_RELEASE)
-            {
-                if (isPaused == true) { isPaused = false; m_gui.setVisibility(false); m_display->hideCursor(); }
-                else if (isPaused == false) { isPaused = true; m_gui.setVisibility(true); m_display->showCursor(); }
-            }
-            escapeLastState = GLFW_PRESS;
-        }
-
         if (!isPaused)
         {
             if (isAzerty)
@@ -96,8 +84,6 @@ public:
     void init(display* display_)
     {
         m_display = display_;
-        m_gui.init(m_display);
-        m_gui.setVisibility(false);
         glfwSetWindowUserPointer(display_->getGLFWWindow(), this);
         glfwSetCursorPosCallback(m_display->getGLFWWindow(), mouse_callback);
     }
@@ -107,6 +93,4 @@ private:
 
     bool firstMouse;
     float yaw, pitch, lastX, lastY;
-
-    int escapeLastState;
 };

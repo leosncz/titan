@@ -120,5 +120,8 @@
     <ClInclude Include="cameraEngine\cameraEngine.h">
       <Filter>scene</Filter>
     </ClInclude>
+    <ClInclude Include="gui\guiEngine.h">
+      <Filter>gui</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

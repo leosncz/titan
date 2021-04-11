@@ -88,8 +88,6 @@ public:
         m_display->showCursor();
         glfwSetWindowUserPointer(display_->getGLFWWindow(), this);
         glfwSetCursorPosCallback(m_display->getGLFWWindow(), mouse_callback);
-        m_gui.init(m_display);
-        m_gui.setVisibility(true);
     }
 
 private:
