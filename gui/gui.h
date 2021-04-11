@@ -8,6 +8,7 @@
 #include "../shader/shader.h"
 #include <iostream>
 #include <vector>
+using namespace std;
 class gui
 {
 public:
@@ -53,9 +54,9 @@ protected:
 	void setupUIStyle()
 	{
 		//ImGuiStyle* style = &ImGui::GetStyle();
+		cout << "--> Setting up GUI style" << endl;
 		ImGuiIO& io = ImGui::GetIO();
 		io.Fonts->AddFontFromFileTTF("graphicData/OpenSans-Light.ttf", 20);
-
 		ImGui::GetStyle().FrameRounding = 4.0f;
 		ImGui::GetStyle().GrabRounding = 4.0f;
 
