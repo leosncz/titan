@@ -13,7 +13,7 @@ Handles window and ogl context creation
 class display
 {
 public:
-    int init(int x, int y, int aa, bool fullscreen=false); // Create window and context
+    display(int x, int y, int aa, bool fullscreen = false);
     void exitEngine();
     bool shouldExit()
     {

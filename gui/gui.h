@@ -5,20 +5,14 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "../display/display.h"
 #include "../renderObject/renderObject.h"
-#include "../shader/shader.h"
 #include <iostream>
 #include <vector>
 using namespace std;
 class gui
 {
 public:
-	gui()
+	gui(display* display_)
 	{
-		m_isInitialized = false;
-	}
-	void init(display* display_)
-	{
-		m_isInitialized = true;
 		m_id = rand();
 		m_display = display_;
 		IMGUI_CHECKVERSION();
@@ -27,29 +21,25 @@ public:
 		ImGui::StyleColorsClassic();
 		ImGui_ImplGlfw_InitForOpenGL(m_display->getGLFWWindow(), true);
 		ImGui_ImplOpenGL3_Init("#version 330 core");
-		isVisible = false;
 		setupUIStyle();
+		isVisible = false;
 
 		std::cout << "--> GUI ID=" << m_id << " created !" << std::endl;
 	}
 	void setVisibility(bool isVisible_) { isVisible = isVisible_; }
-	virtual void update(vector<renderObject*>* objectHolder, vector<light*> lights, GLuint albedoSpecTexture, GLuint normalTexture, GLuint positionTexture, GLuint roughnessTexture, GLuint metallicTexture) = 0;
+	virtual void render(vector<renderObject*>* objectHolder, vector<light*> lights, GLuint albedoSpecTexture, GLuint normalTexture, GLuint positionTexture, GLuint roughnessTexture, GLuint metallicTexture) = 0;
 
 	~gui()
 	{
-		if (m_isInitialized)
-		{
-			ImGui_ImplOpenGL3_Shutdown();
-			ImGui_ImplGlfw_Shutdown();
-			ImGui::DestroyContext();
-			std::cout << "--> GUI ID=" << m_id << " destroyed !" << std::endl;
-		}
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext();
+		std::cout << "--> GUI ID=" << m_id << " destroyed !" << std::endl;
 	}
 protected:
 	int m_id;
 	display* m_display;
 	bool isVisible;
-	bool m_isInitialized;
 
 	void setupUIStyle()
 	{

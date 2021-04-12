@@ -1,10 +1,10 @@
 #include "display.h"
-int display::init(int x, int y, int aa, bool fullscreen)
+display::display(int x, int y, int aa, bool fullscreen)
 {
     std::cout << "--> Titan Engine " << "dev 0.1" << " is warming up !" << std::endl;
     if( !glfwInit() )
     {
-        return -1;
+        std::cout << "---> CRITICAL ERROR -1 (display)" << std::endl;
     }
 
     glfwWindowHint(GLFW_SAMPLES, aa); // 4x antialiasing
@@ -26,14 +26,12 @@ int display::init(int x, int y, int aa, bool fullscreen)
     if( m_window == NULL ){
         std::cout << "--> CRITICAL ERROR : OPENGL 3.X IS PROBABLY NOT SUPPORTED BY YOUR GRAPHIC CARD ! (-2)" << std::endl;
         glfwTerminate();
-        return -2;
     }
     glfwMakeContextCurrent(m_window); // setup GLEW
     glewExperimental=true; // Nécessaire dans le profil de base
     if (glewInit() != GLEW_OK) {
         std::cout << "--> CRITICAL ERROR : OPENGL 3.X IS PROBABLY NOT SUPPORTED BY YOUR GRAPHIC CARD ! (-3)" << std::endl;
         glfwTerminate();
-        return -3;
     }
     glfwSetInputMode(m_window, GLFW_STICKY_KEYS, GL_TRUE); // Ensure we will be able to capture all our keys
     glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -49,8 +47,6 @@ int display::init(int x, int y, int aa, bool fullscreen)
     m_disWidth = x;
     m_shouldExit = false;
     std::cout << "---> Titan Engine successfuly created OpenGL Context" << std::endl;
-
-    return 0;
 }
 
 void display::exitEngine()

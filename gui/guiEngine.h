@@ -6,33 +6,24 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "../display/display.h"
 #include "../renderObject/renderObject.h"
-#include "../camera/camera.h"
 #include <iostream>
 #include <vector>
 class guiEngine : public gui
 {
 public:
-	guiEngine(camera* cam)
+	guiEngine(display* display_) : gui(display_)
 	{
 		m_showLightingDebug = false;
 		m_showRenderingDebug = false;
 		m_showSceneInformations = false;
 		m_showHelloMessage = true;
-		m_camera = cam;
 	}
-	void update(vector<renderObject*>* objectHolder, vector<light*> lights, GLuint albedoSpecTexture, GLuint normalTexture, GLuint positionTexture, GLuint roughnessTexture, GLuint metallicTexture)
+
+	void render(vector<renderObject*>* objectHolder, vector<light*> lights, GLuint albedoSpecTexture, GLuint normalTexture, GLuint positionTexture, GLuint roughnessTexture, GLuint metallicTexture)
 	{
 		if (glfwGetKey(m_display->getGLFWWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		{
 			isVisible = !isVisible;
-			if (isVisible == true)
-			{
-				m_camera->pauseControls();
-			}
-			else
-			{
-				m_camera->resumeControls();
-			}
 		}
 		if (isVisible)
 		{
@@ -89,7 +80,6 @@ public:
 	}
 private:
 	bool m_showRenderingDebug, m_showSceneInformations, m_showLightingDebug, m_showHelloMessage;
-	camera* m_camera;
 
 	void showLightingDebug(vector<light*> lights)
 	{

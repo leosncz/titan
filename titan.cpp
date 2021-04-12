@@ -11,15 +11,13 @@ using namespace std;
 
 int main()
 {
-    display mainDisplay = display();
-    mainDisplay.init(1620, 880, 4, false);
+    display mainDisplay = display(1620, 880, 4, false);
 
     scene myscene;
     cameraFPS cam;
     cam.init(&mainDisplay);
 
-    guiEngine gui_(&cam);
-    cam.setGUI(&gui_);
+    guiEngine gui_(&mainDisplay);
 
     myscene.init(&mainDisplay, &cam);
 
@@ -111,7 +109,8 @@ int main()
     while (!mainDisplay.shouldExit()) {
         myscene.renderScene();
         myscene.updateCamera();
-        myscene.refreshScene();
+        gui_.render(myscene.getObjectHolder(), *myscene.getLights(), myscene.getGAlbedo(), myscene.getGNormals(), myscene.getGPosition(), myscene.getGRoughness(), myscene.getGMetallic());
+        myscene.updateScene();
         i += 0.001f;
         triangle4.rotateObject(0.01, glm::vec3(0, i, 0));
     } 

@@ -23,7 +23,6 @@ public:
         std::cout << "--> Creating new scene ID=" << id << std::endl;
 
         m_display = customDisplay;
-        m_nbOfLight = 0;
 
         // Setup ogl matrix
         projection = glm::perspective(glm::radians(45.0f), (float)((float)customDisplay->getDisWidth() / (float)customDisplay->getDisHeight()), 0.01f, 200.0f);
@@ -77,13 +76,13 @@ public:
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal, 0);
 
         // - color + specular color buffer
-        glGenTextures(1, &gAlbedoSpec);
-        glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
+        glGenTextures(1, &gAlbedo);
+        glBindTexture(GL_TEXTURE_2D, gAlbedo);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, m_display->getDisWidth(), m_display->getDisHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, &swizzleMask[0]);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedoSpec, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedo, 0);
 
         glGenTextures(1, &gRoughness);
         glBindTexture(GL_TEXTURE_2D, gRoughness);
@@ -187,7 +186,7 @@ public:
 
     void addLight(light* thelight)
     {
-        lights.push_back(thelight);
+        m_lights.push_back(thelight);
         if (thelight->type == POINT_LIGHT)
         {
             glGenFramebuffers(1, &thelight->depthMapFBO);
@@ -231,15 +230,13 @@ public:
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
-
-        m_nbOfLight++;
     }
 
     void deleteLight(int id)
     {
-        if (lights.size() > id)
+        if (m_lights.size() > id)
         {
-            lights.erase(lights.begin() + id);
+            m_lights.erase(m_lights.begin() + id);
         }
     }
 
@@ -261,17 +258,16 @@ public:
     {
         glfwPollEvents();
         m_actualCamera->update(&view, isAzerty);
-        m_actualCamera->updateGUI(&m_objectHolder,lights,gAlbedoSpec,gNormal,gPosition,gRoughness,gMetallic);
     }
 
-    void refreshScene()
+    void updateScene()
     {
         glfwSwapBuffers(m_display->getGLFWWindow());
     }
 
     display* getDisplay() { return m_display; }
 
-    int getNbOfLight(){return m_nbOfLight;}
+    int getNbOfLight(){return m_lights.size();}
 
     texturePool* getTexturePool(){ return &m_texturePool; }
 
@@ -280,10 +276,18 @@ public:
         m_actualCamera = cam;
     }
 
+    GLuint getGPosition() { return gPosition; }
+    GLuint getGNormals() { return gNormal; }
+    GLuint getGAlbedo() { return gAlbedo; }
+    GLuint getGRoughness() { return gRoughness; }
+    GLuint getGMetallic() { return gMetallic; }
+    vector<light*>* getLights() { return &m_lights; }
+    vector<renderObject*>* getObjectHolder() { return &m_objectHolder; }
+
     ~scene()
     {
         glDeleteTextures(1, &hdrTexture);
-        glDeleteTextures(1, &gAlbedoSpec);
+        glDeleteTextures(1, &gAlbedo);
         glDeleteTextures(1, &gNormal);
         glDeleteTextures(1, &gPosition);
         glDeleteTextures(1, &gRoughness);
@@ -308,8 +312,7 @@ private:
 
     glm::mat4 projection, view, model;
 
-    vector<light*> lights; 
-    int m_nbOfLight;
+    vector<light*> m_lights; 
 
     camera *m_actualCamera;
 
@@ -324,7 +327,7 @@ private:
     GLuint vbo, vbo_colors, vbo_texCoords, vao;
     float m_exposure;
 
-    GLuint gBuffer, gPosition, gNormal, gAlbedoSpec, gRoughness, gMetallic, gRBO;
+    GLuint gBuffer, gPosition, gNormal, gAlbedo, gRoughness, gMetallic, gRBO;
     shader m_deferedShader;
 
     void freeTexturesSlot() // Free all texture stuff related to binded texture or slot
@@ -363,15 +366,15 @@ private:
         int dirLightID = 0;
         int ptLightID = 0;
         int textureCount = 0; // 0 is hdr texture
-        for (int i = 0; i < lights.size(); i++) // For each light
+        for (int i = 0; i < m_lights.size(); i++) // For each light
         {
-            if (glIsTexture(lights[i]->textureDepthMap) && lights[i]->computeShadows && lights[i]->type == POINT_LIGHT)
+            if (glIsTexture(m_lights[i]->textureDepthMap) && m_lights[i]->computeShadows && m_lights[i]->type == POINT_LIGHT)
             {
                 if (ptLightID == 0)
                 {
                     glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(), "textureDepthCubemap[0]"), 0);
                     glActiveTexture(GL_TEXTURE0);
-                    glBindTexture(GL_TEXTURE_CUBE_MAP, lights[i]->textureDepthMap);
+                    glBindTexture(GL_TEXTURE_CUBE_MAP, m_lights[i]->textureDepthMap);
                     ptLightID++;
                 }
                 else
@@ -381,18 +384,18 @@ private:
                     name.append("]");
                     glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(), name.c_str()), textureCount);
                     glActiveTexture(GL_TEXTURE0 + textureCount);
-                    glBindTexture(GL_TEXTURE_CUBE_MAP, lights[i]->textureDepthMap);
+                    glBindTexture(GL_TEXTURE_CUBE_MAP, m_lights[i]->textureDepthMap);
                     ptLightID++;
                 }
                 textureCount++;
             }
-            else if (glIsTexture(lights[i]->textureDepthMap) && lights[i]->computeShadows && lights[i]->type == DIRECTIONNAL_LIGHT)
+            else if (glIsTexture(m_lights[i]->textureDepthMap) && m_lights[i]->computeShadows && m_lights[i]->type == DIRECTIONNAL_LIGHT)
             {
                 string name = "lightSpaceMatrix[";
                 name.append(to_string(dirLightID));
                 name.append("]");
                 glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 25.0f);
-                glm::mat4 lightView = glm::lookAt(lights[i]->lightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+                glm::mat4 lightView = glm::lookAt(m_lights[i]->lightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
                 glm::mat4 lightSpaceMatrix = lightProjection * lightView;
                 glUniformMatrix4fv(glGetUniformLocation(m_deferedShader.getShaderID(), name.c_str()), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
 
@@ -400,7 +403,7 @@ private:
                 {
                     glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(), "textureDepthMap[0]"), 0);
                     glActiveTexture(GL_TEXTURE0);
-                    glBindTexture(GL_TEXTURE_2D, lights[i]->textureDepthMap);
+                    glBindTexture(GL_TEXTURE_2D, m_lights[i]->textureDepthMap);
                     dirLightID++;
                 }
                 else
@@ -410,13 +413,13 @@ private:
                     name.append("]");
                     glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(), name.c_str()), textureCount);
                     glActiveTexture(GL_TEXTURE0 + textureCount);
-                    glBindTexture(GL_TEXTURE_2D, lights[i]->textureDepthMap);
+                    glBindTexture(GL_TEXTURE_2D, m_lights[i]->textureDepthMap);
                     dirLightID++;
                 }
                 textureCount++;
             }
         }
-        m_deferedShader.registerLightToRender(lights,m_nbOfLight);
+        m_deferedShader.registerLightToRender(m_lights,m_lights.size());
         if (glIsTexture(gPosition))
         {
             glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(),"gPosition") , textureCount);
@@ -445,11 +448,11 @@ private:
             glBindTexture(GL_TEXTURE_2D, gRoughness);
             textureCount++;
         }
-        if (glIsTexture(gAlbedoSpec))
+        if (glIsTexture(gAlbedo))
         {
             glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(), "gAlbedoSpec"), textureCount);
             glActiveTexture(GL_TEXTURE0 + textureCount);
-            glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
+            glBindTexture(GL_TEXTURE_2D, gAlbedo);
             textureCount++;
         }
        
@@ -458,17 +461,17 @@ private:
 
     void drawShadowPass()
     {
-        for (int i = 0; i < lights.size(); i++)
+        for (int i = 0; i < m_lights.size(); i++)
         {
-            if (lights[i]->computeShadows)
+            if (m_lights[i]->computeShadows)
             {
                 glCullFace(GL_FRONT);
-                glViewport(0, 0, lights[i]->shadowResolution, lights[i]->shadowResolution);
-                glBindFramebuffer(GL_FRAMEBUFFER, lights[i]->depthMapFBO);
+                glViewport(0, 0, m_lights[i]->shadowResolution, m_lights[i]->shadowResolution);
+                glBindFramebuffer(GL_FRAMEBUFFER, m_lights[i]->depthMapFBO);
                 glClear(GL_DEPTH_BUFFER_BIT);
                 for (int i2 = 0; i2 < m_objectHolder.size(); i2++)
                 {
-                    m_objectHolder[i2]->renderDepth(&projection, &view, &model, lights[i]);
+                    m_objectHolder[i2]->renderDepth(&projection, &view, &model, m_lights[i]);
                 }
                 glBindFramebuffer(GL_FRAMEBUFFER, 0);
                 glCullFace(GL_BACK);
@@ -483,7 +486,7 @@ private:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         for (int i = 0; i < m_objectHolder.size(); i++)
         {
-            m_objectHolder[i]->renderGBuffer(&projection, &view, &model, m_actualCamera->getCameraPos(), lights, m_nbOfLight);
+            m_objectHolder[i]->renderGBuffer(&projection, &view, &model, m_actualCamera->getCameraPos(), m_lights, m_lights.size());
         }
     }
 };
