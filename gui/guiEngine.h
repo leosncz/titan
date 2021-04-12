@@ -5,13 +5,13 @@ class guiEngine : public gui
 public:
 	guiEngine(display* display_) : gui(display_)
 	{
-		m_showLightingDebug = false;
+		m_showLightingEditor = false;
 		m_showRenderingDebug = false;
-		m_showSceneInformations = false;
+		m_showSceneEditor = false;
 		m_showHelloMessage = true;
 	}
 
-	void render(scene* scene_)
+	void update(scene* scene_)
 	{
 		if (glfwGetKey(m_display->getGLFWWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		{
@@ -32,13 +32,13 @@ public:
 			{
 				showRenderingDebug(scene_->getGPosition(), scene_->getGNormals(), scene_->getGAlbedo(), scene_->getGRoughness(), scene_->getGMetallic(),scene_->getGAmbient());
 			}
-			if (m_showSceneInformations)
+			if (m_showSceneEditor)
 			{
-				showSceneInformations(scene_->getObjectHolder());
+				showSceneEditor(scene_->getObjectHolder());
 			}
-			if (m_showLightingDebug)
+			if (m_showLightingEditor)
 			{
-				showLightingDebug(*scene_->getLights());
+				showLightingEditor(scene_->getLights());
 			}
 
 			if (ImGui::BeginMainMenuBar())
@@ -48,14 +48,14 @@ public:
 					m_showRenderingDebug = true;
 					ImGui::EndMenu();
 				}
-				if (ImGui::BeginMenu("Lighting & shadow debug"))
+				if (ImGui::BeginMenu("Lighting editor"))
 				{
-					m_showLightingDebug = true;
+					m_showLightingEditor = true;
 					ImGui::EndMenu();
 				}
 				if (ImGui::BeginMenu("Scene editor"))
 				{
-					m_showSceneInformations = true;
+					m_showSceneEditor = true;
 					ImGui::EndMenu();
 				}
 				if (ImGui::BeginMenu("Quit"))
@@ -71,34 +71,34 @@ public:
 		}
 	}
 private:
-	bool m_showRenderingDebug, m_showSceneInformations, m_showLightingDebug, m_showHelloMessage;
+	bool m_showRenderingDebug, m_showSceneEditor, m_showLightingEditor, m_showHelloMessage;
 
-	void showLightingDebug(vector<light*> lights)
+	void showLightingEditor(vector<light*>* lights)
 	{
-		ImGui::Begin("Lighting & shadow debug", &m_showLightingDebug);
+		ImGui::Begin("Lighting editor", &m_showLightingEditor);
 		ImGui::SetWindowFontScale(1.1);
-		if (lights.size() == 0)
+		if (lights->size() == 0)
 		{
 			ImGui::TextWrapped("No light !");
 		}
 		else
 		{
-			for (int i = 0; i < lights.size(); i++)
+			for (int i = 0; i < lights->size(); i++)
 			{
-				IM_ASSERT(lights[i]->textureDepthMap);
+				IM_ASSERT(lights->at(i)->textureDepthMap);
 				string content = "Light ";
 				content.append(std::to_string(i));
 				content.append(" :");
 				ImGui::TextWrapped(content.c_str());
 				content = "Shadow resolution: ";
-				content.append(to_string(lights[i]->shadowResolution));
+				content.append(to_string((lights->at(i)->shadowResolution)));
 				ImGui::TextWrapped(content.c_str());
-				if (lights[i]->type == DIRECTIONNAL_LIGHT)
+				if (lights->at(i)->type == DIRECTIONNAL_LIGHT)
 				{
 					ImGui::TextWrapped("Type: Directionnal");
 					content = "ShadowMap (if enabled): ";
 					ImGui::TextWrapped(content.c_str());
-					ImGui::Image((void*)(intptr_t)lights[i]->textureDepthMap, ImVec2(400, 300), ImVec2(0, 1), ImVec2(1, 0));
+					ImGui::Image((void*)(intptr_t)lights->at(i)->textureDepthMap, ImVec2(400, 300), ImVec2(0, 1), ImVec2(1, 0));
 				}
 				else
 				{
@@ -106,14 +106,21 @@ private:
 				}
 
 				content = "constant: ";
-				content.append(to_string(lights[i]->constant));
+				content.append(to_string(lights->at(i)->constant));
 				ImGui::TextWrapped(content.c_str());
 				content = "linear: ";
-				content.append(to_string(lights[i]->linear));
+				content.append(to_string(lights->at(i)->linear));
 				ImGui::TextWrapped(content.c_str());
 				content = "quadratic: ";
-				content.append(to_string(lights[i]->quadratic));
+				content.append(to_string(lights->at(i)->quadratic));
 				ImGui::TextWrapped(content.c_str());
+
+				content = "Delete ";
+				content.append(to_string(i));
+				if (ImGui::Button(content.c_str()))
+				{
+					lights->erase(lights->begin() + i);
+				}
 
 				ImGui::Separator();
 			}
@@ -182,10 +189,10 @@ private:
 		ImGui::End();
 	}
 
-	void showSceneInformations(vector<renderObject*>* objectHolder)
+	void showSceneEditor(vector<renderObject*>* objectHolder)
 	{
 		//Scene information
-		ImGui::Begin("Scene informations", &m_showSceneInformations);
+		ImGui::Begin("Scene editor", &m_showSceneEditor);
 		ImGui::SetWindowFontScale(1.1);
 		for (int i = 0; i < objectHolder->size(); i++)
 		{
@@ -195,18 +202,23 @@ private:
 			name.append(to_string(object->getID()));
 			ImGui::Text(name.c_str());
 
-			name = "TAG : ";
+			name = "Tag : ";
 			name.append(object->getTag());
 			ImGui::Text(name.c_str());
 
-			name = "METALLIC : ";
-			float ambiant = object->getShader()->metallic;
-			name.append(to_string(ambiant));
+			name = "Metallic : ";
+			float metallic = object->getShader()->metallic;
+			name.append(to_string(metallic));
 			ImGui::Text(name.c_str());
 
-			name = "ROUGHNESS : ";
-			float specular = object->getShader()->roughness;
-			name.append(to_string(specular));
+			name = "Roughness : ";
+			float roughness = object->getShader()->roughness;
+			name.append(to_string(roughness));
+			ImGui::Text(name.c_str());
+
+			name = "Ambient : ";
+			float ambient = object->getShader()->ambient;
+			name.append(to_string(ambient));
 			ImGui::Text(name.c_str());
 
 			name = "Use normal map : ";

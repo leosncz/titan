@@ -26,7 +26,7 @@ public:
 		std::cout << "--> GUI ID=" << m_id << " created !" << std::endl;
 	}
 	void setVisibility(bool isVisible_) { isVisible = isVisible_; }
-	virtual void render(scene* scene_) = 0;
+	virtual void update(scene* scene_) = 0;
 	~gui()
 	{
 		ImGui_ImplOpenGL3_Shutdown();

@@ -103,7 +103,7 @@ int main()
     while (!mainDisplay.shouldExit()) {
         myscene.renderScene();
         myscene.updateCamera();
-        gui_.render(&myscene);
+        gui_.update(&myscene);
         myscene.updateScene();
         i += 0.001f;
         triangle4.rotateObject(0.01, glm::vec3(0, i, 0));
