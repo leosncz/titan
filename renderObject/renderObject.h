@@ -346,6 +346,8 @@ public:
 
         glUniform1f(glGetUniformLocation(m_gShader.getShaderID(), "metallic"), m_gShader.metallic);
         glUniform1f(glGetUniformLocation(m_gShader.getShaderID(), "roughness"), m_gShader.roughness);
+        glUniform1f(glGetUniformLocation(m_gShader.getShaderID(), "ambient"), m_gShader.ambient);
+
 
         int dirLightID = 0;
         int ptLightID = 0;

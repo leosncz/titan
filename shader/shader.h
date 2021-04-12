@@ -19,7 +19,7 @@ public:
     //Material properties
     float metallic = 0.5f;
     float roughness = 0.5f;
-    float ambient = 0.01f;
+    float ambient = 0.1f;
     //End material properties
 
     shader()
@@ -27,7 +27,7 @@ public:
         id = rand();
     }
 
-    void registerLightToRender(vector<light*> sceneLights, int numberOfLight, bool forwardRendering=false) // the shader chosen must support light
+    void registerLightToRender(vector<light*> sceneLights, int numberOfLight, bool forwardRendering=false) 
     {
         //Send material properties
         glUniform1i(glGetUniformLocation(m_shaderID, "numberOfLight"), numberOfLight);
@@ -35,11 +35,7 @@ public:
         {
              glUniform1f(glGetUniformLocation(m_shaderID, "metallic"), metallic);
              glUniform1f(glGetUniformLocation(m_shaderID, "roughness"), roughness);
-             glUniform1f(glGetUniformLocation(m_shaderID, "ambient"), ambient);
         }
-
-        glUniform1f(glGetUniformLocation(m_shaderID, "ambient"), ambient);
-
         for (int i = 0; i < sceneLights.size(); i++)
         {
             string IDcolors = "lightsColor[";
@@ -158,8 +154,6 @@ public:
 
         const char* fragment_shader =
         "#version 330 core\n"
-        //MATERIAL PROPERTIES
-        "uniform float ambient;"
         //END MATERIAL PROPERTIES-------------
         "uniform vec3 lightsColor[100];"
         "uniform vec3 lightsPosition[100];"
@@ -191,6 +185,7 @@ public:
         "uniform sampler2D gPosition;"
         "uniform sampler2D gMetallic;"
         "uniform sampler2D gRoughness;"
+        "uniform sampler2D gAmbient;"
         "uniform samplerCube textureDepthCubemap[20];"
         "uniform sampler2D textureDepthMap[20];"
 
@@ -290,6 +285,7 @@ public:
             "vec3 Diffuse = texture(gAlbedoSpec, texCoord).rgb;" 
             "float metallic = texture(gMetallic, texCoord).r;"
             "float roughness = texture(gRoughness, texCoord).r;" 
+            "float ambient = texture(gAmbient, texCoord).r;"
 
             " vec3 N = Normal;"
             " vec3 WorldPos = FragPos;"
@@ -401,6 +397,7 @@ public:
             "layout(location = 2) out vec4 gAlbedoSpec;"
             "layout(location = 3) out vec3 gRoughness;"
             "layout(location = 4) out vec3 gMetallic;"
+            "layout(location = 5) out vec3 gAmbient;"
             "in vec3 aNormals;"
             "in vec3 fragPos;"
             "in vec2 texCoord;"
@@ -411,6 +408,7 @@ public:
             "in mat3 TBN;"
             "uniform float metallic;"
             "uniform float roughness;"
+            "uniform float ambient;"
             // TEXTURES
             "uniform sampler2D texture1;"
             "uniform sampler2D texture2;"
@@ -433,7 +431,7 @@ public:
             " gPosition = fragPos;"
             " if(useMetallicMap == 0){gMetallic = vec3(metallic,metallic,metallic);}else{gMetallic = vec3(texture(metallicMap,texCoord));}"
             " if(useRoughnessMap == 0){gRoughness = vec3(roughness,roughness,roughness);}else{gRoughness = vec3(texture(roughnessMap,texCoord));}"
-            " "
+            " gAmbient = vec3(ambient,ambient,ambient);"
             " "
             "}";
 

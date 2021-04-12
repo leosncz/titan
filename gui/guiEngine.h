@@ -30,7 +30,7 @@ public:
 			}
 			if (m_showRenderingDebug)
 			{
-				showRenderingDebug(scene_->getGPosition(), scene_->getGNormals(), scene_->getGAlbedo(), scene_->getGRoughness(), scene_->getGMetallic());
+				showRenderingDebug(scene_->getGPosition(), scene_->getGNormals(), scene_->getGAlbedo(), scene_->getGRoughness(), scene_->getGMetallic(),scene_->getGAmbient());
 			}
 			if (m_showSceneInformations)
 			{
@@ -53,7 +53,7 @@ public:
 					m_showLightingDebug = true;
 					ImGui::EndMenu();
 				}
-				if (ImGui::BeginMenu("Scene informations"))
+				if (ImGui::BeginMenu("Scene editor"))
 				{
 					m_showSceneInformations = true;
 					ImGui::EndMenu();
@@ -91,7 +91,7 @@ private:
 		ImGui::End();
 	}
 
-	void showRenderingDebug(GLuint positionTexture, GLuint normalTexture, GLuint albedoSpecTexture, GLuint roughnessTexture, GLuint metallicTexture)
+	void showRenderingDebug(GLuint positionTexture, GLuint normalTexture, GLuint albedoSpecTexture, GLuint roughnessTexture, GLuint metallicTexture, GLuint ambientTexture)
 	{
 		ImGui::Begin("Deferred rendering debug", &m_showRenderingDebug);
 		ImGui::SetWindowFontScale(1.1);
@@ -128,6 +128,12 @@ private:
 		ImGui::TextWrapped("Metallic: ");
 		IM_ASSERT(metallicTexture);
 		ImGui::Image((void*)(intptr_t)metallicTexture, ImVec2(400, 300), ImVec2(0, 1), ImVec2(1, 0));
+
+		ImGui::Separator();
+
+		ImGui::TextWrapped("Ambient: ");
+		IM_ASSERT(ambientTexture);
+		ImGui::Image((void*)(intptr_t)ambientTexture, ImVec2(400, 300), ImVec2(0, 1), ImVec2(1, 0));
 
 		ImGui::End();
 	}

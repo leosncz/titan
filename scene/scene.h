@@ -98,6 +98,14 @@ public:
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, &swizzleMask[0]);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, gMetallic, 0);
+
+        glGenTextures(1, &gAmbient);
+        glBindTexture(GL_TEXTURE_2D, gAmbient);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, m_display->getDisWidth(), m_display->getDisHeight(), 0, GL_RGBA, GL_FLOAT, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, &swizzleMask[0]);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, GL_TEXTURE_2D, gAmbient, 0);
        
         glGenRenderbuffers(1, &gRBO);
         glBindRenderbuffer(GL_RENDERBUFFER, gRBO);
@@ -106,8 +114,8 @@ public:
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, gRBO);
 
         // - tell OpenGL which color attachments we'll use (of this framebuffer) for rendering 
-        unsigned int attachments[5] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4 };
-        glDrawBuffers(5, attachments);
+        unsigned int attachments[6] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5 };
+        glDrawBuffers(6, attachments);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glBindTexture(GL_TEXTURE_2D, 0);
@@ -280,6 +288,7 @@ public:
     GLuint getGAlbedo() { return gAlbedo; }
     GLuint getGRoughness() { return gRoughness; }
     GLuint getGMetallic() { return gMetallic; }
+    GLuint getGAmbient() { return gAmbient; }
     vector<light*>* getLights() { return &m_lights; }
     vector<renderObject*>* getObjectHolder() { return &m_objectHolder; }
 
@@ -291,6 +300,7 @@ public:
         glDeleteTextures(1, &gPosition);
         glDeleteTextures(1, &gRoughness);
         glDeleteTextures(1, &gMetallic);
+        glDeleteTextures(1, &gAmbient);
         glDeleteRenderbuffers(1, &hdrRBO);
         glDeleteRenderbuffers(1, &gRBO);
         glDeleteFramebuffers(1, &hdrFBO);
@@ -326,7 +336,7 @@ private:
     GLuint vbo, vbo_colors, vbo_texCoords, vao;
     float m_exposure;
 
-    GLuint gBuffer, gPosition, gNormal, gAlbedo, gRoughness, gMetallic, gRBO;
+    GLuint gBuffer, gPosition, gNormal, gAlbedo, gRoughness, gMetallic, gAmbient, gRBO;
     shader m_deferedShader;
 
     void freeTexturesSlot() // Free all texture stuff related to binded texture or slot
@@ -454,7 +464,13 @@ private:
             glBindTexture(GL_TEXTURE_2D, gAlbedo);
             textureCount++;
         }
-       
+        if (glIsTexture(gAmbient))
+        {
+            glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(), "gAmbient"), textureCount);
+            glActiveTexture(GL_TEXTURE0 + textureCount);
+            glBindTexture(GL_TEXTURE_2D, gAmbient);
+            textureCount++;
+        }
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 

@@ -11,9 +11,10 @@ using namespace std;
 
 int main()
 {
-    display mainDisplay = display(1620, 880, 4, false);
+    display mainDisplay(1620, 880, 4, false);
 
     scene myscene;
+
     cameraFPS cam;
     cam.init(&mainDisplay);
 
@@ -88,7 +89,7 @@ int main()
     triangle4.setNumberOfTextureToDraw(1);
     triangle4.setNormalMap("graphicData/metalnormalmap.jpg");
 
-   /* light light_[50];
+    /*light light_[50];
     int i2 = 0;
     for (int i = -4; i < 4; i+=1)
     {
@@ -99,11 +100,11 @@ int main()
         i2++;
     }*/
 
-    light mylight4 = light();
+    /*light mylight4 = light();
     mylight4.setData(glm::vec3(0.5, 2, 3), glm::vec3(10,10,10), glm::vec3(0, -0.3, -1), 1000.0f);
     mylight4.type = DIRECTIONNAL_LIGHT;
-    mylight4.shadowResolution = 6024;
-    myscene.addLight(&mylight4);
+    mylight4.shadowResolution = 4024;
+    myscene.addLight(&mylight4);*/
 
     float i = 0.0f;
     while (!mainDisplay.shouldExit()) {
