@@ -88,13 +88,32 @@ private:
 				IM_ASSERT(lights[i]->textureDepthMap);
 				string content = "Light ";
 				content.append(std::to_string(i));
+				content.append(" :");
+				ImGui::TextWrapped(content.c_str());
+				content = "Shadow resolution: ";
+				content.append(to_string(lights[i]->shadowResolution));
 				ImGui::TextWrapped(content.c_str());
 				if (lights[i]->type == DIRECTIONNAL_LIGHT)
 				{
+					ImGui::TextWrapped("Type: Directionnal");
 					content = "ShadowMap (if enabled): ";
 					ImGui::TextWrapped(content.c_str());
 					ImGui::Image((void*)(intptr_t)lights[i]->textureDepthMap, ImVec2(400, 300), ImVec2(0, 1), ImVec2(1, 0));
 				}
+				else
+				{
+					ImGui::TextWrapped("Type: Point light");
+				}
+
+				content = "constant: ";
+				content.append(to_string(lights[i]->constant));
+				ImGui::TextWrapped(content.c_str());
+				content = "linear: ";
+				content.append(to_string(lights[i]->linear));
+				ImGui::TextWrapped(content.c_str());
+				content = "quadratic: ";
+				content.append(to_string(lights[i]->quadratic));
+				ImGui::TextWrapped(content.c_str());
 
 				ImGui::Separator();
 			}

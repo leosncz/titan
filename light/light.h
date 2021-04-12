@@ -1,6 +1,6 @@
-#ifndef LIGHT_H_INCLUDED
-#define LIGHT_H_INCLUDED
+#pragma once
 #include <glm.hpp>
+#include <GL/glew.h>
 #define POINT_LIGHT 0
 #define DIRECTIONNAL_LIGHT 1
 #define SPOT_LIGHT 2
@@ -8,8 +8,19 @@ using namespace glm;
 class light
 {
   public:
-      light() { shadowResolution = 1024;  computeShadows = true;  type = DIRECTIONNAL_LIGHT; cutOff = glm::cos(glm::radians(12.5f));  lightPosition = vec3(0, 0, 0); lightColor = vec3(1, 1, 1); lightDirection = vec3(0, 0, -1); constant = 1.0; linear = 0.19; quadratic = 0.032; }
-     void setData(vec3 position, vec3 color, vec3 direction, float strength = 0.0, float cutoff_ = glm::cos(glm::radians(12.5))) { cutOff = cutoff_; lightPosition = position; lightColor = color; lightDirection = direction; }
+      light(int type_ = DIRECTIONNAL_LIGHT, vec3 position_ = vec3(0,0,0), vec3 color_=vec3(1,1,1), vec3 direction_=vec3(0,-0.3,-1), bool computeShadows_=true, int shadowResolution_ = 500, float constant_=1.0,float linear_ = 1.0, float quadratic_ = 1.0,float cutoff_ = glm::cos(glm::radians(12.5))) 
+      { 
+          shadowResolution = shadowResolution_;  
+          computeShadows = computeShadows_; 
+          type = type_;
+          cutOff = cutoff_; 
+          lightPosition = position_;
+          lightColor = color_;
+          lightDirection = direction_;
+          constant = constant_;
+          linear = linear_;
+          quadratic = quadratic_;
+      }
 
      vec3 lightPosition;
      vec3 lightColor;
@@ -33,4 +44,3 @@ class light
      }
 
 };
-#endif // LIGHT_H_INCLUDED

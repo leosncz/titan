@@ -31,11 +31,7 @@ public:
     {
         //Send material properties
         glUniform1i(glGetUniformLocation(m_shaderID, "numberOfLight"), numberOfLight);
-        if (forwardRendering)
-        {
-             glUniform1f(glGetUniformLocation(m_shaderID, "metallic"), metallic);
-             glUniform1f(glGetUniformLocation(m_shaderID, "roughness"), roughness);
-        }
+
         for (int i = 0; i < sceneLights.size(); i++)
         {
             string IDcolors = "lightsColor[";
@@ -308,7 +304,7 @@ public:
             "    else{L = normalize(lightsPosition[i] - WorldPos);}" // point light
             "    vec3 H = normalize(V + L);"
             "    float distance = length(lightsPosition[i] - WorldPos);"
-            "    float attenuation = 1.0 / (distance * distance);"
+            "    float attenuation = 1.0 / (lightsConstant[i] + lightsLinear[i] * distance + lightsQuadratic[i] * (distance));"
             "    vec3 radiance = vec3(0.0);"
             "    if(lightsType[i] == 1){radiance = lightsColor[i];}" // directionnal light
             "    else{radiance = lightsColor[i] * attenuation;}" // point light
