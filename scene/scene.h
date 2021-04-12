@@ -17,7 +17,7 @@ Handles everything related to scenes and object rendering loop in scenes
 class scene
 {
 public:
-    void init(display* customDisplay, camera* cam) // Set the display that will be used to render the scene
+    scene(display* customDisplay, camera* cam) // Set the display that will be used to render the scene
     {
         std::cout << "--> Creating new scene ID=" << id << std::endl;
 
