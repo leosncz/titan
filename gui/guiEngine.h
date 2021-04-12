@@ -77,16 +77,27 @@ private:
 	{
 		ImGui::Begin("Lighting & shadow debug", &m_showLightingDebug);
 		ImGui::SetWindowFontScale(1.1);
-		for (int i = 0; i < lights.size(); i++)
+		if (lights.size() == 0)
 		{
-			IM_ASSERT(lights[i]->textureDepthMap);
-			string content = "Light " + i;
-			ImGui::TextWrapped(content.c_str());
-			content = "ShadowMap (if enabled): ";
-			ImGui::TextWrapped(content.c_str());
-			ImGui::Image((void*)(intptr_t)lights[i]->textureDepthMap, ImVec2(400, 300), ImVec2(0, 1), ImVec2(1, 0));
+			ImGui::TextWrapped("No light !");
+		}
+		else
+		{
+			for (int i = 0; i < lights.size(); i++)
+			{
+				IM_ASSERT(lights[i]->textureDepthMap);
+				string content = "Light ";
+				content.append(std::to_string(i));
+				ImGui::TextWrapped(content.c_str());
+				if (lights[i]->type == DIRECTIONNAL_LIGHT)
+				{
+					content = "ShadowMap (if enabled): ";
+					ImGui::TextWrapped(content.c_str());
+					ImGui::Image((void*)(intptr_t)lights[i]->textureDepthMap, ImVec2(400, 300), ImVec2(0, 1), ImVec2(1, 0));
+				}
 
-			ImGui::Separator();
+				ImGui::Separator();
+			}
 		}
 		ImGui::End();
 	}
