@@ -5,7 +5,7 @@
 #include "light/light.h"
 #include "scene/scene.h"
 #include "renderObjectScene/renderObjectScene.h"
-#include "cameraEngine/cameraEngine.h"
+#include "cameraFPS/cameraFPS.h"
 #include "gui/guiEngine.h"
 using namespace std;
 
@@ -109,7 +109,7 @@ int main()
     while (!mainDisplay.shouldExit()) {
         myscene.renderScene();
         myscene.updateCamera();
-        gui_.render(myscene.getObjectHolder(), *myscene.getLights(), myscene.getGAlbedo(), myscene.getGNormals(), myscene.getGPosition(), myscene.getGRoughness(), myscene.getGMetallic());
+        gui_.render(&myscene);
         myscene.updateScene();
         i += 0.001f;
         triangle4.rotateObject(0.01, glm::vec3(0, i, 0));

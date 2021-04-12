@@ -1,13 +1,5 @@
 #pragma once
 #include "gui.h"
-#include <GL/glew.h>
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_glfw.h"
-#include "imgui/imgui_impl_opengl3.h"
-#include "../display/display.h"
-#include "../renderObject/renderObject.h"
-#include <iostream>
-#include <vector>
 class guiEngine : public gui
 {
 public:
@@ -19,7 +11,7 @@ public:
 		m_showHelloMessage = true;
 	}
 
-	void render(vector<renderObject*>* objectHolder, vector<light*> lights, GLuint albedoSpecTexture, GLuint normalTexture, GLuint positionTexture, GLuint roughnessTexture, GLuint metallicTexture)
+	void render(scene* scene_)
 	{
 		if (glfwGetKey(m_display->getGLFWWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		{
@@ -38,15 +30,15 @@ public:
 			}
 			if (m_showRenderingDebug)
 			{
-				showRenderingDebug(positionTexture, normalTexture, albedoSpecTexture, roughnessTexture, metallicTexture);
+				showRenderingDebug(scene_->getGPosition(), scene_->getGNormals(), scene_->getGAlbedo(), scene_->getGRoughness(), scene_->getGMetallic());
 			}
 			if (m_showSceneInformations)
 			{
-				showSceneInformations(objectHolder);
+				showSceneInformations(scene_->getObjectHolder());
 			}
 			if (m_showLightingDebug)
 			{
-				showLightingDebug(lights);
+				showLightingDebug(*scene_->getLights());
 			}
 
 			if (ImGui::BeginMainMenuBar())
@@ -159,7 +151,6 @@ private:
 		//Scene information
 		ImGui::Begin("Scene informations", &m_showSceneInformations);
 		ImGui::SetWindowFontScale(1.1);
-		float value;
 		for (int i = 0; i < objectHolder->size(); i++)
 		{
 			vector<renderObject*>* test = objectHolder;

@@ -1,8 +1,7 @@
 /* Author: leosncz
 Handles everything related to scenes and object rendering loop in scenes
 */
-#ifndef SCENE_H_INCLUDED
-#define SCENE_H_INCLUDED
+#pragma once
 #include <iostream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -11,7 +10,7 @@ Handles everything related to scenes and object rendering loop in scenes
 #include <vector>
 #include "../display/display.h"
 #include "../renderObject/renderObject.h"
-#include "../cameraFPS/cameraFPS.h"
+#include "../camera/camera.h"
 #include "../texturePool/texturePool.h"
 #include "../shader/shader.h"
 
@@ -491,4 +490,3 @@ private:
     }
 };
 
-#endif // SCENE_H_INCLUDED

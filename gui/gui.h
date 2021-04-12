@@ -1,5 +1,4 @@
 #pragma once
-#include <GL/glew.h>
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
@@ -27,8 +26,7 @@ public:
 		std::cout << "--> GUI ID=" << m_id << " created !" << std::endl;
 	}
 	void setVisibility(bool isVisible_) { isVisible = isVisible_; }
-	virtual void render(vector<renderObject*>* objectHolder, vector<light*> lights, GLuint albedoSpecTexture, GLuint normalTexture, GLuint positionTexture, GLuint roughnessTexture, GLuint metallicTexture) = 0;
-
+	virtual void render(scene* scene_) = 0;
 	~gui()
 	{
 		ImGui_ImplOpenGL3_Shutdown();

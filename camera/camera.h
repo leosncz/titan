@@ -5,7 +5,6 @@
 #include <GLFW/glfw3.h>
 #include <gtc/matrix_transform.hpp>
 #include "../display/display.h"
-#include "../gui/gui.h"
 
 class camera
 {
