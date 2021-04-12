@@ -102,9 +102,9 @@ int main()
     float i = 0.0f;
     while (!mainDisplay.shouldExit()) {
         myscene.renderScene();
-        myscene.updateCamera();
+        cam.update(myscene.getViewMatrix());
         gui_.update(&myscene);
-        myscene.updateScene();
+        myscene.updateWindow();
         i += 0.001f;
         triangle4.rotateObject(0.01, glm::vec3(0, i, 0));
     } 

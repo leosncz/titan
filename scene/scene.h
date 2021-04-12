@@ -175,11 +175,18 @@ public:
         drawHDRQuad();
         freeTexturesSlot();
 
-        //Check for errors
+        //Check for global errors
         GLenum err;
         while ((err = glGetError()) != GL_NO_ERROR) {
             std::cerr << "--> PIPELINE ERROR: " << err << std::endl;
         }
+    }
+
+    void updateWindow()
+    {
+        // Update window content & user interaction
+        glfwSwapBuffers(m_display->getGLFWWindow());
+        glfwPollEvents();
     }
 
     void setGamma(float gamma) { m_gamma = gamma; }
@@ -255,23 +262,6 @@ public:
         }
     }
 
-    void clearScene()
-    {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glfwPollEvents();
-    }
-
-    void updateCamera(bool isAzerty=true)
-    {
-        glfwPollEvents();
-        m_actualCamera->update(&view, isAzerty);
-    }
-
-    void updateScene()
-    {
-        glfwSwapBuffers(m_display->getGLFWWindow());
-    }
-
     display* getDisplay() { return m_display; }
 
     int getNbOfLight(){return m_lights.size();}
@@ -291,6 +281,7 @@ public:
     GLuint getGAmbient() { return gAmbient; }
     vector<light*>* getLights() { return &m_lights; }
     vector<renderObject*>* getObjectHolder() { return &m_objectHolder; }
+    mat4* getViewMatrix() { return &view; }
 
     ~scene()
     {
