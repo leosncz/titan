@@ -90,9 +90,11 @@ private:
 				content.append(std::to_string(i));
 				content.append(" :");
 				ImGui::TextWrapped(content.c_str());
+
 				content = "Shadow resolution: ";
 				content.append(to_string((lights->at(i)->shadowResolution)));
 				ImGui::TextWrapped(content.c_str());
+
 				if (lights->at(i)->type == DIRECTIONNAL_LIGHT)
 				{
 					ImGui::TextWrapped("Type: Directionnal");
@@ -105,15 +107,17 @@ private:
 					ImGui::TextWrapped("Type: Point light");
 				}
 
-				content = "constant: ";
-				content.append(to_string(lights->at(i)->constant));
-				ImGui::TextWrapped(content.c_str());
-				content = "linear: ";
-				content.append(to_string(lights->at(i)->linear));
-				ImGui::TextWrapped(content.c_str());
-				content = "quadratic: ";
-				content.append(to_string(lights->at(i)->quadratic));
-				ImGui::TextWrapped(content.c_str());
+				content = "Constant ##";
+				content.append(to_string(i));
+				ImGui::SliderFloat(content.c_str(), &lights->at(i)->constant, 0.0, 4.0);
+
+				content = "Linear ##";
+				content.append(to_string(i));
+				ImGui::SliderFloat(content.c_str(), &lights->at(i)->linear, 0.0, 4.0);
+
+				content = "Quadratic ##";
+				content.append(to_string(i));
+				ImGui::SliderFloat(content.c_str(), &lights->at(i)->quadratic, 0.0, 4.0);
 
 				content = "Delete ";
 				content.append(to_string(i));
@@ -205,21 +209,18 @@ private:
 			name = "Tag : ";
 			name.append(object->getTag());
 			ImGui::Text(name.c_str());
+			
+			name = "Metallic ##";
+			name.append(to_string(object->getID()));
+			ImGui::SliderFloat(name.c_str(), &object->getShader()->metallic, 0.0, 1.0);
 
-			name = "Metallic : ";
-			float metallic = object->getShader()->metallic;
-			name.append(to_string(metallic));
-			ImGui::Text(name.c_str());
+			name = "Roughness ##";
+			name.append(to_string(object->getID()));
+			ImGui::SliderFloat(name.c_str(), &object->getShader()->roughness, 0.0, 1.0);
 
-			name = "Roughness : ";
-			float roughness = object->getShader()->roughness;
-			name.append(to_string(roughness));
-			ImGui::Text(name.c_str());
-
-			name = "Ambient : ";
-			float ambient = object->getShader()->ambient;
-			name.append(to_string(ambient));
-			ImGui::Text(name.c_str());
+			name = "Ambient ##";
+			name.append(to_string(object->getID()));
+			ImGui::SliderFloat(name.c_str(), &object->getShader()->ambient,0.0, 1.0);
 
 			name = "Use normal map : ";
 			if (object->doesMeshHasNormalMap()) { name.append("Yes"); }

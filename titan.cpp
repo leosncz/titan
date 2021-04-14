@@ -89,7 +89,7 @@ int main()
 
     light light_[50];
     int i2 = 0;
-    for (int i = -4; i < 4; i+=1)
+    for (int i = -2; i < 2; i+=1)
     {
         light_[i2] = light(POINT_LIGHT, vec3(i, 0.5, 2), vec3(10, 10, 10), vec3(0, -0.3, -1),true);
         myscene.addLight(&light_[i2]);
