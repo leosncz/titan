@@ -184,6 +184,7 @@ public:
         "uniform sampler2D gAmbient;"
         "uniform samplerCube textureDepthCubemap[20];"
         "uniform sampler2D textureDepthMap[20];"
+        "uniform float farShadow;"
 
         "const float PI = 3.14159265359;"
         //
@@ -205,7 +206,7 @@ public:
             "        for (float z = -offset; z < offset; z += offset / (samples * 0.5))"
             "        {"
             "            float closestDepth = texture(tex, fragToLight + vec3(x, y, z)).r;"
-            "            closestDepth *= 25.0;"   // undo mapping [0;1]
+            "            closestDepth *= farShadow;"   // undo mapping [0;1]
             "            if (currentDepth - bias > closestDepth){"
             "                shadow += 1.0;}"
             "        }"
@@ -327,7 +328,7 @@ public:
             "    vec3 final = (kD * albedo / PI + specular) * radiance * NdotL;"
             // SHADOWS
             "    if(lightsType[i] == 1){float shadowval = ShadowCalculation(lightSpaceMatrix[i]*vec4(FragPos,1.0), textureDepthMap[i]); final *= (1-shadowval);}"
-            "    else if(lightsType[i] == 0){float shadowval = ShadowCalculationPL(FragPos, lightsPosition[i], textureDepthCubemap[i]); if((1-shadowval) < 0.4 && distance < 25.0){final = vec3(0,0,0);}}"
+            "    else if(lightsType[i] == 0){float shadowval = ShadowCalculationPL(FragPos, lightsPosition[i], textureDepthCubemap[i]); if((1-shadowval) < 0.4 && distance < farShadow){final = vec3(0,0,0);}}"
             "    Lo += final;"
             "}"
 
@@ -505,11 +506,12 @@ public:
         "in vec4 FragPos;"
         "uniform vec3 lightPos;"
         "uniform int isPoint;"
+        "uniform float farShadow;"
         //""
         "void main() {"
         "   if(isPoint == 1){"
         "   float lightDistance = length(FragPos.xyz - lightPos);"
-        "   lightDistance = lightDistance / 25.0;"
+        "   lightDistance = lightDistance / farShadow;"
         "   gl_FragDepth = lightDistance;}else{gl_FragDepth = gl_FragCoord.z;}"
         "}";
 

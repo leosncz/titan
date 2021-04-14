@@ -49,7 +49,7 @@ public:
 			}
 			if (m_showLightingEditor)
 			{
-				showLightingEditor(scene_->getLights());
+				showLightingEditor(scene_->getFarShadow(),scene_->getLights());
 			}
 			if (m_showExportMenu)
 			{
@@ -93,10 +93,14 @@ public:
 private:
 	bool m_showRenderingDebug, m_showSceneEditor, m_showLightingEditor, m_showHelloMessage, m_showExportMenu;
 
-	void showLightingEditor(vector<light*>* lights)
+	void showLightingEditor(float* farShadow, vector<light*>* lights)
 	{
 		ImGui::Begin("Lighting editor", &m_showLightingEditor);
 		ImGui::SetWindowFontScale(1.1);
+
+		ImGui::SliderFloat("Far shadow", farShadow, 2.0, 200.0);
+		ImGui::Separator();
+
 		if (lights->size() == 0)
 		{
 			ImGui::TextWrapped("No light !");

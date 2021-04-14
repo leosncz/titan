@@ -87,7 +87,7 @@ int main()
     triangle4.setNumberOfTextureToDraw(1);
     triangle4.setNormalMap("graphicData/metalnormalmap.jpg");
 
-    light light_[50];
+    light light_[10];
     int i2 = 0;
     for (int i = -2; i < 2; i+=1)
     {
@@ -96,7 +96,7 @@ int main()
         i2++;
     }
 
-   /* light mylight4 = light(DIRECTIONNAL_LIGHT,vec3(0,0.5,2),vec3(10,10,10),vec3(0,-0.3,-1),false);
+    /*light mylight4 = light(DIRECTIONNAL_LIGHT,vec3(6.0,0.5,2),vec3(10,10,10),vec3(0,-0.3,-1),true);
     myscene.addLight(&mylight4);*/
 
     float i = 0.0f;

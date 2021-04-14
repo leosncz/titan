@@ -147,7 +147,7 @@ public:
     {
         m_texturePool = texPool;
     }
-    void renderDepth(glm::mat4* projection, glm::mat4* view, glm::mat4* model, light* lightToRender)
+    void renderDepth(glm::mat4* projection, glm::mat4* view, glm::mat4* model, light* lightToRender, float farShadow = 25.0f)
     {
         //Update actual model matrix
         glm::mat4 customModelMatrix = *model * modelMatrix;
@@ -160,10 +160,11 @@ public:
         glUniformMatrix4fv(glGetUniformLocation(m_depthShader.getShaderID(),"model"), 1, GL_FALSE, glm::value_ptr(customModelMatrix));
         glUniformMatrix4fv(glGetUniformLocation(m_depthShader.getShaderID(), "view"), 1, GL_FALSE, glm::value_ptr(*view));
         glUniformMatrix4fv(glGetUniformLocation(m_depthShader.getShaderID(), "projection"), 1, GL_FALSE, glm::value_ptr(*projection));
+        glUniform1f(glGetUniformLocation(m_depthShader.getShaderID(), "farShadow"), farShadow);
 
         if (lightToRender->type == DIRECTIONNAL_LIGHT)
         {
-            glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 25.0f);
+            glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, farShadow);
             glm::mat4 lightView = glm::lookAt(lightToRender->lightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
             glm::mat4 lightSpaceMatrix = lightProjection * lightView;
             glUniformMatrix4fv(glGetUniformLocation(m_depthShader.getShaderID(),"lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
@@ -173,7 +174,7 @@ public:
         {
             float aspect = (float)1024 / (float)1024;
             float near = 1.0f;
-            float far = 25.0f;
+            float far = farShadow;
             glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect, near, far);
             std::vector<glm::mat4> shadowTransforms;
             shadowTransforms.push_back(shadowProj *

@@ -31,6 +31,7 @@ public:
         id = rand();
 
         m_actualCamera = cam;
+        m_farShadow = 25.0f;
 
         m_gamma = 2.2;
 
@@ -285,6 +286,8 @@ public:
     camera* getCamera() { return m_actualCamera; }
     float* getExposure() { return &m_exposure; }
     float* getGamma() { return &m_gamma; }
+    float* getFarShadow() { return &m_farShadow; }
+    void setFarShadow(float value = 25.0f) { m_farShadow = value; }
 
     ~scene()
     {
@@ -337,6 +340,8 @@ private:
 
     texturePool m_texturePool; // All scenes have their own texture pool (for now)
 
+    float m_farShadow; // Used to tell the maximum distance where we have to calculate shadow
+
     //gamma
     float m_gamma;
 
@@ -381,6 +386,7 @@ private:
         glBindVertexArray(vao);
 
         glUniform3f(glGetUniformLocation(m_deferedShader.getShaderID(), "viewPos"), m_actualCamera->getCameraPos().x, m_actualCamera->getCameraPos().y, m_actualCamera->getCameraPos().z);
+        glUniform1f(glGetUniformLocation(m_deferedShader.getShaderID(), "farShadow"), m_farShadow);
 
         int dirLightID = 0;
         int ptLightID = 0;
@@ -413,7 +419,7 @@ private:
                 string name = "lightSpaceMatrix[";
                 name.append(to_string(dirLightID));
                 name.append("]");
-                glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 25.0f);
+                glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, m_farShadow);
                 glm::mat4 lightView = glm::lookAt(m_lights[i]->lightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
                 glm::mat4 lightSpaceMatrix = lightProjection * lightView;
                 glUniformMatrix4fv(glGetUniformLocation(m_deferedShader.getShaderID(), name.c_str()), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
@@ -496,7 +502,7 @@ private:
                 glClear(GL_DEPTH_BUFFER_BIT);
                 for (int i2 = 0; i2 < m_objectHolder.size(); i2++)
                 {
-                    m_objectHolder[i2]->renderDepth(&projection, &view, &model, m_lights[i]);
+                    m_objectHolder[i2]->renderDepth(&projection, &view, &model, m_lights[i],m_farShadow);
                 }
                 glBindFramebuffer(GL_FRAMEBUFFER, 0);
                 glCullFace(GL_BACK);
