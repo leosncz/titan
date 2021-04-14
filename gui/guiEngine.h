@@ -189,7 +189,7 @@ private:
 		ImGui::Separator();
 
 		ImGui::SliderFloat("Gamma", gamma, 0.0, 5.0);
-		ImGui::SliderFloat("Exposure", exposure, 0.0, 5.0);
+		ImGui::SliderFloat("Exposure", exposure, 0.0, 30.0);
 
 		ImGui::Separator();
 		ImGui::TextWrapped("Position: ");
