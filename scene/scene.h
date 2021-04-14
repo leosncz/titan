@@ -282,6 +282,9 @@ public:
     vector<light*>* getLights() { return &m_lights; }
     vector<renderObject*>* getObjectHolder() { return &m_objectHolder; }
     mat4* getViewMatrix() { return &view; }
+    camera* getCamera() { return m_actualCamera; }
+    float* getExposure() { return &m_exposure; }
+    float* getGamma() { return &m_gamma; }
 
     ~scene()
     {
@@ -300,6 +303,22 @@ public:
         glDeleteBuffers(1, &vbo_colors);
         glDeleteBuffers(1, &vbo_texCoords);
         glDeleteVertexArrays(1, &vao);
+
+        for (int i = 0; i < m_lights.size(); i++)
+        {
+            if (m_lights[i]->mustBeDeleted)
+            {
+                delete m_lights[i];
+            }
+        }
+        for (int i = 0; i < m_objectHolder.size(); i++)
+        {
+            if (m_objectHolder[i]->getDeleteStatus())
+            {
+                delete m_objectHolder[i];
+            }
+        }
+
         std::cout << "--> Destroying scene ID=" << id << std::endl;
     }
 

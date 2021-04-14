@@ -20,6 +20,7 @@ class light
           constant = constant_;
           linear = linear_;
           quadratic = quadratic_;
+          mustBeDeleted = false;
       }
 
      vec3 lightPosition;
@@ -36,6 +37,8 @@ class light
      int shadowResolution;
 
      GLuint textureDepthMap, depthMapFBO;
+
+     bool mustBeDeleted; // Indicates if this light has been dynamically created on the heap, if yes the scene will delete it
 
      ~light()
      {

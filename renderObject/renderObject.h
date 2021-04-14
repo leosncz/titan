@@ -21,6 +21,7 @@ public:
         id = rand(); 
         std::cout << "--> Creating new renderObject ID=" << id << std::endl;
         tag = "Custom Object";
+        mustBeDeleted = false;
     }
     string getTag() { return tag; }
     shader* getShader() { return &m_gShader; }
@@ -198,134 +199,6 @@ public:
         glDrawArrays(GL_TRIANGLES, 0, m_nbOfPointToDraw);
     }
 
-    //Should NOT be called unless for forward rendering
-    void render(glm::mat4* projection, glm::mat4* view, glm::mat4* model, glm::vec3 viewPos, vector<light*> sceneLights = {}, int numberOfLight = 0, GLuint gPosition = 0,GLuint gAlbedoSpec=0,GLuint gNormals=0)
-    {
-        //Update actual model matrix
-        glm::mat4 customModelMatrix = *model * modelMatrix;
-        
-        glUseProgram(m_shader.getShaderID());
-
-        glBindVertexArray(vao);
-
-            //Send object relative data to display the object
-            glUniformMatrix4fv(modelID, 1, GL_FALSE, glm::value_ptr(customModelMatrix));
-            glUniformMatrix4fv(viewID, 1, GL_FALSE, glm::value_ptr(*view));
-            glUniformMatrix4fv(projectionID, 1, GL_FALSE, glm::value_ptr(*projection));
-            glUniform3f(viewPosID, viewPos.x, viewPos.y, viewPos.z);
-
-            glUniform1i(howManyTexID, m_nbOfTextureToDraw);
-           
-
-            int dirLightID = 0;
-            int ptLightID = 0;
-            int textureCount = 0; // 0 is hdr texture
-            for (int i = 0; i < sceneLights.size(); i++) // For each light
-            {
-                if (glIsTexture(sceneLights[i]->textureDepthMap) && sceneLights[i]->computeShadows && sceneLights[i]->type == POINT_LIGHT)
-                {
-                    if (ptLightID == 0)
-                    {
-                        glUniform1i(glGetUniformLocation(m_shader.getShaderID(), "textureDepthCubemap"), 0);
-                        glActiveTexture(GL_TEXTURE0);
-                        glBindTexture(GL_TEXTURE_CUBE_MAP, sceneLights[i]->textureDepthMap);
-                        ptLightID++;
-                    }
-                    else
-                    {
-                        string name = "textureDepthCubemap";
-                        name.append(to_string(ptLightID));
-                        glUniform1i(glGetUniformLocation(m_shader.getShaderID(), name.c_str()), textureCount);
-                        glActiveTexture(GL_TEXTURE0 + textureCount);
-                        glBindTexture(GL_TEXTURE_CUBE_MAP, sceneLights[i]->textureDepthMap);
-                        ptLightID++;
-                    }
-                    textureCount++;
-                }
-                else if (glIsTexture(sceneLights[i]->textureDepthMap) && sceneLights[i]->computeShadows && sceneLights[i]->type == DIRECTIONNAL_LIGHT)
-                {
-                    string name = "lightSpaceMatrix";
-                    if (dirLightID != 0) {
-                        name.append(to_string(dirLightID));
-                    }
-                    glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 25.0f);
-                    glm::mat4 lightView = glm::lookAt(sceneLights[i]->lightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-                    glm::mat4 lightSpaceMatrix = lightProjection * lightView;
-                    glUniformMatrix4fv(glGetUniformLocation(m_shader.getShaderID(),name.c_str()), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
-
-                    if (dirLightID == 0)
-                    {
-                        glUniform1i(glGetUniformLocation(m_shader.getShaderID(), "textureDepthMap"), 0);
-                        glActiveTexture(GL_TEXTURE0);
-                        glBindTexture(GL_TEXTURE_2D, sceneLights[i]->textureDepthMap);
-                        dirLightID++;
-                    }
-                    else
-                    {
-                        string name = "textureDepthMap";
-                        name.append(to_string(dirLightID));
-                        glUniform1i(glGetUniformLocation(m_shader.getShaderID(), name.c_str()), textureCount);
-                        glActiveTexture(GL_TEXTURE0 + textureCount);
-                        glBindTexture(GL_TEXTURE_2D, sceneLights[i]->textureDepthMap);
-                        dirLightID++;
-                    }
-                    textureCount++;
-                }
-            }
-
-            if (glIsTexture(texture1))
-            {
-                glUniform1i(texture1ID, textureCount);
-                glActiveTexture(GL_TEXTURE0 + textureCount);
-                glBindTexture(GL_TEXTURE_2D, texture1);
-                textureCount++;
-            }
-            if (glIsTexture(texture2))
-            {
-                glUniform1i(texture1ID, textureCount);
-                glActiveTexture(GL_TEXTURE0 + textureCount);
-                glBindTexture(GL_TEXTURE_2D, texture2);
-                textureCount++;
-            }
-            if (glIsTexture(texture3))
-            {
-                glUniform1i(texture1ID, textureCount);
-                glActiveTexture(GL_TEXTURE0 + textureCount);
-                glBindTexture(GL_TEXTURE_2D, texture3);
-                textureCount++;
-            }
-            if (hasNormalMap)
-            {
-                glUniform1i(normalTextureID, textureCount);
-                glActiveTexture(GL_TEXTURE0 + textureCount);
-                glBindTexture(GL_TEXTURE_2D, normalTexture);
-                glUniform1i(useNormalMapID, 1);
-                textureCount++;
-            }
-            else { glUniform1i(useNormalMapID, 0); }
-            if (hasMetallicMap)
-            {
-                glUniform1i(metallicTextureID, textureCount);
-                glActiveTexture(GL_TEXTURE0 + textureCount);
-                glBindTexture(GL_TEXTURE_2D, metallicTexture);
-                glUniform1i(useMetallicMapID, 1);
-                textureCount++;
-            }
-            else { glUniform1i(useMetallicMapID, 0); }
-            if (hasRoughnessMap)
-            {
-                glUniform1i(roughnessTextureID, textureCount);
-                glActiveTexture(GL_TEXTURE0 + textureCount);
-                glBindTexture(GL_TEXTURE_2D, roughnessTexture);
-                glUniform1i(useRoughnessMapID, 1);
-                textureCount++;
-            }
-            else { glUniform1i(useRoughnessMapID, 0); }
-
-            m_shader.registerLightToRender(sceneLights,numberOfLight); // MUST BE CALLED if you want lighting to work
-
-            glDrawArrays(GL_TRIANGLES,0,m_nbOfPointToDraw);
-    }
     void renderGBuffer(glm::mat4* projection, glm::mat4* view, glm::mat4* model, glm::vec3 viewPos, vector<light*> sceneLights = {}, int numberOfLight = 0)
     {
         //Update actual model matrix
@@ -499,6 +372,7 @@ public:
     }
     void setNormalMap(const char* path)
     {
+        removeNormalMap();
         setTexture(&normalTexture, path);
         hasNormalMap = true;
     }
@@ -509,6 +383,7 @@ public:
     }
     void setMetallicMap(const char* path)
     {
+        removeMetallicMap();
         setTexture(&metallicTexture, path);
         hasMetallicMap = true;
     }
@@ -519,6 +394,7 @@ public:
     }
     void setRoughnessMap(const char* path)
     {
+        removeRoughnessMap();
         setTexture(&roughnessTexture, path);
         hasRoughnessMap = true;
     }
@@ -526,7 +402,8 @@ public:
     bool doesMeshHasNormalMap() { return hasNormalMap; }
     bool doesMeshHasRoughnessMap() { return hasRoughnessMap; }
     bool doesMeshHasMetallicMap() { return hasMetallicMap; }
-
+    void setDeleteStatus(bool status) { mustBeDeleted = status; }
+    bool getDeleteStatus() { return mustBeDeleted; }
     int getID(){return id;}
 
 protected:
@@ -535,6 +412,7 @@ protected:
     string tag;
 
     bool isInitialized;
+    bool mustBeDeleted; // Indicates if this renderObject has been dynamically created on the heap, if yes the scene will delete it
 
     glm::mat4 modelMatrix;
 

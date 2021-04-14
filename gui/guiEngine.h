@@ -9,6 +9,7 @@ public:
 		m_showRenderingDebug = false;
 		m_showSceneEditor = false;
 		m_showHelloMessage = true;
+		m_showExportMenu = false;
 	}
 
 	void update(scene* scene_)
@@ -16,6 +17,16 @@ public:
 		if (glfwGetKey(m_display->getGLFWWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		{
 			isVisible = !isVisible;
+			if (isVisible == true)
+			{
+				camera* cam = scene_->getCamera();
+				cam->pauseControls();
+			}
+			else
+			{
+				camera* cam = scene_->getCamera();
+				cam->resumeControls();
+			}
 		}
 		if (isVisible)
 		{
@@ -30,7 +41,7 @@ public:
 			}
 			if (m_showRenderingDebug)
 			{
-				showRenderingDebug(scene_->getGPosition(), scene_->getGNormals(), scene_->getGAlbedo(), scene_->getGRoughness(), scene_->getGMetallic(),scene_->getGAmbient());
+				showRenderingDebug(scene_->getExposure(),scene_->getGamma(),scene_->getGPosition(), scene_->getGNormals(), scene_->getGAlbedo(), scene_->getGRoughness(), scene_->getGMetallic(),scene_->getGAmbient());
 			}
 			if (m_showSceneEditor)
 			{
@@ -39,6 +50,10 @@ public:
 			if (m_showLightingEditor)
 			{
 				showLightingEditor(scene_->getLights());
+			}
+			if (m_showExportMenu)
+			{
+				showExportMenu();
 			}
 
 			if (ImGui::BeginMainMenuBar())
@@ -58,6 +73,11 @@ public:
 					m_showSceneEditor = true;
 					ImGui::EndMenu();
 				}
+				if (ImGui::BeginMenu("Export this project"))
+				{
+					m_showExportMenu = true;
+					ImGui::EndMenu();
+				}
 				if (ImGui::BeginMenu("Quit"))
 				{
 					m_display->setExitStatus(true);
@@ -71,7 +91,7 @@ public:
 		}
 	}
 private:
-	bool m_showRenderingDebug, m_showSceneEditor, m_showLightingEditor, m_showHelloMessage;
+	bool m_showRenderingDebug, m_showSceneEditor, m_showLightingEditor, m_showHelloMessage, m_showExportMenu;
 
 	void showLightingEditor(vector<light*>* lights)
 	{
@@ -132,7 +152,28 @@ private:
 		ImGui::End();
 	}
 
-	void showRenderingDebug(GLuint positionTexture, GLuint normalTexture, GLuint albedoSpecTexture, GLuint roughnessTexture, GLuint metallicTexture, GLuint ambientTexture)
+	void showExportMenu()
+	{
+		ImGui::Begin("Export your project", &m_showExportMenu);
+		ImGui::SetWindowFontScale(1.1);
+
+		ImGui::TextWrapped("Select target device :");
+
+		ImGui::Button("Microsoft Window");
+		ImGui::Button("Apple Mac OS (must support OpenGL)");
+		ImGui::Button("Linux");
+
+		ImGui::Separator();
+
+		char output[] = "C:\\Users\...";
+		ImGui::TextWrapped("Select output path: ");
+		ImGui::InputText("Output path",output,10);
+
+		ImGui::Button("Export");
+		ImGui::End();
+	}
+
+	void showRenderingDebug(float* exposure, float* gamma, GLuint positionTexture, GLuint normalTexture, GLuint albedoSpecTexture, GLuint roughnessTexture, GLuint metallicTexture, GLuint ambientTexture)
 	{
 		ImGui::Begin("Deferred rendering debug", &m_showRenderingDebug);
 		ImGui::SetWindowFontScale(1.1);
@@ -141,6 +182,11 @@ private:
 		char* vendor = (char*)glGetString(GL_VENDOR);
 		ImGui::TextWrapped(renderer);
 		ImGui::TextWrapped(vendor);
+		ImGui::Separator();
+
+		ImGui::SliderFloat("Gamma", gamma, 0.0, 5.0);
+		ImGui::SliderFloat("Exposure", exposure, 0.0, 5.0);
+
 		ImGui::Separator();
 		ImGui::TextWrapped("Position: ");
 		IM_ASSERT(positionTexture);
