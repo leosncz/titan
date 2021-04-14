@@ -100,13 +100,14 @@ int main()
     myscene.addLight(&mylight4);*/
 
     float i = 0.0f;
+
     while (!mainDisplay.shouldExit()) {
         myscene.renderScene();
         cam.update(myscene.getViewMatrix());
         gui_.update(&myscene);
         myscene.updateWindow();
-        i += 0.001f;
-        triangle4.rotateObject(0.01, glm::vec3(0, i, 0));
+        //triangle4.rotateObjectFromSceneOrigin(i, vec3(0, 1, 0));
+        i += 0.1;
     } 
 
     return 0;

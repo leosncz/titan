@@ -75,7 +75,7 @@ public:
         {
             for (int i = 0; i < objects.size(); i++)
             {
-                objects[i]->moveObject(transation);
+                objects[i]->moveObjectFromSceneOrigin(transation);
             }
         }
     }

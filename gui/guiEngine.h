@@ -131,6 +131,16 @@ private:
 					ImGui::TextWrapped("Type: Point light");
 				}
 
+				content = "Position ##";
+				content.append(to_string(i));
+				float lightPos[3] = { lights->at(i)->lightPosition.x, lights->at(i)->lightPosition.y, lights->at(i)->lightPosition.z};
+				if (ImGui::InputFloat3(content.c_str(), lightPos))
+				{
+					lights->at(i)->lightPosition.x = lightPos[0];
+					lights->at(i)->lightPosition.y = lightPos[1];
+					lights->at(i)->lightPosition.z = lightPos[2];
+				}
+
 				content = "Constant ##";
 				content.append(to_string(i));
 				ImGui::SliderFloat(content.c_str(), &lights->at(i)->constant, 0.0, 4.0);
@@ -248,10 +258,10 @@ private:
 		//Scene information
 		ImGui::Begin("Scene editor", &m_showSceneEditor);
 		ImGui::SetWindowFontScale(1.1);
+		vector<renderObject*>* objs = objectHolder;
 		for (int i = 0; i < objectHolder->size(); i++)
 		{
-			vector<renderObject*>* test = objectHolder;
-			renderObject* object = test->at(i);
+			renderObject* object = objs->at(i);
 			string name = "ID : ";
 			name.append(to_string(object->getID()));
 			ImGui::Text(name.c_str());
@@ -259,6 +269,22 @@ private:
 			name = "Tag : ";
 			name.append(object->getTag());
 			ImGui::Text(name.c_str());
+
+			name = "Position ##";
+			name.append(to_string(object->getID()));
+			float *objPosition = object->getPosition();
+			if (ImGui::InputFloat3(name.c_str(), objPosition))
+			{
+				object->moveObjectFromSceneOrigin(glm::vec3(objPosition[0], objPosition[1], objPosition[2]));
+			}
+
+			name = "Scale ##";
+			name.append(to_string(object->getID()));
+			float* objScale = object->getScale();
+			if (ImGui::InputFloat3(name.c_str(), objScale))
+			{
+				object->scaleObject(glm::vec3(objScale[0], objScale[1], objScale[2]));
+			}
 			
 			name = "Metallic ##";
 			name.append(to_string(object->getID()));

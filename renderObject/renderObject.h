@@ -22,19 +22,27 @@ public:
         std::cout << "--> Creating new renderObject ID=" << id << std::endl;
         tag = "Custom Object";
         mustBeDeleted = false;
+        m_position[0] = 0.0;
+        m_position[1] = 0.0;
+        m_position[2] = 0.0;
+        m_scale[0] = 1.0f;
+        m_scale[1] = 1.0f;
+        m_scale[2] = 1.0f;
+        positionMatrix = glm::mat4(1.0);
+        scaleMatrix = glm::mat4(1.0);
+        rotationMatrix = glm::mat4(1.0);
+        m_nbOfTexture = 0;
+        m_nbOfTextureToDraw = 0;
+        hasNormalMap = false;
+        hasRoughnessMap = false;
+        hasMetallicMap = false;
+        isInitialized = true;
     }
     string getTag() { return tag; }
     shader* getShader() { return &m_gShader; }
     bool setData(float* vertices, float* colors, float* texCoord, int nbOfPointToDraw, float* normals=0, texturePool* texturePool_=0) // Use this methode to define the mesh by hand
     {
          m_nbOfPointToDraw = nbOfPointToDraw;
-         modelMatrix = glm::mat4(1.0);
-         m_nbOfTexture = 0;
-         m_nbOfTextureToDraw = 0;
-         hasNormalMap = false;
-         hasRoughnessMap = false;
-         hasMetallicMap = false;
-         isInitialized = true;
          m_texturePool = texturePool_;
          //Set texcordds
          if (texCoord != 0) { for (int i = 0; i < nbOfPointToDraw * 2; i++) { m_texCoords.push_back(texCoord[i]); } }
@@ -150,7 +158,7 @@ public:
     void renderDepth(glm::mat4* projection, glm::mat4* view, glm::mat4* model, light* lightToRender, float farShadow = 25.0f)
     {
         //Update actual model matrix
-        glm::mat4 customModelMatrix = *model * modelMatrix;
+        glm::mat4 customModelMatrix = *model * positionMatrix * rotationMatrix * scaleMatrix;
 
         glUseProgram(m_depthShader.getShaderID());
 
@@ -203,7 +211,7 @@ public:
     void renderGBuffer(glm::mat4* projection, glm::mat4* view, glm::mat4* model, glm::vec3 viewPos, vector<light*> sceneLights = {}, int numberOfLight = 0)
     {
         //Update actual model matrix
-        glm::mat4 customModelMatrix = *model * modelMatrix;
+        glm::mat4 customModelMatrix = *model * positionMatrix * rotationMatrix * scaleMatrix;
         
         glUseProgram(m_gShader.getShaderID());
         
@@ -319,18 +327,37 @@ public:
         m_nbOfTexture++;
     }
 
-    void moveObject(glm::vec3 position) // move from scene origin everytime
+    void moveObject(glm::vec3 position) // move from object origin 
     {
-        modelMatrix = glm::translate(modelMatrix,position);
+        positionMatrix = glm::translate(positionMatrix,position);
+        m_position[0] += position.x;
+        m_position[1] += position.y;
+        m_position[2] += position.z;
     }
-
-    void rotateObject(float angle, glm::vec3 factors) // rotate from last rotation AND scene origin
+    void moveObjectFromSceneOrigin(glm::vec3 position) // move from scene origin 
     {
-        modelMatrix = glm::rotate(modelMatrix,angle,factors);
+        positionMatrix = glm::mat4(1.0);
+        positionMatrix = glm::translate(positionMatrix, position);
+        m_position[0] = position.x;
+        m_position[1] = position.y;
+        m_position[2] = position.z;
+    }
+    void rotateObjectFromLastRotation(float angle, glm::vec3 factors) // rotate from object origin
+    {
+        rotationMatrix = mat4(1.0);
+        rotationMatrix = glm::rotate(rotationMatrix,angle,factors);
+    }
+    void rotateObject(float angle, glm::vec3 factors) // rotate from object last rotation
+    {
+        rotationMatrix = glm::rotate(rotationMatrix, angle, factors);
     }
     void scaleObject(glm::vec3 factors)
     {
-        modelMatrix = glm::scale(modelMatrix,factors);
+        scaleMatrix = mat4(1.0);
+        scaleMatrix = glm::scale(scaleMatrix,factors);
+        m_scale[0] = factors.x;
+        m_scale[1] = factors.y;
+        m_scale[2] = factors.z;
     }
     ~renderObject()
     {
@@ -400,6 +427,9 @@ public:
         hasRoughnessMap = true;
     }
 
+    float* getPosition() { return m_position; }
+    float* getScale() { return m_scale; }
+
     bool doesMeshHasNormalMap() { return hasNormalMap; }
     bool doesMeshHasRoughnessMap() { return hasRoughnessMap; }
     bool doesMeshHasMetallicMap() { return hasMetallicMap; }
@@ -412,10 +442,16 @@ protected:
     int id;
     string tag;
 
+    float m_position[3];
+    float m_scale[3];
+
     bool isInitialized;
     bool mustBeDeleted; // Indicates if this renderObject has been dynamically created on the heap, if yes the scene will delete it
 
-    glm::mat4 modelMatrix;
+    glm::mat4 positionMatrix;
+    glm::mat4 rotationMatrix;
+    glm::mat4 scaleMatrix;
+
 
     int m_nbOfPointToDraw; // Nb of point to draw
     int m_nbOfTexture; // Nb of texture created
