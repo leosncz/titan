@@ -247,19 +247,20 @@ public:
         }
     }
 
-    void deleteLight(int id)
-    {
-        if (m_lights.size() > id)
-        {
-            m_lights.erase(m_lights.begin() + id);
-        }
-    }
-
     void deleteRenderObject(int id)
     {
         if (m_objectHolder.size() > id)
         {
-            m_objectHolder.erase(m_objectHolder.begin() + id);
+            if (m_objectHolder[id]->getDeleteStatus())
+            {
+                renderObject* obj = m_objectHolder.at(id);
+                m_objectHolder.erase(m_objectHolder.begin() + id);
+                delete obj;
+            }
+            else
+            {
+                m_objectHolder.erase(m_objectHolder.begin() + id);
+            }
         }
     }
 
@@ -288,6 +289,15 @@ public:
     float* getGamma() { return &m_gamma; }
     float* getFarShadow() { return &m_farShadow; }
     void setFarShadow(float value = 25.0f) { m_farShadow = value; }
+
+    void deleteLight(int i)
+    {
+        if (m_lights.at(i)->mustBeDeleted)
+        {
+            delete m_lights.at(i);
+        }
+        m_lights.erase(m_lights.begin() + i);
+    }
 
     ~scene()
     {

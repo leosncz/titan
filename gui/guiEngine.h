@@ -45,11 +45,11 @@ public:
 			}
 			if (m_showSceneEditor)
 			{
-				showSceneEditor(scene_->getObjectHolder());
+				showSceneEditor(scene_->getObjectHolder(),scene_);
 			}
 			if (m_showLightingEditor)
 			{
-				showLightingEditor(scene_->getFarShadow(),scene_->getLights());
+				showLightingEditor(scene_->getFarShadow(),scene_->getLights(),scene_);
 			}
 			if (m_showExportMenu)
 			{
@@ -93,12 +93,26 @@ public:
 private:
 	bool m_showRenderingDebug, m_showSceneEditor, m_showLightingEditor, m_showHelloMessage, m_showExportMenu;
 
-	void showLightingEditor(float* farShadow, vector<light*>* lights)
+	// These variables are used to save data in light creation dialog
+	float m_lpos[3] = { 0.0,0.0,0.0 };
+	float m_ldir[3] = { 0.0,-0.3,-1.0 };
+	float m_lcol[3] = { 10.0,10.0,10.0 };
+	float m_lconstant = 1.0, m_llinear = 1.0, m_lquadratic = 1.0;
+	int m_lshadowResolution = 500;
+	int m_lcomputeShadows = 0;
+
+	void showLightingEditor(float* farShadow, vector<light*>* lights, scene* scene_)
 	{
 		ImGui::Begin("Lighting editor", &m_showLightingEditor);
 		ImGui::SetWindowFontScale(1.1);
 
 		ImGui::SliderFloat("Far shadow", farShadow, 2.0, 200.0);
+		ImGui::Separator();
+
+		ImGui::TextWrapped("Create new light : ");
+		
+		showLightCreationDialog(scene_);
+
 		ImGui::Separator();
 
 		if (lights->size() == 0)
@@ -126,7 +140,7 @@ private:
 					ImGui::TextWrapped(content.c_str());
 					ImGui::Image((void*)(intptr_t)lights->at(i)->textureDepthMap, ImVec2(400, 300), ImVec2(0, 1), ImVec2(1, 0));
 				}
-				else
+				else if(lights->at(i)->type == POINT_LIGHT)
 				{
 					ImGui::TextWrapped("Type: Point light");
 				}
@@ -139,6 +153,16 @@ private:
 					lights->at(i)->lightPosition.x = lightPos[0];
 					lights->at(i)->lightPosition.y = lightPos[1];
 					lights->at(i)->lightPosition.z = lightPos[2];
+				}
+
+				content = "Color ##";
+				content.append(to_string(i));
+				float lightCol[3] = { lights->at(i)->lightColor.r, lights->at(i)->lightColor.g, lights->at(i)->lightColor.b };
+				if (ImGui::InputFloat3(content.c_str(), lightCol))
+				{
+					lights->at(i)->lightColor.r = lightCol[0];
+					lights->at(i)->lightColor.g = lightCol[1];
+					lights->at(i)->lightColor.b = lightCol[2];
 				}
 
 				content = "Constant ##";
@@ -157,7 +181,7 @@ private:
 				content.append(to_string(i));
 				if (ImGui::Button(content.c_str()))
 				{
-					lights->erase(lights->begin() + i);
+					scene_->deleteLight(i);
 				}
 
 				ImGui::Separator();
@@ -239,6 +263,34 @@ private:
 		ImGui::End();
 	}
 
+	void showLightCreationDialog(scene* scene_)
+	{
+		
+		ImGui::InputFloat3("Light Position", m_lpos);
+		ImGui::InputFloat3("Light Direction", m_ldir);
+		ImGui::InputFloat3("Light Color", m_lcol);
+		ImGui::SliderFloat("Constant", &m_lconstant, 0.0, 4.0);
+		ImGui::SliderFloat("Linear", &m_llinear, 0.0, 4.0);
+		ImGui::SliderFloat("Quadratic", &m_lquadratic, 0.0, 4.0);
+		ImGui::SliderInt("Shadow resolution", &m_lshadowResolution, 100, 10000);
+		ImGui::SliderInt("Compute shadow", &m_lcomputeShadows,0,1);
+
+		if (ImGui::Button("Create point light"))
+		{
+			light* mylight = new light(POINT_LIGHT, glm::vec3(m_lpos[0], m_lpos[1], m_lpos[2]), glm::vec3(m_lcol[0], m_lcol[1], m_lcol[2]), glm::vec3(m_ldir[0], m_ldir[1], m_ldir[2]), m_lcomputeShadows, m_lshadowResolution, m_lconstant, m_llinear, m_lquadratic);
+			mylight->mustBeDeleted = true;
+
+			scene_->addLight(mylight);
+		}
+		if (ImGui::Button("Create directionnal light"))
+		{
+			light* mylight = new light(DIRECTIONNAL_LIGHT, glm::vec3(m_lpos[0], m_lpos[1], m_lpos[2]), glm::vec3(m_lcol[0], m_lcol[1], m_lcol[2]), glm::vec3(m_ldir[0], m_ldir[1], m_ldir[2]), m_lcomputeShadows, m_lshadowResolution, m_lconstant, m_llinear, m_lquadratic);
+			mylight->mustBeDeleted = true;
+
+			scene_->addLight(mylight);
+		}
+	}
+
 	void showWelcome()
 	{
 		//Welcome
@@ -253,7 +305,7 @@ private:
 		ImGui::End();
 	}
 
-	void showSceneEditor(vector<renderObject*>* objectHolder)
+	void showSceneEditor(vector<renderObject*>* objectHolder, scene* scene_)
 	{
 		//Scene information
 		ImGui::Begin("Scene editor", &m_showSceneEditor);
@@ -315,7 +367,7 @@ private:
 
 			string buttonName = "Delete ";
 			buttonName.append(to_string(object->getID()));
-			if (ImGui::Button(buttonName.c_str())) { objectHolder->erase(objectHolder->begin() + i); }
+			if (ImGui::Button(buttonName.c_str())) { scene_->deleteRenderObject(i); }
 
 			ImGui::Separator();
 
