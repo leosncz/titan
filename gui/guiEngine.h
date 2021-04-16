@@ -93,7 +93,8 @@ public:
 private:
 	bool m_showRenderingDebug, m_showSceneEditor, m_showLightingEditor, m_showHelloMessage, m_showExportMenu;
 
-	// These variables are used to save data in light creation dialog
+	// These variables are used to save data in dialogs
+	char m_normalmappath[45];
 	float m_lpos[3] = { 0.0,0.0,0.0 };
 	float m_ldir[3] = { 0.0,-0.3,-1.0 };
 	float m_lcol[3] = { 10.0,10.0,10.0 };
@@ -354,6 +355,12 @@ private:
 			if (object->doesMeshHasNormalMap()) { name.append("Yes"); }
 			else { name.append("No"); }
 			ImGui::Text(name.c_str());
+			name = "Normal map path ##";
+			name.append(to_string(object->getID()));
+			ImGui::InputText(name.c_str(),m_normalmappath,45);
+			name = "Apply ##";
+			name.append(to_string(object->getID()));
+			if (ImGui::Button(name.c_str())) { object->setNormalMap(m_normalmappath); }
 
 			name = "Use roughness map : ";
 			if (object->doesMeshHasRoughnessMap()) { name.append("Yes"); }

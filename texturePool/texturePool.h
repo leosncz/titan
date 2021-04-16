@@ -9,7 +9,7 @@ class texturePool
 public:
 	GLuint getCacheTextureID(string path) {
 		if (textureIDs.size() != 0) {
-			for(int i=0;i<textureIDs.size()-1;i++){
+			for(int i=0;i<textureIDs.size();i++){
 				if (path == texturePaths[i]) { cout << "--> Texture " << path << " has been found in tex cache" << endl; return textureIDs[i]; }
 			}
 		}
