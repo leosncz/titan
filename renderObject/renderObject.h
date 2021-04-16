@@ -395,34 +395,28 @@ public:
     }
     void removeNormalMap()
     {
-        glDeleteTextures(1, &normalTexture);
         hasNormalMap = false;
     }
     void setNormalMap(const char* path)
     {
-        removeNormalMap();
         setTexture(&normalTexture, path);
         hasNormalMap = true;
     }
     void removeMetallicMap()
     {
-        glDeleteTextures(1, &metallicTexture);
         hasMetallicMap = false;
     }
     void setMetallicMap(const char* path)
     {
-        removeMetallicMap();
         setTexture(&metallicTexture, path);
         hasMetallicMap = true;
     }
     void removeRoughnessMap()
     {
-        glDeleteTextures(1, &roughnessTexture);
         hasRoughnessMap = false;
     }
     void setRoughnessMap(const char* path)
     {
-        removeRoughnessMap();
         setTexture(&roughnessTexture, path);
         hasRoughnessMap = true;
     }

@@ -95,6 +95,8 @@ private:
 
 	// These variables are used to save data in dialogs
 	char m_normalmappath[45];
+	char m_roughnessmappath[45];
+	char m_metallicmappath[45];
 	float m_lpos[3] = { 0.0,0.0,0.0 };
 	float m_ldir[3] = { 0.0,-0.3,-1.0 };
 	float m_lcol[3] = { 10.0,10.0,10.0 };
@@ -358,21 +360,54 @@ private:
 			name = "Normal map path ##";
 			name.append(to_string(object->getID()));
 			ImGui::InputText(name.c_str(),m_normalmappath,45);
-			name = "Apply ##";
+			name = "Apply normal map ##";
 			name.append(to_string(object->getID()));
 			if (ImGui::Button(name.c_str())) { object->setNormalMap(m_normalmappath); }
+			if (object->doesMeshHasNormalMap())
+			{
+				string name_ = "Delete normal map"; 
+				name_.append(" ##");
+				name_.append(to_string(object->getID()));
+				if (ImGui::Button(name_.c_str())) { object->removeNormalMap(); }
+			}
 
 			name = "Use roughness map : ";
 			if (object->doesMeshHasRoughnessMap()) { name.append("Yes"); }
 			else { name.append("No"); }
 			ImGui::Text(name.c_str());
+			name = "Roughness map path ##";
+			name.append(to_string(object->getID()));
+			ImGui::InputText(name.c_str(), m_roughnessmappath, 45);
+			name = "Apply roughness map ##";
+			name.append(to_string(object->getID()));
+			if (ImGui::Button(name.c_str())) { object->setRoughnessMap(m_roughnessmappath); }
+			if (object->doesMeshHasRoughnessMap())
+			{
+				string name_ = "Delete roughness map";
+				name_.append(" ##");
+				name_.append(to_string(object->getID()));
+				if (ImGui::Button(name_.c_str())) { object->removeRoughnessMap(); }
+			}
 
 			name = "Use metallic map : ";
 			if (object->doesMeshHasMetallicMap()) { name.append("Yes"); }
 			else { name.append("No"); }
 			ImGui::Text(name.c_str());
+			name = "Metallic map path ##";
+			name.append(to_string(object->getID()));
+			ImGui::InputText(name.c_str(), m_metallicmappath, 45);
+			name = "Apply metallic map ##";
+			name.append(to_string(object->getID()));
+			if (ImGui::Button(name.c_str())) { object->setMetallicMap(m_roughnessmappath); }
+			if (object->doesMeshHasMetallicMap())
+			{
+				string name_ = "Delete metallic map";
+				name_.append(" ##");
+				name_.append(to_string(object->getID()));
+				if (ImGui::Button(name_.c_str())) { object->removeMetallicMap(); }
+			}
 
-			string buttonName = "Delete ";
+			string buttonName = "Delete object ##";
 			buttonName.append(to_string(object->getID()));
 			if (ImGui::Button(buttonName.c_str())) { scene_->deleteRenderObject(i); }
 

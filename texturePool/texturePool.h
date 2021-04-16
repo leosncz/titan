@@ -22,6 +22,15 @@ public:
 
 		cout << "--> Texture " << path << " has been added to tex cache" << endl;
 	}
+
+	~texturePool()
+	{
+		cout << "--> Destroying textures" << endl;
+		for (int i = 0; i < textureIDs.size(); i++)
+		{
+			glDeleteTextures(1, &textureIDs[i]);
+		}
+	}
 private:
 	vector<GLuint> textureIDs; // textures ids
 	vector<string> texturePaths; // texture paths
