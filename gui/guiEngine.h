@@ -353,10 +353,16 @@ private:
 			name.append(to_string(object->getID()));
 			ImGui::SliderFloat(name.c_str(), &object->getShader()->ambient,0.0, 1.0);
 
-			name = "Use normal map : ";
+			name = "Using normal map : ";
 			if (object->doesMeshHasNormalMap()) { name.append("Yes"); }
 			else { name.append("No"); }
 			ImGui::Text(name.c_str());
+
+			if (object->doesMeshHasNormalMap())
+			{
+				IM_ASSERT(object->getNormalMap()); ImGui::Image((void*)(intptr_t)object->getNormalMap(), ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
+			}
+
 			name = "Normal map path ##";
 			name.append(to_string(object->getID()));
 			ImGui::InputText(name.c_str(),m_normalmappath,45);
@@ -371,10 +377,16 @@ private:
 				if (ImGui::Button(name_.c_str())) { object->removeNormalMap(); }
 			}
 
-			name = "Use roughness map : ";
+			name = "Using roughness map : ";
 			if (object->doesMeshHasRoughnessMap()) { name.append("Yes"); }
 			else { name.append("No"); }
 			ImGui::Text(name.c_str());
+
+			if (object->doesMeshHasRoughnessMap())
+			{
+				IM_ASSERT(object->getRoughnessMap()); ImGui::Image((void*)(intptr_t)object->getRoughnessMap(), ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
+			}
+
 			name = "Roughness map path ##";
 			name.append(to_string(object->getID()));
 			ImGui::InputText(name.c_str(), m_roughnessmappath, 45);
@@ -382,17 +394,23 @@ private:
 			name.append(to_string(object->getID()));
 			if (ImGui::Button(name.c_str())) { object->setRoughnessMap(m_roughnessmappath); }
 			if (object->doesMeshHasRoughnessMap())
-			{
+			{				
 				string name_ = "Delete roughness map";
 				name_.append(" ##");
 				name_.append(to_string(object->getID()));
 				if (ImGui::Button(name_.c_str())) { object->removeRoughnessMap(); }
 			}
 
-			name = "Use metallic map : ";
+			name = "Using metallic map : ";
 			if (object->doesMeshHasMetallicMap()) { name.append("Yes"); }
 			else { name.append("No"); }
 			ImGui::Text(name.c_str());
+
+			if (object->doesMeshHasMetallicMap())
+			{
+				IM_ASSERT(object->getMetallicMap()); ImGui::Image((void*)(intptr_t)object->getMetallicMap(), ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
+			}
+
 			name = "Metallic map path ##";
 			name.append(to_string(object->getID()));
 			ImGui::InputText(name.c_str(), m_metallicmappath, 45);

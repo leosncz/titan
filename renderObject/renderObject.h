@@ -427,6 +427,9 @@ public:
     bool doesMeshHasNormalMap() { return hasNormalMap; }
     bool doesMeshHasRoughnessMap() { return hasRoughnessMap; }
     bool doesMeshHasMetallicMap() { return hasMetallicMap; }
+    GLuint getNormalMap() { return normalTexture; }
+    GLuint getMetallicMap() { return metallicTexture; }
+    GLuint getRoughnessMap() { return roughnessTexture; }
     void setDeleteStatus(bool status) { mustBeDeleted = status; }
     bool getDeleteStatus() { return mustBeDeleted; }
     int getID(){return id;}
