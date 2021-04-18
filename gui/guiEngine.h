@@ -1,5 +1,6 @@
 #pragma once
 #include "gui.h"
+#include "imfilebrowser.h"
 class guiEngine : public gui
 {
 public:
@@ -94,15 +95,16 @@ private:
 	bool m_showRenderingDebug, m_showSceneEditor, m_showLightingEditor, m_showHelloMessage, m_showExportMenu;
 
 	// These variables are used to save data in dialogs
-	char m_normalmappath[45];
-	char m_roughnessmappath[45];
-	char m_metallicmappath[45];
+	bool m_normalMapPathEditing = false, m_roughnessMapPathEditing = false, m_metallicMapPathEditing = false;
 	float m_lpos[3] = { 0.0,0.0,0.0 };
 	float m_ldir[3] = { 0.0,-0.3,-1.0 };
 	float m_lcol[3] = { 10.0,10.0,10.0 };
 	float m_lconstant = 1.0, m_llinear = 1.0, m_lquadratic = 1.0;
 	int m_lshadowResolution = 500;
 	int m_lcomputeShadows = 0;
+
+	ImGui::FileBrowser m_fileDialog;
+	int m_currentObjectEdit = -1; // Tell which object we are currently editinh in the filebrowsing window
 
 	void showLightingEditor(float* farShadow, vector<light*>* lights, scene* scene_)
 	{
@@ -353,22 +355,16 @@ private:
 			name.append(to_string(object->getID()));
 			ImGui::SliderFloat(name.c_str(), &object->getShader()->ambient,0.0, 1.0);
 
-			name = "Using normal map : ";
-			if (object->doesMeshHasNormalMap()) { name.append("Yes"); }
-			else { name.append("No"); }
-			ImGui::Text(name.c_str());
-
-			if (object->doesMeshHasNormalMap())
-			{
+			ImGui::Text("Normal map:");
+			if (!object->doesMeshHasNormalMap()) { ImGui::Text("No"); }
+			else 
+			{ 
 				IM_ASSERT(object->getNormalMap()); ImGui::Image((void*)(intptr_t)object->getNormalMap(), ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
 			}
 
-			name = "Normal map path ##";
+			name = "Import normal map ##";
 			name.append(to_string(object->getID()));
-			ImGui::InputText(name.c_str(),m_normalmappath,45);
-			name = "Apply normal map ##";
-			name.append(to_string(object->getID()));
-			if (ImGui::Button(name.c_str())) { object->setNormalMap(m_normalmappath); }
+			if (ImGui::Button(name.c_str())) { m_currentObjectEdit = object->getID(); m_fileDialog.SetTitle("Chose normal map file"); m_fileDialog.SetTypeFilters({ ".jpg", ".jpeg", ".png" }); m_fileDialog.Open(); m_normalMapPathEditing = true; }
 			if (object->doesMeshHasNormalMap())
 			{
 				string name_ = "Delete normal map"; 
@@ -376,53 +372,72 @@ private:
 				name_.append(to_string(object->getID()));
 				if (ImGui::Button(name_.c_str())) { object->removeNormalMap(); }
 			}
+			if (m_normalMapPathEditing && m_currentObjectEdit == object->getID())
+			{
+				m_fileDialog.Display();
+				if (m_fileDialog.HasSelected())
+				{
+					object->setNormalMap(m_fileDialog.GetSelected().string().c_str());
+					m_fileDialog.ClearSelected();
+					m_normalMapPathEditing = false;
+				}
+			}
 
-			name = "Using roughness map : ";
-			if (object->doesMeshHasRoughnessMap()) { name.append("Yes"); }
-			else { name.append("No"); }
-			ImGui::Text(name.c_str());
 
-			if (object->doesMeshHasRoughnessMap())
+			ImGui::Text("Roughness map:");
+			if (!object->doesMeshHasRoughnessMap()) { ImGui::Text("No"); }
+			else
 			{
 				IM_ASSERT(object->getRoughnessMap()); ImGui::Image((void*)(intptr_t)object->getRoughnessMap(), ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
 			}
 
-			name = "Roughness map path ##";
+			name = "Import roughness map ##";
 			name.append(to_string(object->getID()));
-			ImGui::InputText(name.c_str(), m_roughnessmappath, 45);
-			name = "Apply roughness map ##";
-			name.append(to_string(object->getID()));
-			if (ImGui::Button(name.c_str())) { object->setRoughnessMap(m_roughnessmappath); }
+			if (ImGui::Button(name.c_str())) { m_currentObjectEdit = object->getID(); m_fileDialog.SetTitle("Chose roughness map file"); m_fileDialog.SetTypeFilters({ ".jpg", ".jpeg", ".png" }); m_fileDialog.Open();  m_roughnessMapPathEditing = true; }
 			if (object->doesMeshHasRoughnessMap())
-			{				
+			{
 				string name_ = "Delete roughness map";
 				name_.append(" ##");
 				name_.append(to_string(object->getID()));
 				if (ImGui::Button(name_.c_str())) { object->removeRoughnessMap(); }
 			}
+			if (m_roughnessMapPathEditing && m_currentObjectEdit == object->getID())
+			{
+				m_fileDialog.Display();
+				if (m_fileDialog.HasSelected())
+				{
+					object->setRoughnessMap(m_fileDialog.GetSelected().string().c_str());
+					m_fileDialog.ClearSelected();
+					m_roughnessMapPathEditing = false;
+				}
+			}
 
-			name = "Using metallic map : ";
-			if (object->doesMeshHasMetallicMap()) { name.append("Yes"); }
-			else { name.append("No"); }
-			ImGui::Text(name.c_str());
-
-			if (object->doesMeshHasMetallicMap())
+			ImGui::Text("Metallic map:");
+			if (!object->doesMeshHasMetallicMap()) { ImGui::Text("No"); }
+			else
 			{
 				IM_ASSERT(object->getMetallicMap()); ImGui::Image((void*)(intptr_t)object->getMetallicMap(), ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
 			}
 
-			name = "Metallic map path ##";
+			name = "Import metallic map ##";
 			name.append(to_string(object->getID()));
-			ImGui::InputText(name.c_str(), m_metallicmappath, 45);
-			name = "Apply metallic map ##";
-			name.append(to_string(object->getID()));
-			if (ImGui::Button(name.c_str())) { object->setMetallicMap(m_roughnessmappath); }
+			if (ImGui::Button(name.c_str())) { m_currentObjectEdit = object->getID(); m_fileDialog.SetTitle("Chose metallic map file"); m_fileDialog.SetTypeFilters({ ".jpg", ".jpeg", ".png" }); m_fileDialog.Open(); m_metallicMapPathEditing = true; }
 			if (object->doesMeshHasMetallicMap())
 			{
 				string name_ = "Delete metallic map";
 				name_.append(" ##");
 				name_.append(to_string(object->getID()));
 				if (ImGui::Button(name_.c_str())) { object->removeMetallicMap(); }
+			}
+			if (m_metallicMapPathEditing && m_currentObjectEdit == object->getID())
+			{
+				m_fileDialog.Display();
+				if (m_fileDialog.HasSelected())
+				{
+					object->setMetallicMap(m_fileDialog.GetSelected().string().c_str());
+					m_fileDialog.ClearSelected();
+					m_metallicMapPathEditing = false;
+				}
 			}
 
 			string buttonName = "Delete object ##";

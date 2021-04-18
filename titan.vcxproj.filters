@@ -123,5 +123,8 @@
     <ClInclude Include="gui\guiEngine.h">
       <Filter>gui</Filter>
     </ClInclude>
+    <ClInclude Include="gui\imfilebrowser.h">
+      <Filter>gui</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
