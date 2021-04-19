@@ -56,7 +56,11 @@ class light
 
      ~light()
      {
-         glDeleteTextures(1, &textureDepthMap);
-         glDeleteFramebuffers(1, &depthMapFBO);
+         if (glIsTexture(textureDepthMap))
+         {
+             glDeleteFramebuffers(1, &depthMapFBO);
+             glDeleteTextures(1, &textureDepthMap);
+         }
+         
      }
 };

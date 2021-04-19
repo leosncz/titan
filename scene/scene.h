@@ -292,11 +292,12 @@ public:
 
     void deleteLight(int i)
     {
-        if (m_lights.at(i)->mustBeDeleted)
-        {
-            delete m_lights.at(i);
-        }
+        light* li = m_lights.at(i);
         m_lights.erase(m_lights.begin() + i);
+        if (li->mustBeDeleted)
+        {
+            delete li;
+        }
     }
 
     ~scene()

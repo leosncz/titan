@@ -101,7 +101,7 @@ private:
 	float m_lcol[3] = { 10.0,10.0,10.0 };
 	float m_lconstant = 1.0, m_llinear = 1.0, m_lquadratic = 1.0;
 	int m_lshadowResolution = 500;
-	int m_lcomputeShadows = 0;
+	bool m_lcomputeShadows = true;
 
 	ImGui::FileBrowser m_fileDialog;
 	int m_currentObjectEdit = -1; // Tell which object we are currently editinh in the filebrowsing window
@@ -279,7 +279,7 @@ private:
 		ImGui::SliderFloat("Linear", &m_llinear, 0.0, 4.0);
 		ImGui::SliderFloat("Quadratic", &m_lquadratic, 0.0, 4.0);
 		ImGui::SliderInt("Shadow resolution", &m_lshadowResolution, 100, 10000);
-		ImGui::SliderInt("Compute shadow", &m_lcomputeShadows,0,1);
+		ImGui::Checkbox("Compute shadow", &m_lcomputeShadows);
 
 		if (ImGui::Button("Create point light"))
 		{
@@ -288,6 +288,7 @@ private:
 
 			scene_->addLight(mylight);
 		}
+		ImGui::SameLine();
 		if (ImGui::Button("Create directionnal light"))
 		{
 			light* mylight = new light(DIRECTIONNAL_LIGHT, glm::vec3(m_lpos[0], m_lpos[1], m_lpos[2]), glm::vec3(m_lcol[0], m_lcol[1], m_lcol[2]), glm::vec3(m_ldir[0], m_ldir[1], m_ldir[2]), m_lcomputeShadows, m_lshadowResolution, m_lconstant, m_llinear, m_lquadratic);
