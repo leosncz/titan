@@ -45,7 +45,7 @@ public:
 
             glUniform3f(glGetUniformLocation(m_shaderID, (IDcolors.append(to_string(i).append("]")).c_str())), sceneLights[i]->lightColor.x, sceneLights[i]->lightColor.y, sceneLights[i]->lightColor.z);
             glUniform3f(glGetUniformLocation(m_shaderID, (IDPos.append(to_string(i).append("]")).c_str())), sceneLights[i]->lightPosition.x, sceneLights[i]->lightPosition.y, sceneLights[i]->lightPosition.z);
-            glUniform3f(glGetUniformLocation(m_shaderID, (IDDir.append(to_string(i).append("]")).c_str())), sceneLights[i]->lightDirection.x, sceneLights[i]->lightDirection.y, sceneLights[i]->lightDirection.z);
+            glUniform4f(glGetUniformLocation(m_shaderID, (IDDir.append(to_string(i).append("]")).c_str())), sceneLights[i]->lightDirection.x, sceneLights[i]->lightDirection.y, sceneLights[i]->lightDirection.z, sceneLights[i]->lightDirection.w);
             glUniform1i(glGetUniformLocation(m_shaderID, (IDType.append(to_string(i).append("]")).c_str())), sceneLights[i]->type);
             glUniform1f(glGetUniformLocation(m_shaderID, (IDconstant.append(to_string(i).append("]")).c_str())), sceneLights[i]->constant);
             glUniform1f(glGetUniformLocation(m_shaderID, (IDLin.append(to_string(i).append("]")).c_str())), sceneLights[i]->linear);
@@ -150,10 +150,10 @@ public:
 
         const char* fragment_shader =
         "#version 330 core\n"
-        //END MATERIAL PROPERTIES-------------
+        "uniform int numberOfLight;"
         "uniform vec3 lightsColor[100];"
         "uniform vec3 lightsPosition[100];"
-        "uniform vec3 lightsDir[100];"
+        "uniform vec4 lightsDir[100];"
         "uniform int lightsType[100];"
         "uniform float lightsConstant[100];"
         "uniform float lightsLinear[100];"
@@ -166,8 +166,6 @@ public:
         "vec4 FragPosLightSpace;"
         "vec4 FragPosLightSpace1;"
         "} fs_in;"
-        //number of lights
-        "uniform int numberOfLight;"
         // next important render things
         "uniform vec3 viewPos;"
         "in vec3 WorldPos;"
@@ -301,7 +299,7 @@ public:
             // We assume its a point light by default
             // calculate per-light radiance
             "    vec3 L = vec3(0.0);"
-            "    if(lightsType[i] == 1){L = -lightsDir[i];}" // directionnal light
+            "    if(lightsType[i] == 1){L = -vec3(lightsDir[i].x,lightsDir[i].y,lightsDir[i].z);}" // directionnal light
             "    else{L = normalize(lightsPosition[i] - WorldPos);}" // point light
             "    vec3 H = normalize(V + L);"
             "    float distance = length(lightsPosition[i] - WorldPos);"
@@ -327,8 +325,9 @@ public:
             "    float NdotL = max(dot(N, L), 0.0);"
             "    vec3 final = (kD * albedo / PI + specular) * radiance * NdotL;"
             // SHADOWS
+            "    if(lightsDir[i].w == 1){"
             "    if(lightsType[i] == 1){float shadowval = ShadowCalculation(lightSpaceMatrix[i]*vec4(FragPos,1.0), textureDepthMap[i]); final *= (1-shadowval);}"
-            "    else if(lightsType[i] == 0){float shadowval = ShadowCalculationPL(FragPos, lightsPosition[i], textureDepthCubemap[i]); final *= (1-shadowval);}"
+            "    else if(lightsType[i] == 0){float shadowval = ShadowCalculationPL(FragPos, lightsPosition[i], textureDepthCubemap[i]); final *= (1-shadowval);}}"
             "    Lo += final;"
             "}"
 

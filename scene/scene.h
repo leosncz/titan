@@ -401,7 +401,7 @@ private:
         int textureCount = 0; // 0 is hdr texture
         for (int i = 0; i < m_lights.size(); i++) // For each light
         {
-            if (glIsTexture(m_lights[i]->textureDepthMap) && m_lights[i]->computeShadows && m_lights[i]->type == POINT_LIGHT)
+            if (glIsTexture(m_lights[i]->textureDepthMap) && m_lights[i]->doesComputeShadows() && m_lights[i]->type == POINT_LIGHT)
             {
                 string name = "textureDepthCubemap[";
                 name.append(to_string(textureCount));
@@ -411,7 +411,7 @@ private:
                 glBindTexture(GL_TEXTURE_CUBE_MAP, m_lights[i]->textureDepthMap);
                 textureCount++;
             }
-            else if (glIsTexture(m_lights[i]->textureDepthMap) && m_lights[i]->computeShadows && m_lights[i]->type == DIRECTIONNAL_LIGHT)
+            else if (glIsTexture(m_lights[i]->textureDepthMap) && m_lights[i]->doesComputeShadows() && m_lights[i]->type == DIRECTIONNAL_LIGHT)
             {
                 string name = "lightSpaceMatrix[";
                 name.append(to_string(textureCount));
@@ -480,7 +480,7 @@ private:
     {
         for (int i = 0; i < m_lights.size(); i++)
         {
-            if (m_lights[i]->computeShadows)
+            if (m_lights[i]->doesComputeShadows())
             {
                 glCullFace(GL_FRONT);
                 glViewport(0, 0, m_lights[i]->shadowResolution, m_lights[i]->shadowResolution);
