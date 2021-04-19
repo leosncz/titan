@@ -364,12 +364,6 @@ public:
         if (isInitialized)
         {
             std::cout << "--> Destroying renderObject ID=" << id << std::endl;
-            glDeleteTextures(1, &texture1);
-            glDeleteTextures(1, &texture2);
-            glDeleteTextures(1, &texture3);
-            glDeleteTextures(1, &normalTexture);
-            glDeleteTextures(1, &metallicTexture);
-            glDeleteTextures(1, &roughnessTexture);
             glDeleteBuffers(1, &vbo);
             glDeleteBuffers(1, &vbo_colors);
             glDeleteBuffers(1, &vbo_texCoords);
