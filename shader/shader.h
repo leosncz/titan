@@ -328,7 +328,7 @@ public:
             "    vec3 final = (kD * albedo / PI + specular) * radiance * NdotL;"
             // SHADOWS
             "    if(lightsType[i] == 1){float shadowval = ShadowCalculation(lightSpaceMatrix[i]*vec4(FragPos,1.0), textureDepthMap[i]); final *= (1-shadowval);}"
-            "    else if(lightsType[i] == 0){float shadowval = ShadowCalculationPL(FragPos, lightsPosition[i], textureDepthCubemap[i]); if((1-shadowval) < 0.4 && distance < farShadow){final = vec3(0,0,0);}}"
+            "    else if(lightsType[i] == 0){float shadowval = ShadowCalculationPL(FragPos, lightsPosition[i], textureDepthCubemap[i]); final *= (1-shadowval);}"
             "    Lo += final;"
             "}"
 
