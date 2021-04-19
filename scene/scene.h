@@ -405,23 +405,13 @@ private:
         {
             if (glIsTexture(m_lights[i]->textureDepthMap) && m_lights[i]->computeShadows && m_lights[i]->type == POINT_LIGHT)
             {
-                if (ptLightID == 0)
-                {
-                    glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(), "textureDepthCubemap[0]"), 0);
-                    glActiveTexture(GL_TEXTURE0);
-                    glBindTexture(GL_TEXTURE_CUBE_MAP, m_lights[i]->textureDepthMap);
-                    ptLightID++;
-                }
-                else
-                {
-                    string name = "textureDepthCubemap[";
-                    name.append(to_string(ptLightID));
-                    name.append("]");
-                    glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(), name.c_str()), textureCount);
-                    glActiveTexture(GL_TEXTURE0 + textureCount);
-                    glBindTexture(GL_TEXTURE_CUBE_MAP, m_lights[i]->textureDepthMap);
-                    ptLightID++;
-                }
+                string name = "textureDepthCubemap[";
+                name.append(to_string(ptLightID));
+                name.append("]");
+                glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(), name.c_str()), textureCount);
+                glActiveTexture(GL_TEXTURE0 + textureCount);
+                glBindTexture(GL_TEXTURE_CUBE_MAP, m_lights[i]->textureDepthMap);
+                ptLightID++;
                 textureCount++;
             }
             else if (glIsTexture(m_lights[i]->textureDepthMap) && m_lights[i]->computeShadows && m_lights[i]->type == DIRECTIONNAL_LIGHT)
@@ -434,23 +424,14 @@ private:
                 glm::mat4 lightSpaceMatrix = lightProjection * lightView;
                 glUniformMatrix4fv(glGetUniformLocation(m_deferedShader.getShaderID(), name.c_str()), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
 
-                if (dirLightID == 0)
-                {
-                    glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(), "textureDepthMap[0]"), 0);
-                    glActiveTexture(GL_TEXTURE0);
-                    glBindTexture(GL_TEXTURE_2D, m_lights[i]->textureDepthMap);
-                    dirLightID++;
-                }
-                else
-                {
-                    string name = "textureDepthMap[";
-                    name.append(to_string(dirLightID));
-                    name.append("]");
-                    glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(), name.c_str()), textureCount);
-                    glActiveTexture(GL_TEXTURE0 + textureCount);
-                    glBindTexture(GL_TEXTURE_2D, m_lights[i]->textureDepthMap);
-                    dirLightID++;
-                }
+                name = "textureDepthMap[";
+                name.append(to_string(dirLightID));
+                name.append("]");
+                glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(), name.c_str()), textureCount);
+                glActiveTexture(GL_TEXTURE0 + textureCount);
+                glBindTexture(GL_TEXTURE_2D, m_lights[i]->textureDepthMap);
+                dirLightID++;
+                
                 textureCount++;
             }
         }
