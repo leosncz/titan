@@ -6,18 +6,18 @@ big 3D open-worlds full of details. </br>
 The final goal is to have a simple visual editor to easily build great games without the need to code, but the editor will support TitanScripting, an easy to understand language to interact with the world.
 
 ## Example
+**Actual** GUI editor state:
+![Example](example6.png "Example of actual titan rendering")
 PBR example :
 ![Example](example5.png "Example of actual titan rendering")
 ![Example](example4.png "Example of actual titan rendering")
 Shadow example :
 ![Example](example3.png "Example of actual titan rendering")
-**Actual** Editor example:
-![Example](example6.png "Example of actual titan rendering")
 
 ## Actual supported features:
 - Runs on Windows, Mac & Linux (32-64 bits)
 - Infinite number of lights
-- Directionnal, spot and point light supported (spot light broken now due to defered shading)
+- Directionnal, spot and point light supported
 - Physically Based Rendering (PBR)
 - Albedo map (up to 3 textures on a single object)
 - Metallic map

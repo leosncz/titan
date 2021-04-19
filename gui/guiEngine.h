@@ -203,7 +203,7 @@ private:
 
 		ImGui::TextWrapped("Select target device :");
 
-		ImGui::Button("Microsoft Window");
+		ImGui::Button("Microsoft Windows");
 		ImGui::Button("Apple Mac OS (must support OpenGL)");
 		ImGui::Button("Linux");
 
