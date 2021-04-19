@@ -344,11 +344,11 @@ public:
     }
     void rotateObjectFromLastRotation(float angle, glm::vec3 factors) // rotate from object origin
     {
-        rotationMatrix = mat4(1.0);
         rotationMatrix = glm::rotate(rotationMatrix,angle,factors);
     }
     void rotateObject(float angle, glm::vec3 factors) // rotate from object last rotation
     {
+        rotationMatrix = mat4(1.0);
         rotationMatrix = glm::rotate(rotationMatrix, angle, factors);
     }
     void scaleObject(glm::vec3 factors)

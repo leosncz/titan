@@ -106,8 +106,8 @@ int main()
         cam.update(myscene.getViewMatrix());
         gui_.update(&myscene);
         myscene.updateWindow();
-        //triangle4.rotateObjectFromSceneOrigin(i, vec3(0, 1, 0));
-        i += 0.1;
+        triangle4.rotateObject(i, vec3(0, 1, 0));
+        i += 0.001;
     } 
 
     return 0;
