@@ -4,7 +4,7 @@
 class plane : public renderObject
 {
 public:
-    void initPrefab(float* colors, texturePool* texturePool)
+    plane(float* colors, texturePool* texturePool)
     {
         tag = "Plane";
         float planeVertices[] = {

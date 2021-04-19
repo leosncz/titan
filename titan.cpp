@@ -33,16 +33,14 @@ int main()
                     1.0,1.0,1.0,      1.0,1.0,1.0,     1.0,1.0,1.0,
                     1.0,1.0,1.0,       1.0,1.0,1.0,   1.0,1.0,1.0 };
 
-    cube triangle2 = cube();
-    triangle2.initPrefab(colors, myscene.getTexturePool());
+    cube triangle2(colors, myscene.getTexturePool());
     myscene.addDrawableObject(&triangle2);
     triangle2.moveObject(glm::vec3(5, 0.0, 2));
     triangle2.addTexture("graphicData/texture.jpg");
     triangle2.setNumberOfTextureToDraw(1);
     triangle2.setNormalMap("graphicData/normalmap.jpg");
 
-    plane myplane = plane();
-    myplane.initPrefab(colors, myscene.getTexturePool());
+    plane myplane(colors, myscene.getTexturePool());
     myscene.addDrawableObject(&myplane);
     myplane.moveObject(glm::vec3(0, -0.5, -2));
     myplane.scaleObject(glm::vec3(100, 1, 100));
@@ -68,8 +66,7 @@ int main()
     objScene.scaleRenderObjectScene(glm::vec3(0.08, 0.08, 0.08));
     objScene.moveRenderObjectScene(glm::vec3(-3.0, -5.5, -2));*/
 
-    cube triangle3 = cube();
-    triangle3.initPrefab(colors, myscene.getTexturePool());
+    cube triangle3(colors, myscene.getTexturePool());
     myscene.addDrawableObject(&triangle3);
     triangle3.moveObject(glm::vec3(0,0,-2)); // 0 0 1
     triangle3.addTexture("graphicData/PaintedMetal007_1K_Color.jpg");
@@ -79,8 +76,7 @@ int main()
     triangle3.setMetallicMap("graphicData/PaintedMetal007_1K_Metalness-min.jpg");
 
 
-    cube triangle4 = cube();
-    triangle4.initPrefab(colors, myscene.getTexturePool());
+    cube triangle4(colors, myscene.getTexturePool());
     myscene.addDrawableObject(&triangle4);
     triangle4.moveObject(glm::vec3(1.2, 0.0, -2));
     triangle4.addTexture("graphicData/texturemetal.jpg");

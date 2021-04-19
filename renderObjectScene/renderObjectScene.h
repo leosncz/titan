@@ -60,9 +60,11 @@ public:
                     objects[objects.size() - 1]->setNormalMap(curMesh.MeshMaterial.map_bump.c_str());
                 }
                 m_scene->addDrawableObject(objects[objects.size() - 1]);
+                objects[objects.size() - 1]->setDeleteStatus(true);
             }
             else
             {
+                cout << "--> Error while loading obj mesh !" << endl;
                 delete newObject;
             }
             
@@ -196,17 +198,6 @@ public:
             for (int i = 0; i < objects.size(); i++)
             {
                 objects[i]->removeMetallicMap();
-            }
-        }
-    }
-    ~renderObjectScene()
-    {
-        std::cout << "--> Destroying renderObjectScene ID=" << id << std::endl;
-        if (objects.size() > 0)
-        {
-            for (int i = 0; i < objects.size() - 1; i++)
-            {
-                delete objects[i];
             }
         }
     }

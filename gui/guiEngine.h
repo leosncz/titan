@@ -105,6 +105,7 @@ private:
 
 	ImGui::FileBrowser m_fileDialog;
 	int m_currentObjectEdit = -1; // Tell which object we are currently editinh in the filebrowsing window
+	bool m_editingImportMesh = false; // Tell if we are currently looking for importing an obj file
 
 	void showLightingEditor(float* farShadow, vector<light*>* lights, scene* scene_)
 	{
@@ -315,6 +316,27 @@ private:
 		//Scene information
 		ImGui::Begin("Scene editor", &m_showSceneEditor);
 		ImGui::SetWindowFontScale(1.1);
+		if (ImGui::Button("Import object (.obj)"))
+		{
+			m_fileDialog.SetTypeFilters({ ".obj", ".test" });
+			m_fileDialog.SetTitle("Import OBJ file");
+			m_fileDialog.Open();
+			m_editingImportMesh = true;
+		}
+		if (m_editingImportMesh)
+		{
+			m_fileDialog.Display();
+			if (m_fileDialog.HasSelected())
+			{
+				renderObjectScene importModel(scene_);
+				importModel.loadOBJFromFile(m_fileDialog.GetSelected().string().c_str());
+				m_fileDialog.Close();
+				m_editingImportMesh = false;
+			}
+			m_fileDialog.ClearSelected();
+		}
+		ImGui::Separator();
+
 		vector<renderObject*>* objs = objectHolder;
 		for (int i = 0; i < objectHolder->size(); i++)
 		{
