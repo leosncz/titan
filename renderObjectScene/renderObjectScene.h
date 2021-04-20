@@ -56,8 +56,8 @@ public:
                     objects[objects.size() - 1]->addTexture(curMesh.MeshMaterial.map_Kd.c_str());
                     objects[objects.size() - 1]->setNumberOfTextureToDraw(1);
                 }
-                m_scene->addDrawableObject(objects[objects.size() - 1]);
                 objects[objects.size() - 1]->setDeleteStatus(true);
+                m_scene->addDrawableObject(objects[objects.size() - 1]);
             }
             else
             {
