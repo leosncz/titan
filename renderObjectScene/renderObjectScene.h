@@ -54,7 +54,6 @@ public:
                 {
                     cout << "---> Detected texture !" << endl;
                     objects[objects.size() - 1]->addTexture(curMesh.MeshMaterial.map_Kd.c_str());
-                    objects[objects.size() - 1]->setNumberOfTextureToDraw(1);
                 }
                 objects[objects.size() - 1]->setDeleteStatus(true);
                 m_scene->addDrawableObject(objects[objects.size() - 1]);
@@ -104,7 +103,6 @@ public:
             for (int i = 0; i < objects.size(); i++)
             {
                 objects[i]->addTexture(path.c_str());
-                objects[i]->setNumberOfTextureToDraw(1);
             }
         }
     }

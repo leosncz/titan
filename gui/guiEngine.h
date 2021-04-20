@@ -394,7 +394,7 @@ private:
 
 			name = "Import normal map ##";
 			name.append(to_string(object->getID()));
-			if (ImGui::Button(name.c_str())) { m_currentObjectEdit = object->getID(); m_fileDialog.SetTitle("Chose normal map file"); m_fileDialog.SetTypeFilters({ ".jpg", ".jpeg", ".png" }); m_fileDialog.Open(); m_normalMapPathEditing = true; }
+			if (ImGui::Button(name.c_str())) { m_currentObjectEdit = object->getID(); m_fileDialog.SetTitle("Choose normal map file"); m_fileDialog.SetTypeFilters({ ".jpg", ".jpeg", ".png" }); m_fileDialog.Open(); m_normalMapPathEditing = true; }
 			if (object->doesMeshHasNormalMap())
 			{
 				string name_ = "Delete normal map"; 
@@ -423,7 +423,7 @@ private:
 
 			name = "Import roughness map ##";
 			name.append(to_string(object->getID()));
-			if (ImGui::Button(name.c_str())) { m_currentObjectEdit = object->getID(); m_fileDialog.SetTitle("Chose roughness map file"); m_fileDialog.SetTypeFilters({ ".jpg", ".jpeg", ".png" }); m_fileDialog.Open();  m_roughnessMapPathEditing = true; }
+			if (ImGui::Button(name.c_str())) { m_currentObjectEdit = object->getID(); m_fileDialog.SetTitle("Choose roughness map file"); m_fileDialog.SetTypeFilters({ ".jpg", ".jpeg", ".png" }); m_fileDialog.Open();  m_roughnessMapPathEditing = true; }
 			if (object->doesMeshHasRoughnessMap())
 			{
 				string name_ = "Delete roughness map";
@@ -451,7 +451,7 @@ private:
 
 			name = "Import metallic map ##";
 			name.append(to_string(object->getID()));
-			if (ImGui::Button(name.c_str())) { m_currentObjectEdit = object->getID(); m_fileDialog.SetTitle("Chose metallic map file"); m_fileDialog.SetTypeFilters({ ".jpg", ".jpeg", ".png" }); m_fileDialog.Open(); m_metallicMapPathEditing = true; }
+			if (ImGui::Button(name.c_str())) { m_currentObjectEdit = object->getID(); m_fileDialog.SetTitle("Choose metallic map file"); m_fileDialog.SetTypeFilters({ ".jpg", ".jpeg", ".png" }); m_fileDialog.Open(); m_metallicMapPathEditing = true; }
 			if (object->doesMeshHasMetallicMap())
 			{
 				string name_ = "Delete metallic map";

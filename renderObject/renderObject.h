@@ -30,7 +30,6 @@ public:
         scaleMatrix = glm::mat4(1.0);
         rotationMatrix = glm::mat4(1.0);
         m_nbOfTexture = 0;
-        m_nbOfTextureToDraw = 0;
         hasNormalMap = false;
         hasRoughnessMap = false;
         hasMetallicMap = false;
@@ -205,7 +204,7 @@ public:
         glUniformMatrix4fv(glGetUniformLocation(m_gShader.getShaderID(), "view"), 1, GL_FALSE, glm::value_ptr(*view));
         glUniformMatrix4fv(glGetUniformLocation(m_gShader.getShaderID(), "projection"), 1, GL_FALSE, glm::value_ptr(*projection));
         glUniform3f(glGetUniformLocation(m_gShader.getShaderID(), "viewPos"), viewPos.x, viewPos.y, viewPos.z);
-        glUniform1i(glGetUniformLocation(m_gShader.getShaderID(), "howManyTex"), m_nbOfTextureToDraw);
+        glUniform1i(glGetUniformLocation(m_gShader.getShaderID(), "howManyTex"), m_nbOfTexture);
         glm::mat4 inversedModel = glm::inverse(customModelMatrix);
         glUniformMatrix4fv(glGetUniformLocation(m_gShader.getShaderID(), "inversedModel"), 1, GL_FALSE, glm::value_ptr(inversedModel));
 
@@ -269,9 +268,6 @@ public:
         
         glDrawArrays(GL_TRIANGLES, 0, m_nbOfPointToDraw);
     }
-    void setNumberOfTextureToDraw(int howMany){ // Set how many texture should be reserved for drawing
-        m_nbOfTextureToDraw = howMany;
-    }
 
     void updateVertex(float* vertices, int nbOfPointToDraw)
     {
@@ -295,19 +291,22 @@ public:
    
     void addTexture(const char* pathToTexture) // Returns the created texture (max 4)
     {
-        if(m_nbOfTexture == 0)
-        {  
-            setTexture(&texture1, pathToTexture,true); 
-        }
-        else if(m_nbOfTexture == 1)
+        if (m_nbOfTexture < 3)
         {
-            setTexture(&texture2,pathToTexture,true);
+            if (m_nbOfTexture == 0)
+            {
+                setTexture(&texture1, pathToTexture, true);
+            }
+            else if (m_nbOfTexture == 1)
+            {
+                setTexture(&texture2, pathToTexture, true);
+            }
+            else if (m_nbOfTexture == 2)
+            {
+                setTexture(&texture3, pathToTexture, true);
+            }
+            m_nbOfTexture++;
         }
-        else if(m_nbOfTexture == 2)
-        {
-            setTexture(&texture3,pathToTexture,true);
-        }
-        m_nbOfTexture++;
     }
 
     void moveObject(glm::vec3 position) // move from object origin 
@@ -401,6 +400,46 @@ public:
     float* getPosition() { return m_position; }
     float* getScale() { return m_scale; }
 
+    void removeTexture1()
+    {
+        if (m_nbOfTexture == 1)
+        {
+            m_nbOfTexture = 0;
+        }
+        else if(m_nbOfTexture == 2)
+        {
+            texture1 = texture2;
+            m_nbOfTexture = 1;
+        }
+        else if (m_nbOfTexture == 3)
+        {
+            texture1 = texture2;
+            texture2 = texture3;
+            m_nbOfTexture = 2;
+        }
+    }
+
+    void removeTexture2()
+    {
+        if (m_nbOfTexture == 2)
+        {
+            m_nbOfTexture = 1;
+        }
+        else if (m_nbOfTexture == 3)
+        {
+            texture2 = texture3;
+            m_nbOfTexture = 2;
+        }
+    }
+
+    void removeTexture3()
+    {
+        if (m_nbOfTexture == 3)
+        {
+            m_nbOfTexture = 2;
+        }
+    }
+
     bool doesMeshHasNormalMap() { return hasNormalMap; }
     bool doesMeshHasRoughnessMap() { return hasRoughnessMap; }
     bool doesMeshHasMetallicMap() { return hasMetallicMap; }
@@ -408,7 +447,7 @@ public:
     GLuint getMetallicMap() { return metallicTexture; }
     GLuint getRoughnessMap() { return roughnessTexture; }
     GLuint* getTextures() { GLuint textures[3] = { texture1,texture2,texture3 }; return textures;}
-    int getNbOfTextures() { return m_nbOfTextureToDraw; }
+    int getNbOfTextures() { return m_nbOfTexture; }
     void setDeleteStatus(bool status) { mustBeDeleted = status; }
     bool getDeleteStatus() { return mustBeDeleted; }
     int getID(){return id;}
@@ -431,7 +470,6 @@ protected:
 
     int m_nbOfPointToDraw; // Nb of point to draw
     int m_nbOfTexture; // Nb of texture created
-    int m_nbOfTextureToDraw; // Nb of texture to draw
 
     GLuint vbo, vbo_colors, vbo_texCoords, vbo_normals, vbo_tangent, vbo_bitangent;
 
@@ -524,7 +562,6 @@ protected:
     }
     void setTexture(GLuint *texture, const char* path, bool isDiffuseTexture=false)
     {
-        //Check if texture is cached
         *texture = m_texturePool->getCacheTextureID(path, isDiffuseTexture);
     }
 

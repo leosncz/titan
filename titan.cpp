@@ -39,7 +39,6 @@ int main()
     myscene.addDrawableObject(&triangle2);
     triangle2.moveObject(glm::vec3(5, 0.0, 2));
     triangle2.addTexture("graphicData/texture.jpg");
-    triangle2.setNumberOfTextureToDraw(1);
     triangle2.setNormalMap("graphicData/normalmap.jpg");
 
     plane myplane(colors, myscene.getTexturePool());
@@ -47,7 +46,6 @@ int main()
     myplane.moveObject(glm::vec3(0, -0.5, -2));
     myplane.scaleObject(glm::vec3(100, 1, 100));
     myplane.addTexture("graphicData/texture.jpg");
-    myplane.setNumberOfTextureToDraw(1);
     myplane.setTextureResolution(100);
     myplane.setNormalMap("graphicData/normalmap.jpg");
 
@@ -72,7 +70,6 @@ int main()
     myscene.addDrawableObject(&triangle3);
     triangle3.moveObject(glm::vec3(0,0,-2)); // 0 0 1
     triangle3.addTexture("graphicData/PaintedMetal007_1K_Color.jpg");
-    triangle3.setNumberOfTextureToDraw(1);
     triangle3.setNormalMap("graphicData/PaintedMetal007_1K_Normal.jpg");
     triangle3.setRoughnessMap("graphicData/PaintedMetal007_1K_Roughness-min.jpg");
     triangle3.setMetallicMap("graphicData/PaintedMetal007_1K_Metalness-min.jpg");
@@ -82,7 +79,6 @@ int main()
     myscene.addDrawableObject(&triangle4);
     triangle4.moveObject(glm::vec3(1.2, 0.0, -2));
     triangle4.addTexture("graphicData/texturemetal.jpg");
-    triangle4.setNumberOfTextureToDraw(1);
     triangle4.setNormalMap("graphicData/metalnormalmap.jpg");
 
     light light_[10];
