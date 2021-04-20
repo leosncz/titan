@@ -52,12 +52,9 @@ public:
                 objects.push_back(newObject);
                 if (curMesh.MeshMaterial.map_Kd != "") // If there is a diffuse texture
                 {
+                    cout << "---> Detected texture !" << endl;
                     objects[objects.size() - 1]->addTexture(curMesh.MeshMaterial.map_Kd.c_str());
                     objects[objects.size() - 1]->setNumberOfTextureToDraw(1);
-                }
-                if (curMesh.MeshMaterial.map_bump != "") // If there is a normal map
-                {
-                    objects[objects.size() - 1]->setNormalMap(curMesh.MeshMaterial.map_bump.c_str());
                 }
                 m_scene->addDrawableObject(objects[objects.size() - 1]);
                 objects[objects.size() - 1]->setDeleteStatus(true);

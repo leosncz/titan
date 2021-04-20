@@ -1,5 +1,5 @@
 # Titan Engine
-![logo](logo.png "logo")
+![logo](graphicData/logo.jpg "logo")
 
 **Titan Engine** is a powerfull & lightweight game engine aimed to create minimalist 2D games as well as
 big 3D open-worlds full of details. </br>

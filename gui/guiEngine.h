@@ -4,13 +4,14 @@
 class guiEngine : public gui
 {
 public:
-	guiEngine(display* display_) : gui(display_)
+	guiEngine(display* display_, scene* scene_) : gui(display_)
 	{
 		m_showLightingEditor = false;
 		m_showRenderingDebug = false;
 		m_showSceneEditor = false;
 		m_showHelloMessage = true;
 		m_showExportMenu = false;
+		m_textureLogo = scene_->getTexturePool()->getCacheTextureID("graphicData/logo.jpg",false);
 	}
 
 	void update(scene* scene_)
@@ -106,6 +107,8 @@ private:
 	ImGui::FileBrowser m_fileDialog;
 	int m_currentObjectEdit = -1; // Tell which object we are currently editinh in the filebrowsing window
 	bool m_editingImportMesh = false; // Tell if we are currently looking for importing an obj file
+
+	GLuint m_textureLogo;
 
 	void showLightingEditor(float* farShadow, vector<light*>* lights, scene* scene_)
 	{
@@ -302,8 +305,10 @@ private:
 	{
 		//Welcome
 		ImGui::Begin("Hello", &m_showHelloMessage);
-		ImGui::SetWindowSize(ImVec2(600, 200));
+		ImGui::SetWindowSize(ImVec2(470, 500));
 		ImGui::SetWindowFontScale(1.1);
+		IM_ASSERT(m_textureLogo);
+		ImGui::Image((void*)(intptr_t)m_textureLogo, ImVec2(450, 300), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::TextColored(ImVec4(0, 1, 0, 1), "Welcome to TITAN Engine !");
 		ImGui::TextWrapped("Keep in mind : This engine is still in early development !");
 		ImGui::TextWrapped("The 'scene informations' panel only prints active objects");

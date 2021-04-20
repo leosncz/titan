@@ -45,7 +45,7 @@ public:
          //Set texcordds
          if (texCoord != 0) { for (int i = 0; i < nbOfPointToDraw * 2; i++) { m_texCoords.push_back(texCoord[i]); } }
 
-         m_shader.compileDefaultShader();
+         //m_shader.compileDefaultShader();
          m_depthShader.compileDepthShader();
          m_gShader.compileGShaderShader();
 
@@ -131,21 +131,6 @@ public:
          glBindBuffer(GL_ARRAY_BUFFER, vbo_bitangent);
          glEnableVertexAttribArray(5);
          glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
-         modelID = glGetUniformLocation(m_shader.getShaderID(), "model");
-         viewID = glGetUniformLocation(m_shader.getShaderID(), "view");
-         projectionID = glGetUniformLocation(m_shader.getShaderID(), "projection");
-         viewPosID = glGetUniformLocation(m_shader.getShaderID(), "viewPos");
-         texture1ID = glGetUniformLocation(m_shader.getShaderID(), "texture1");
-         texture2ID = glGetUniformLocation(m_shader.getShaderID(), "texture2");
-         texture3ID = glGetUniformLocation(m_shader.getShaderID(), "texture3");
-         normalTextureID = glGetUniformLocation(m_shader.getShaderID(), "normalMap");
-         roughnessTextureID = glGetUniformLocation(m_shader.getShaderID(), "roughnessMap");
-         metallicTextureID = glGetUniformLocation(m_shader.getShaderID(), "metallicMap");
-         howManyTexID = glGetUniformLocation(m_shader.getShaderID(), "howManyTex");
-         useNormalMapID = glGetUniformLocation(m_shader.getShaderID(), "useNormalMap");
-         useRoughnessMapID = glGetUniformLocation(m_shader.getShaderID(), "useRoughnessMap");
-         useMetallicMapID = glGetUniformLocation(m_shader.getShaderID(), "useMetallicMap");
 
          return true;
     }
@@ -453,23 +438,8 @@ protected:
     texturePool* m_texturePool; //Associated texture pool that contains cached texture
 
     GLuint vao;
-    shader m_shader;
     shader m_depthShader;
     shader m_gShader;
-
-    GLuint modelID;
-    GLuint viewID;
-    GLuint viewPosID;
-    GLuint projectionID;
-    GLuint howManyTexID;
-    GLuint useNormalMapID;
-    GLuint useMetallicMapID;
-    GLuint useRoughnessMapID;
-    GLuint texture1ID;
-    GLuint texture2ID;
-    GLuint texture3ID;
-    GLuint normalTextureID;
-    GLuint metallicTextureID, roughnessTextureID;
 
     bool hasNormalMap;
     bool hasMetallicMap;

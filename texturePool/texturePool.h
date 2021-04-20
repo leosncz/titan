@@ -31,12 +31,13 @@ public:
         int width, height, nrChannels;
         unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
 
-        GLuint texture;
+        GLuint texture = 0;
 
         if (data)
         {
             glGenTextures(1, &texture);
             glBindTexture(GL_TEXTURE_2D, texture);
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 			if (isDiffuseTexture)
 			{
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -50,6 +51,9 @@ public:
         else
         {
             std::cout << "Error loading image at " << path << std::endl;
+			stbi_image_free(data);
+			glDeleteTextures(1, &texture);
+			return 0;
         }
         stbi_image_free(data);
 
@@ -63,7 +67,7 @@ public:
 		textureIDs.push_back(textureID);
 		texturePaths.push_back(path);
 
-		cout << "--> Texture " << path << " has been added to tex cache" << endl;
+		cout << "--> Texture " << path << " (" << textureID << ") has been added to tex cache" << endl;
 	}
 
 	~texturePool()
@@ -71,6 +75,7 @@ public:
 		cout << "--> Destroying textures" << endl;
 		for (int i = 0; i < textureIDs.size(); i++)
 		{
+			cout << "---> Deleting texture " << textureIDs[i] << endl;
 			glDeleteTextures(1, &textureIDs[i]);
 		}
 	}

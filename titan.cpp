@@ -16,9 +16,11 @@ int main()
     cameraFPS cam;
     cam.init(&mainDisplay);
 
-    guiEngine gui_(&mainDisplay);
 
     scene myscene(&mainDisplay, &cam);
+
+    guiEngine gui_(&mainDisplay, &myscene);
+
 
     float colors[] = { 1.0,1.0,1.0,   1.0,1.0,1.0,     1.0,1.0,1.0,
                       1.0,1.0,1.0,    1.0,1.0,1.0,    1.0,1.0,1.0,
