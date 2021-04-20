@@ -407,6 +407,8 @@ public:
     GLuint getNormalMap() { return normalTexture; }
     GLuint getMetallicMap() { return metallicTexture; }
     GLuint getRoughnessMap() { return roughnessTexture; }
+    GLuint* getTextures() { GLuint textures[3] = { texture1,texture2,texture3 }; return textures;}
+    int getNbOfTextures() { return m_nbOfTextureToDraw; }
     void setDeleteStatus(bool status) { mustBeDeleted = status; }
     bool getDeleteStatus() { return mustBeDeleted; }
     int getID(){return id;}

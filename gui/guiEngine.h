@@ -96,7 +96,7 @@ private:
 	bool m_showRenderingDebug, m_showSceneEditor, m_showLightingEditor, m_showHelloMessage, m_showExportMenu;
 
 	// These variables are used to save data in dialogs
-	bool m_normalMapPathEditing = false, m_roughnessMapPathEditing = false, m_metallicMapPathEditing = false;
+	bool m_normalMapPathEditing = false, m_roughnessMapPathEditing = false, m_metallicMapPathEditing = false, m_texture1PathEditing=false, m_texture2PathEditing = false, m_texture3PathEditing = false;
 	float m_lpos[3] = { 0.0,0.0,0.0 };
 	float m_ldir[3] = { 0.0,-0.3,-1.0 };
 	float m_lcol[3] = { 10.0,10.0,10.0 };
@@ -382,6 +382,8 @@ private:
 			name = "Ambient ##";
 			name.append(to_string(object->getID()));
 			ImGui::SliderFloat(name.c_str(), &object->getShader()->ambient,0.0, 1.0);
+
+
 
 			ImGui::Text("Normal map:");
 			if (!object->doesMeshHasNormalMap()) { ImGui::Text("No"); }
