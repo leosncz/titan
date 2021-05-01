@@ -4,7 +4,7 @@
 class plane : public renderObject
 {
 public:
-    plane(float* colors, texturePool* texturePool)
+    plane(float* colors, texturePool* texturePool, bool inverseNormals=false)
     {
         tag = "Plane";
         float planeVertices[] = {
@@ -13,6 +13,13 @@ public:
         };
 
         float planeNormals[] = {0,1,0,     0,1,0,      0,1,0,     0,1,0,     0,1,0,     0,1,0};
+        if (inverseNormals)
+        {
+            for (int i = 0; i < 18; i++)
+            {
+                planeNormals[i] = planeNormals[i] * (-1);
+            }
+        }
         float texcoord[] = { 0,0,    1,0,   1,1,  1,1,  0,1, 0,0};
         
         setData(planeVertices,colors,texcoord,6,planeNormals, texturePool);

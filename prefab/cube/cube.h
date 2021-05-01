@@ -4,7 +4,7 @@
 class cube : public renderObject
 {
 public:
-    cube(float* colors, texturePool* texturePool)
+    cube(float* colors, texturePool* texturePool, bool inverseNormals=false)
     {
         tag = "Cube";
         float cubeVertices[] = {
@@ -23,6 +23,13 @@ public:
                                 1,0,0,  1,0,0,    1,0,0,   1,0,0,   1,0,0,   1,0,0,
                                0,0,-1,  0,0,-1,   0,0,-1,  0,0,-1,   0,0,-1,  0,0,-1,
                                 0,-1,0, 0,-1,0,  0,-1,0,   0,-1,0,   0,-1,0,   0,-1,0};
+        if (inverseNormals)
+        {
+            for (int i = 0; i < 324; i++)
+            {
+                cubeNormals[i] = cubeNormals[i] * (-1);
+            }
+        }
 
         float texCoords[] = { 0,0,   1,0,    1,1,   1,1,   0,1,    0,0,
                               0,0,   1,0,    1,1,   1,1,   0,1,    0,0,

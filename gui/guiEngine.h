@@ -281,7 +281,7 @@ private:
 		ImGui::SliderFloat("Constant", &m_lconstant, 0.0, 4.0);
 		ImGui::SliderFloat("Linear", &m_llinear, 0.0, 4.0);
 		ImGui::SliderFloat("Quadratic", &m_lquadratic, 0.0, 4.0);
-		ImGui::SliderInt("Shadow resolution", &m_lshadowResolution, 100, 10000);
+		ImGui::SliderInt("Shadow resolution", &m_lshadowResolution, 100, 20000);
 		ImGui::Checkbox("Compute shadow", &m_lcomputeShadows);
 
 		if (ImGui::Button("Create point light"))
@@ -407,6 +407,7 @@ private:
 				string name_ = "Delete texture 1";
 				name_.append(" ##");
 				name_.append(to_string(object->getID()));
+				ImGui::SameLine();
 				if (ImGui::Button(name_.c_str())) { object->removeTexture1(); }
 			}
 
@@ -420,6 +421,7 @@ private:
 					string name_ = "Delete texture 2";
 					name_.append(" ##");
 					name_.append(to_string(object->getID()));
+					ImGui::SameLine();
 					if (ImGui::Button(name_.c_str())) { object->removeTexture2(); }
 				}
 			}
@@ -433,12 +435,14 @@ private:
 
 			name = "Import normal map ##";
 			name.append(to_string(object->getID()));
+			ImGui::SameLine();
 			if (ImGui::Button(name.c_str())) { m_currentObjectEdit = object->getID(); m_fileDialog.SetTitle("Choose normal map file"); m_fileDialog.SetTypeFilters({ ".jpg", ".jpeg", ".png" }); m_fileDialog.Open(); m_normalMapPathEditing = true; }
 			if (object->doesMeshHasNormalMap())
 			{
 				string name_ = "Delete normal map"; 
 				name_.append(" ##");
 				name_.append(to_string(object->getID()));
+				ImGui::SameLine();
 				if (ImGui::Button(name_.c_str())) { object->removeNormalMap(); }
 			}
 			if (m_normalMapPathEditing && m_currentObjectEdit == object->getID())
@@ -462,12 +466,14 @@ private:
 
 			name = "Import roughness map ##";
 			name.append(to_string(object->getID()));
+			ImGui::SameLine();
 			if (ImGui::Button(name.c_str())) { m_currentObjectEdit = object->getID(); m_fileDialog.SetTitle("Choose roughness map file"); m_fileDialog.SetTypeFilters({ ".jpg", ".jpeg", ".png" }); m_fileDialog.Open();  m_roughnessMapPathEditing = true; }
 			if (object->doesMeshHasRoughnessMap())
 			{
 				string name_ = "Delete roughness map";
 				name_.append(" ##");
 				name_.append(to_string(object->getID()));
+				ImGui::SameLine();
 				if (ImGui::Button(name_.c_str())) { object->removeRoughnessMap(); }
 			}
 			if (m_roughnessMapPathEditing && m_currentObjectEdit == object->getID())
@@ -490,12 +496,14 @@ private:
 
 			name = "Import metallic map ##";
 			name.append(to_string(object->getID()));
+			ImGui::SameLine();
 			if (ImGui::Button(name.c_str())) { m_currentObjectEdit = object->getID(); m_fileDialog.SetTitle("Choose metallic map file"); m_fileDialog.SetTypeFilters({ ".jpg", ".jpeg", ".png" }); m_fileDialog.Open(); m_metallicMapPathEditing = true; }
 			if (object->doesMeshHasMetallicMap())
 			{
 				string name_ = "Delete metallic map";
 				name_.append(" ##");
 				name_.append(to_string(object->getID()));
+				ImGui::SameLine();
 				if (ImGui::Button(name_.c_str())) { object->removeMetallicMap(); }
 			}
 			if (m_metallicMapPathEditing && m_currentObjectEdit == object->getID())
