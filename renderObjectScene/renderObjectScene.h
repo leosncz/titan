@@ -50,12 +50,15 @@ public:
             if (newObject->setData(&vertices[0], &colors[0], &uv[0], curMesh.Vertices.size(), &normals[0], m_scene->getTexturePool()))
             {
                 objects.push_back(newObject);
+                newObject->setTag(curMesh.MeshName);
                 if (curMesh.MeshMaterial.map_Kd != "") // If there is a diffuse texture
                 {
                     cout << "---> Detected texture !" << endl;
                     objects[objects.size() - 1]->addTexture(curMesh.MeshMaterial.map_Kd.c_str());
                 }
                 objects[objects.size() - 1]->setDeleteStatus(true);
+                objects.push_back(newObject);
+
                 m_scene->addDrawableObject(objects[objects.size() - 1]);
             }
             else

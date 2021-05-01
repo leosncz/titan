@@ -4,9 +4,9 @@
 class plane : public renderObject
 {
 public:
-    plane(float* colors, texturePool* texturePool, bool inverseNormals=false)
+    plane(texturePool* texturePool, float* colors = 0, bool inverseNormals=false, string tag_="Plane")
     {
-        tag = "Plane";
+        tag = tag_;
         float planeVertices[] = {
             -0.5,0.0,0.5,  0.5,0.0,0.5,  0.5,0.0,-0.5,
             0.5,0.0,-0.5,   -0.5,0.0,-0.5,   -0.5,0.0,0.5
@@ -21,8 +21,19 @@ public:
             }
         }
         float texcoord[] = { 0,0,    1,0,   1,1,  1,1,  0,1, 0,0};
+
+        if (colors == 0)
+        {
+            float colors_[] = { 1.0,1.0,1.0,   1.0,1.0,1.0,     1.0,1.0,1.0,
+                      1.0,1.0,1.0,    1.0,1.0,1.0,    1.0,1.0,1.0 };
+            setData(planeVertices, colors_, texcoord, 6, planeNormals, texturePool);
+        }
+        else
+        {
+            setData(planeVertices, colors, texcoord, 6, planeNormals, texturePool);
+        }
         
-        setData(planeVertices,colors,texcoord,6,planeNormals, texturePool);
+        
     }
 };
 #endif 

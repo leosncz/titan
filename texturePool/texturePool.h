@@ -75,7 +75,7 @@ public:
 		cout << "--> Destroying textures" << endl;
 		for (int i = 0; i < textureIDs.size(); i++)
 		{
-			cout << "---> Deleting texture " << textureIDs[i] << endl;
+			cout << "---> Deleting texture " << textureIDs[i] << " : " << texturePaths[i] << endl;
 			glDeleteTextures(1, &textureIDs[i]);
 		}
 	}

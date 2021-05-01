@@ -36,6 +36,7 @@ public:
         isInitialized = true;
     }
     string getTag() { return tag; }
+    void setTag(string tag_) { tag = tag_; }
     shader* getShader() { return &m_gShader; }
     bool setData(float* vertices, float* colors, float* texCoord, int nbOfPointToDraw, float* normals=0, texturePool* texturePool_=0) // Use this methode to define the mesh by hand
     {

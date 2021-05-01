@@ -4,9 +4,9 @@
 class cube : public renderObject
 {
 public:
-    cube(float* colors, texturePool* texturePool, bool inverseNormals=false)
+    cube(texturePool* texturePool, float* colors = 0, bool inverseNormals=false, string tag_="Cube" )
     {
-        tag = "Cube";
+        tag = tag_;
         float cubeVertices[] = {
           -0.5,-0.5,0.5,    0.5,-0.5,0.5,    0.5,0.5,0.5,   0.5,0.5,0.5,  -0.5,0.5,0.5,    -0.5,-0.5,0.5,  //front
           -0.5,0.5,0.5,    0.5,0.5,0.5,    0.5,0.5,-0.5,    0.5,0.5,-0.5,   -0.5,0.5,-0.5,   -0.5,0.5,0.5,//top
@@ -38,7 +38,26 @@ public:
                               0,0,   1,0,    1,1,  1,1,    0,1,    0,0,
                               0,0,   1,0,    1,1,  1,1,    0,1,    0,0};
 
-        setData(cubeVertices,colors,texCoords,36,cubeNormals,texturePool);
+        if (colors == 0)
+        {
+            float colors_[] = { 1.0,1.0,1.0,   1.0,1.0,1.0,     1.0,1.0,1.0,
+                      1.0,1.0,1.0,    1.0,1.0,1.0,    1.0,1.0,1.0,
+                    1.0,1.0,1.0,      1.0,1.0,1.0,     1.0,1.0,1.0,
+                    1.0,1.0,1.0,       1.0,1.0,1.0,   1.0,1.0,1.0,
+                    1.0,1.0,1.0,      1.0,1.0,1.0,     1.0,1.0,1.0,
+                    1.0,1.0,1.0,       1.0,1.0,1.0,   1.0,1.0,1.0,
+                    1.0,1.0,1.0,      1.0,1.0,1.0,     1.0,1.0,1.0,
+                    1.0,1.0,1.0,       1.0,1.0,1.0,   1.0,1.0,1.0,
+                    1.0,1.0,1.0,      1.0,1.0,1.0,     1.0,1.0,1.0,
+                    1.0,1.0,1.0,       1.0,1.0,1.0,   1.0,1.0,1.0,
+                    1.0,1.0,1.0,      1.0,1.0,1.0,     1.0,1.0,1.0,
+                    1.0,1.0,1.0,       1.0,1.0,1.0,   1.0,1.0,1.0 };
+            setData(cubeVertices, colors_, texCoords, 36, cubeNormals, texturePool);
+        }
+        else
+        {
+            setData(cubeVertices, colors, texCoords, 36, cubeNormals, texturePool);
+        }
     }
 };
 #endif // CUBE_H_INCLUDED

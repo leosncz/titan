@@ -103,6 +103,8 @@ private:
 	float m_lconstant = 1.0, m_llinear = 1.0, m_lquadratic = 1.0;
 	int m_lshadowResolution = 500;
 	bool m_lcomputeShadows = true;
+	char m_chosenMeshName[10];
+	bool m_chosenMeshInverseNormals = false;
 
 	ImGui::FileBrowser m_fileDialog;
 	int m_currentObjectEdit = -1; // Tell which object we are currently editinh in the filebrowsing window
@@ -342,6 +344,38 @@ private:
 			m_fileDialog.ClearSelected();
 		}
 		ImGui::Separator();
+		ImGui::InputText("Object name",m_chosenMeshName,10);
+		ImGui::Checkbox("Inverse normals", &m_chosenMeshInverseNormals);
+		if(ImGui::Button("Create Cube"))
+		{
+			cube* cube_ = 0;
+			if (m_chosenMeshInverseNormals)
+			{
+				cube_ = new cube(scene_->getTexturePool(),0,true,m_chosenMeshName);
+			}
+			else
+			{
+				cube_ = new cube(scene_->getTexturePool(),0,false,m_chosenMeshName);
+			}
+			cube_->setDeleteStatus(true);
+			scene_->addDrawableObject(cube_);
+		}
+		else if (ImGui::Button("Create Plane"))
+		{
+			plane* plane_ = 0;
+			if (m_chosenMeshInverseNormals)
+			{
+				plane_ = new plane(scene_->getTexturePool(), 0, true,m_chosenMeshName);
+			}
+			else
+			{
+				plane_ = new plane(scene_->getTexturePool(),0,false,m_chosenMeshName);
+			}
+			plane_->setDeleteStatus(true);
+			scene_->addDrawableObject(plane_);
+		}
+		ImGui::Separator();
+
 
 		vector<renderObject*>* objs = objectHolder;
 		for (int i = 0; i < objectHolder->size(); i++)
