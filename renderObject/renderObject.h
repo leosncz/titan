@@ -295,7 +295,6 @@ public:
             {
                 setTexture(&texture2, pathToTexture, true);
             }
-            m_nbOfTexture++;
         }
     }
 
@@ -400,6 +399,7 @@ public:
         {
             texture1 = texture2;
             m_nbOfTexture = 1;
+            texture2 = 0;
         }
     }
 
@@ -408,6 +408,7 @@ public:
         if (m_nbOfTexture == 2)
         {
             m_nbOfTexture = 1;
+            texture2 = 0;
         }
     }
 
@@ -456,11 +457,7 @@ protected:
     bool hasMetallicMap;
     bool hasRoughnessMap;
 
-    GLuint texture1;
-    GLuint texture2;
-    GLuint normalTexture;
-    GLuint roughnessTexture;
-    GLuint metallicTexture;
+    GLuint texture1=0, texture2=0, normalTexture, roughnessTexture, metallicTexture;
 
     // Used to compute tangent and bitangent for normal mapping
     void computeTangent(std::vector<glm::vec3>& vertices,std::vector<glm::vec2>& uvs,std::vector<glm::vec3>& normals,std::vector<glm::vec3>& tangents,std::vector<glm::vec3>& bitangents)
@@ -533,6 +530,10 @@ protected:
     void setTexture(GLuint *texture, const char* path, bool isDiffuseTexture=false)
     {
         *texture = m_texturePool->getCacheTextureID(path, isDiffuseTexture);
+        if (isDiffuseTexture && *texture != 0)
+        {
+            m_nbOfTexture++;
+        }
     }
 
 };

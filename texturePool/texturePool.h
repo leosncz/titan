@@ -52,6 +52,7 @@ public:
         {
             std::cout << "Error loading image at " << path << std::endl;
 			stbi_image_free(data);
+			glBindTexture(GL_TEXTURE_2D, 0);
 			glDeleteTextures(1, &texture);
 			return 0;
         }
