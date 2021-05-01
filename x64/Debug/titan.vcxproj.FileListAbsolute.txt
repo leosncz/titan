@@ -1,0 +1,2 @@
+C:\Users\leosa\source\repos\titan\x64\Debug\titan.exe
+C:\Users\leosa\source\repos\titan\x64\Debug\titan.pdb
