@@ -231,13 +231,6 @@ public:
             glBindTexture(GL_TEXTURE_2D, texture2);
             textureCount++;
         }
-        if (glIsTexture(texture3))
-        {
-            glUniform1i(glGetUniformLocation(m_gShader.getShaderID(), "texture3"), textureCount);
-            glActiveTexture(GL_TEXTURE0 + textureCount);
-            glBindTexture(GL_TEXTURE_2D, texture3);     
-            textureCount++;
-        }
         if (hasNormalMap)
         {
             glUniform1i(glGetUniformLocation(m_gShader.getShaderID(), "normalMap"), textureCount);
@@ -291,7 +284,7 @@ public:
    
     void addTexture(const char* pathToTexture) // Returns the created texture (max 4)
     {
-        if (m_nbOfTexture < 3)
+        if (m_nbOfTexture < 2)
         {
             if (m_nbOfTexture == 0)
             {
@@ -300,10 +293,6 @@ public:
             else if (m_nbOfTexture == 1)
             {
                 setTexture(&texture2, pathToTexture, true);
-            }
-            else if (m_nbOfTexture == 2)
-            {
-                setTexture(&texture3, pathToTexture, true);
             }
             m_nbOfTexture++;
         }
@@ -411,12 +400,6 @@ public:
             texture1 = texture2;
             m_nbOfTexture = 1;
         }
-        else if (m_nbOfTexture == 3)
-        {
-            texture1 = texture2;
-            texture2 = texture3;
-            m_nbOfTexture = 2;
-        }
     }
 
     void removeTexture2()
@@ -424,19 +407,6 @@ public:
         if (m_nbOfTexture == 2)
         {
             m_nbOfTexture = 1;
-        }
-        else if (m_nbOfTexture == 3)
-        {
-            texture2 = texture3;
-            m_nbOfTexture = 2;
-        }
-    }
-
-    void removeTexture3()
-    {
-        if (m_nbOfTexture == 3)
-        {
-            m_nbOfTexture = 2;
         }
     }
 
@@ -446,7 +416,7 @@ public:
     GLuint getNormalMap() { return normalTexture; }
     GLuint getMetallicMap() { return metallicTexture; }
     GLuint getRoughnessMap() { return roughnessTexture; }
-    GLuint* getTextures() { GLuint textures[3] = { texture1,texture2,texture3 }; return textures;}
+    GLuint* getTextures() { GLuint textures[2] = { texture1,texture2 }; return textures;}
     int getNbOfTextures() { return m_nbOfTexture; }
     void setDeleteStatus(bool status) { mustBeDeleted = status; }
     bool getDeleteStatus() { return mustBeDeleted; }
@@ -487,7 +457,6 @@ protected:
 
     GLuint texture1;
     GLuint texture2;
-    GLuint texture3;
     GLuint normalTexture;
     GLuint roughnessTexture;
     GLuint metallicTexture;

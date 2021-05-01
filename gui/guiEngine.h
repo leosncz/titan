@@ -96,7 +96,7 @@ private:
 	bool m_showRenderingDebug, m_showSceneEditor, m_showLightingEditor, m_showHelloMessage, m_showExportMenu;
 
 	// These variables are used to save data in dialogs
-	bool m_normalMapPathEditing = false, m_roughnessMapPathEditing = false, m_metallicMapPathEditing = false, m_texture1PathEditing=false, m_texture2PathEditing = false, m_texture3PathEditing = false;
+	bool m_texturePathEditing = false, m_normalMapPathEditing = false, m_roughnessMapPathEditing = false, m_metallicMapPathEditing = false;
 	float m_lpos[3] = { 0.0,0.0,0.0 };
 	float m_ldir[3] = { 0.0,-0.3,-1.0 };
 	float m_lcol[3] = { 10.0,10.0,10.0 };
@@ -383,7 +383,46 @@ private:
 			name.append(to_string(object->getID()));
 			ImGui::SliderFloat(name.c_str(), &object->getShader()->ambient,0.0, 1.0);
 
+			if (object->getNbOfTextures() < 2)
+			{
+				name = "Import texture ##";
+				name.append(to_string(object->getID()));
+				if (ImGui::Button(name.c_str())) { m_currentObjectEdit = object->getID(); m_fileDialog.SetTitle("Choose texture file"); m_fileDialog.SetTypeFilters({ ".jpg", ".jpeg", ".png" }); m_fileDialog.Open(); m_texturePathEditing = true; }
+				if (m_texturePathEditing && m_currentObjectEdit == object->getID())
+				{
+					m_fileDialog.Display();
+					if (m_fileDialog.HasSelected())
+					{
+						object->addTexture(m_fileDialog.GetSelected().string().c_str());
+						m_fileDialog.ClearSelected();
+						m_texturePathEditing = false;
+					}
+				}
+			}
+			ImGui::Text("Texture 1:");
+			if (object->getNbOfTextures() == 0) { ImGui::Text("No"); }
+			else
+			{ 
+				IM_ASSERT(object->getTextures()[0]); ImGui::Image((void*)(intptr_t)object->getTextures()[0], ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
+				string name_ = "Delete texture 1";
+				name_.append(" ##");
+				name_.append(to_string(object->getID()));
+				if (ImGui::Button(name_.c_str())) { object->removeTexture1(); }
+			}
 
+			if (object->getNbOfTextures() == 2)
+			{
+				ImGui::Text("Texture 2:");
+				if (object->getNbOfTextures() == 1) { ImGui::Text("No"); }
+				else
+				{
+					IM_ASSERT(object->getTextures()[1]); ImGui::Image((void*)(intptr_t)object->getTextures()[1], ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
+					string name_ = "Delete texture 2";
+					name_.append(" ##");
+					name_.append(to_string(object->getID()));
+					if (ImGui::Button(name_.c_str())) { object->removeTexture2(); }
+				}
+			}
 
 			ImGui::Text("Normal map:");
 			if (!object->doesMeshHasNormalMap()) { ImGui::Text("No"); }

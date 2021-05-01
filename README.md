@@ -19,7 +19,7 @@ Shadow example :
 - Infinite number of lights
 - Directionnal, spot and point light supported
 - Physically Based Rendering (PBR)
-- Albedo map (up to 3 textures on a single object)
+- Albedo map
 - Metallic map
 - Roughness map
 - Normal map
