@@ -334,7 +334,7 @@ public:
     {
         if (isInitialized)
         {
-            std::cout << "--> Destroying renderObject ID=" << id << std::endl;
+            std::cout << "--> Destroying renderObject (id=" << id << ") : " << tag << std::endl;
             glDeleteBuffers(1, &vbo);
             glDeleteBuffers(1, &vbo_colors);
             glDeleteBuffers(1, &vbo_texCoords);
