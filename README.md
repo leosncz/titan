@@ -40,12 +40,9 @@ Shadow example :
 - Dynamic light frustrum
 
 ## Build
-In order to use & build the project with this library, you must install the following libraries :
-- GLFW
-- OpenGL
-- GLEW
-- GLM </br>
-If you use the sln solution, keep in mind that everything is 64-bit oriented.
+Everything is setup, just run the program :). </br>
+If you use the sln solution, keep in mind that everything is 64-bit oriented.</br>
+C++ 17 must be used
 
 ## License
 Please contact me before considering using any code from this repository.

@@ -72,23 +72,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>E:\TitanEngine\assimp\include;E:\TitanEngine\glm;E:\TitanEngine\glfw-3.3.3.bin.WIN64\include;E:\TitanEngine\glew-2.1.0\include;E:\TitanEngine\glm;E:\TitanEngine\glfw-3.3.2.bin.WIN32\include;E:\TitanEngine\glew-2.1.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\TitanEngine\glfw-3.3.3.bin.WIN64\lib-vc2019;E:\TitanEngine\glew-2.1.0\lib\Release\x64;E:\TitanEngine\glfw-3.3.2.bin.WIN32\lib-vc2019;E:\TitanEngine\glew-2.1.0\lib\Release\Win32;$(LibraryPath)</LibraryPath>
+    <IncludePath>libraries\glm;libraries\glfw-3.3.3.bin.WIN64\include;libraries\glew-2.1.0\include;E:\TitanEngine\glm;E:\TitanEngine\glfw-3.3.2.bin.WIN32\include;E:\TitanEngine\glew-2.1.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>libraries\glfw-3.3.3.bin.WIN64\lib-vc2019;libraries\glew-2.1.0\lib\Release\x64;E:\TitanEngine\glfw-3.3.2.bin.WIN32\lib-vc2019;E:\TitanEngine\glew-2.1.0\lib\Release\Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>E:\TitanEngine\assimp\include;E:\TitanEngine\glm;E:\TitanEngine\glfw-3.3.3.bin.WIN64\include;E:\TitanEngine\glew-2.1.0\include;E:\TitanEngine\glm;E:\TitanEngine\glfw-3.3.2.bin.WIN32\include;E:\TitanEngine\glew-2.1.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\TitanEngine\glfw-3.3.3.bin.WIN64\lib-vc2019;E:\TitanEngine\glew-2.1.0\lib\Release\x64;E:\TitanEngine\glfw-3.3.2.bin.WIN32\lib-vc2019;E:\TitanEngine\glew-2.1.0\lib\Release\Win32;$(LibraryPath)</LibraryPath>
+    <IncludePath>libraries\glm;libraries\glfw-3.3.3.bin.WIN64\include;libraries\glew-2.1.0\include;E:\TitanEngine\glm;E:\TitanEngine\glfw-3.3.2.bin.WIN32\include;E:\TitanEngine\glew-2.1.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>libraries\glfw-3.3.3.bin.WIN64\lib-vc2019;libraries\glew-2.1.0\lib\Release\x64;E:\TitanEngine\glfw-3.3.2.bin.WIN32\lib-vc2019;E:\TitanEngine\glew-2.1.0\lib\Release\Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>E:\TitanEngine\assimp\include;E:\TitanEngine\glm;E:\TitanEngine\glfw-3.3.3.bin.WIN64\include;E:\TitanEngine\glew-2.1.0\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <LibraryPath>E:\TitanEngine\glfw-3.3.3.bin.WIN64\lib-vc2019;E:\TitanEngine\glew-2.1.0\lib\Release\x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <IncludePath>libraries\glm;libraries\glfw-3.3.3.bin.WIN64\include;libraries\glew-2.1.0\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <LibraryPath>libraries\glfw-3.3.3.bin.WIN64\lib-vc2019;libraries\glew-2.1.0\lib\Release\x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>E:\TitanEngine\assimp\include;E:\TitanEngine\glm;E:\TitanEngine\glfw-3.3.3.bin.WIN64\include;E:\TitanEngine\glew-2.1.0\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <LibraryPath>E:\TitanEngine\glfw-3.3.3.bin.WIN64\lib-vc2019;E:\TitanEngine\glew-2.1.0\lib\Release\x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <IncludePath>libraries\glm;libraries\glfw-3.3.3.bin.WIN64\include;libraries\glew-2.1.0\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <LibraryPath>libraries\glfw-3.3.3.bin.WIN64\lib-vc2019;libraries\glew-2.1.0\lib\Release\x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
