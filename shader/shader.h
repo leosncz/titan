@@ -105,6 +105,88 @@ public:
         glDeleteShader(vs);
         glDeleteShader(fs);
     }
+    void compileSSAOShader()
+    {
+        std::cout << "---> Compiling SSAOShader for scene" << std::endl;
+
+        const char* vertex_shader =
+            "#version 330 core\n"
+            "layout(location = 0) in vec3 vp;"
+            "layout(location = 1) in vec3 color;"
+            "layout(location = 2) in vec2 inputTexCoord;"
+
+            "out vec2 texCoord;"
+
+            "void main() {"
+            "   gl_Position = vec4(vp, 1.0);"
+            "   texCoord = inputTexCoord;"
+            "}";
+
+        const char* fragment_shader =
+            "#version 330 core\n"
+            "out float frag_colour;"
+            "in vec2 texCoord;"
+            "uniform sampler2D gPosition;"
+            "uniform sampler2D gNormals;"
+            "uniform sampler2D noiseTexture;"
+
+            "uniform vec3 samples[50];"
+
+            "int kernelSize = 50;"
+            "float radius = 1.5;"
+            "float bias = 0.025;"
+            "const vec2 noiseScale = vec2(1620 / 4.0, 880 / 4.0);"
+
+            "uniform mat4 projection;"
+            
+            "void main() {"
+                "vec3 fragPos = texture(gPosition, texCoord).xyz;"
+                "vec3 normal = normalize(texture(gNormals, texCoord).rgb);"
+                "vec3 randomVec = normalize(texture(noiseTexture, texCoord * noiseScale).xyz);"
+                // create TBN change-of-basis matrix: from tangent-space to view-space
+                "vec3 tangent = normalize(randomVec - normal * dot(randomVec, normal));"
+                "vec3 bitangent = cross(normal, tangent);"
+                "mat3 TBN = mat3(tangent, bitangent, normal);"
+                "float occlusion = 0.0;"
+                "for (int i = 0; i < kernelSize; ++i)"
+                "{"
+                    // get sample position
+                    "vec3 samplePos = TBN * samples[i];" // from tangent to view-space
+                    "samplePos = fragPos + samplePos * radius;"
+
+                    // project sample position (to sample texture) (to get position on screen/texture)
+                    "vec4 offset = vec4(samplePos, 1.0);"
+                    "offset = projection * offset;" // from view to clip-space
+                    "offset.xyz /= offset.w;" // perspective divide
+                    "offset.xyz = offset.xyz * 0.5 + 0.5;" // transform to range 0.0 - 1.0
+
+                    // get sample depth
+                    "float sampleDepth = texture(gPosition, offset.xy).z;" // get depth value of kernel sample
+
+                    // range check & accumulate
+                    "float rangeCheck = smoothstep(0.0, 1.0, radius / abs(fragPos.z - sampleDepth));"
+                    "occlusion += (sampleDepth >= samplePos.z + bias ? 1.0 : 0.0) * rangeCheck;"
+                "}"
+                "occlusion = 1.0 - (occlusion / kernelSize);"
+                "frag_colour = occlusion;"
+            "}";
+
+        GLuint vs = glCreateShader(GL_VERTEX_SHADER);
+        glShaderSource(vs, 1, &vertex_shader, NULL);
+        glCompileShader(vs);
+
+        GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(fs, 1, &fragment_shader, NULL);
+        glCompileShader(fs);
+
+        m_shaderID = glCreateProgram();
+        glAttachShader(m_shaderID, fs);
+        glAttachShader(m_shaderID, vs);
+        glLinkProgram(m_shaderID);
+
+        glDeleteShader(vs);
+        glDeleteShader(fs);
+    }
     void compileDefaultShader() //For now handles directionnal, spot and point lights
     {
         std::cout << "---> Compiling PBR shader ID=" << id << std::endl;

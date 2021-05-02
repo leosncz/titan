@@ -3,6 +3,7 @@ Handles everything related to scenes and object rendering loop in scenes
 */
 #pragma once
 #include <iostream>
+#include <random>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm.hpp>
@@ -121,6 +122,51 @@ public:
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glBindTexture(GL_TEXTURE_2D, 0);
 
+        m_ssaoShader.compileSSAOShader();
+        std::uniform_real_distribution<float> randomFloats(0.0, 1.0); // random floats between [0.0, 1.0]
+        std::default_random_engine generator;
+        for (unsigned int i = 0; i < 50; ++i)
+        {
+            glm::vec3 sample(randomFloats(generator) * 2.0 - 1.0, randomFloats(generator) * 2.0 - 1.0, randomFloats(generator));
+            sample = glm::normalize(sample);
+            sample *= randomFloats(generator);
+            float scale = float(i) / 64.0;
+
+            // scale samples s.t. they're more aligned to center of kernel
+            scale = 0.1 + (scale * scale) * (1.0 - 0.1);
+            sample *= scale;
+            ssaoKernel.push_back(sample);
+        }
+        std::vector<glm::vec3> ssaoNoise;
+        for (unsigned int i = 0; i < 16; i++)
+        {
+            glm::vec3 noise(
+                randomFloats(generator) * 2.0 - 1.0,
+                randomFloats(generator) * 2.0 - 1.0,
+                0.0f);
+            ssaoNoise.push_back(noise);
+        }
+        glGenTextures(1, &noiseTexture);
+        glBindTexture(GL_TEXTURE_2D, noiseTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 4, 4, 0, GL_RGB, GL_FLOAT, &ssaoNoise[0]);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        glGenFramebuffers(1, &ssaoFBO);
+        glBindFramebuffer(GL_FRAMEBUFFER, ssaoFBO);
+        glGenTextures(1, &ssaoColorBuffer);
+        glBindTexture(GL_TEXTURE_2D, ssaoColorBuffer);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_display->getDisWidth(), m_display->getDisHeight(), 0, GL_RED, GL_FLOAT, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ssaoColorBuffer, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
         //Create quad to render HDR scene
         m_hdrShader.compileQuadRenderShader();
         float vertices[] = {-1.0,-1.0,0.0,    1.0,-1.0,0.0,      1.0,1.0,0.0,     1.0,1.0,0.0,   -1.0,1.0,0.0,    -1.0,-1.0,0.0};
@@ -156,13 +202,19 @@ public:
     }
     void renderScene()
     {
-        // SHADOW PASSES
+        // SHADOW PASS
         drawShadowPass();
         freeTexturesSlot();
 
         //Generate GBuffer
         glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
         drawGBufferPass();
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        freeTexturesSlot();
+
+        //Generate SSAO texture
+        glBindFramebuffer(GL_FRAMEBUFFER, ssaoFBO);
+        drawSSAO();
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         freeTexturesSlot();
 
@@ -281,6 +333,7 @@ public:
     GLuint getGRoughness() { return gRoughness; }
     GLuint getGMetallic() { return gMetallic; }
     GLuint getGAmbient() { return gAmbient; }
+    GLuint getSSAOTexture() { return ssaoColorBuffer; }
     vector<light*>* getLights() { return &m_lights; }
     vector<renderObject*>* getObjectHolder() { return &m_objectHolder; }
     mat4* getViewMatrix() { return &view; }
@@ -309,9 +362,13 @@ public:
         glDeleteTextures(1, &gRoughness);
         glDeleteTextures(1, &gMetallic);
         glDeleteTextures(1, &gAmbient);
+        glDeleteTextures(1, &noiseTexture);
+        glDeleteTextures(1, &ssaoColorBuffer);
+        glDeleteRenderbuffers(1, &ssaoColorBuffer);
         glDeleteRenderbuffers(1, &hdrRBO);
         glDeleteRenderbuffers(1, &gRBO);
         glDeleteFramebuffers(1, &hdrFBO);
+        glDeleteFramebuffers(1, &ssaoFBO);
         glDeleteFramebuffers(1, &gBuffer);
         glDeleteBuffers(1, &vbo);
         glDeleteBuffers(1, &vbo_colors);
@@ -362,8 +419,10 @@ private:
     GLuint vbo, vbo_colors, vbo_texCoords, vao;
     float m_exposure;
 
-    GLuint gBuffer, gPosition, gNormal, gAlbedo, gRoughness, gMetallic, gAmbient, gRBO;
+    GLuint gBuffer, gPosition, gNormal, gAlbedo, gRoughness, gMetallic, gAmbient, gRBO, noiseTexture, ssaoFBO, ssaoColorBuffer;
     shader m_deferedShader;
+    shader m_ssaoShader;
+    std::vector<glm::vec3> ssaoKernel;
 
     void freeTexturesSlot() // Free all texture stuff related to binded texture or slot
     {
@@ -387,6 +446,38 @@ private:
         glBindTexture(GL_TEXTURE_2D, hdrTexture);
         glUniform1i(glGetUniformLocation(m_hdrShader.getShaderID(), "hdrTexture"), 0);
         glDrawArrays(GL_TRIANGLES, 0, 6);
+    }
+
+    void drawSSAO()
+    {
+        glViewport(0, 0, m_display->getDisWidth(), m_display->getDisHeight());
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glUseProgram(m_ssaoShader.getShaderID());
+        glBindVertexArray(vao);
+
+        glUniformMatrix4fv(glGetUniformLocation(m_ssaoShader.getShaderID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+        glUniform1i(glGetUniformLocation(m_ssaoShader.getShaderID(), "gPosition"), 0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, gPosition);
+            
+        glUniform1i(glGetUniformLocation(m_ssaoShader.getShaderID(), "gNormals"), 1);
+        glActiveTexture(GL_TEXTURE0 + 1);
+        glBindTexture(GL_TEXTURE_2D, gNormal);
+
+        glUniform1i(glGetUniformLocation(m_ssaoShader.getShaderID(), "noiseTexture"), 2);
+        glActiveTexture(GL_TEXTURE0 + 2);
+        glBindTexture(GL_TEXTURE_2D, noiseTexture);
+
+        for (int i = 0; i < 50; i++)
+        {
+            string name = "samples[";
+            name.append(std::to_string(i));
+            name.append("]");
+            glUniform3f(glGetUniformLocation(m_ssaoShader.getShaderID(), name.c_str()), ssaoKernel[i].x,ssaoKernel[i].y,ssaoKernel[i].z);
+        }
+        
+        //glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 
     void drawDeferedQuad()
