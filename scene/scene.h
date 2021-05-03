@@ -600,7 +600,7 @@ private:
             glBindTexture(GL_TEXTURE_2D, noiseTexture);
             textureCount++;
         }
-        for (int i = 0; i < 50; i++)
+        for (int i = 0; i < 64; i++)
         {
             string name = "samples[";
             name.append(to_string(i));
@@ -608,7 +608,7 @@ private:
             glUniform3f(glGetUniformLocation(m_ssaoShader.getShaderID(), name.c_str()), ssaoKernel[i].x, ssaoKernel[i].y, ssaoKernel[i].z);
         }
         glUniformMatrix4fv(glGetUniformLocation(m_ssaoShader.getShaderID(),"projection"), 1, GL_FALSE, glm::value_ptr(projection));
-
+        glUniformMatrix4fv(glGetUniformLocation(m_ssaoShader.getShaderID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 
