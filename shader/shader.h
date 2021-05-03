@@ -266,6 +266,7 @@ public:
         "uniform sampler2D gMetallic;"
         "uniform sampler2D gRoughness;"
         "uniform sampler2D gAmbient;"
+        "uniform sampler2D ssao;"
         "uniform samplerCube textureDepthCubemap[20];"
         "uniform sampler2D textureDepthMap[20];"
         "uniform float farShadow;"
@@ -417,7 +418,7 @@ public:
             "    Lo += final;"
             "}"
 
-            "vec3 ambient_ = vec3(ambient) * albedo;" //*ao
+            "vec3 ambient_ = vec3(ambient) * albedo * texture(ssao,texCoord).r;" 
             "vec3 color = ambient_ + Lo;"
             "frag_colour = vec4(color, 1.0);"
             "}";
@@ -506,7 +507,7 @@ public:
             //""
             "void main() {"
             " if(useNormalMap == 0){"
-            " gNormal = normalize(mat3(transpose(inversedModel)) * aNormals);}"  
+            " gNormal = normalize(mat3(transpose(inversedModel)) * aNormals);}" 
             " else{vec3 normal = texture(normalMap, texCoord).rgb; normal = normalize(normal * 2.0 - 1.0); normal = normalize(TBN * normal); gNormal = normal;}"
             " gAlbedoSpec = vec4(finalColor,1.0);"
             " if(howManyTex == 1){gAlbedoSpec = gAlbedoSpec * vec4(vec3(texture(texture1, texCoord)),1.0);}"

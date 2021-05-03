@@ -547,6 +547,13 @@ private:
             glBindTexture(GL_TEXTURE_2D, gAmbient);
             textureCount++;
         }
+        if (glIsTexture(ssaoColorBuffer))
+        {
+            glUniform1i(glGetUniformLocation(m_deferedShader.getShaderID(), "ssao"), textureCount);
+            glActiveTexture(GL_TEXTURE0 + textureCount);
+            glBindTexture(GL_TEXTURE_2D, ssaoColorBuffer);
+            textureCount++;
+        }
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 

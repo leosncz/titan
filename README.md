@@ -19,6 +19,7 @@ Shadow example :
 - Infinite number of lights
 - Directionnal, spot and point light supported
 - Physically Based Rendering (PBR)
+- SSAO
 - Albedo map
 - Metallic map
 - Roughness map
@@ -33,7 +34,6 @@ Shadow example :
 
 ## Currently working on (top is prioritized) :
 - AO map (priority)
-- SSAO (priority)
 - TitanScripting to enable users exporting their game using TitanEngine (priority)
 - Engine GUI to create beautiful games without needing to code ! (priority)
 - Physics system
