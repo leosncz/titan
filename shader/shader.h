@@ -55,7 +55,7 @@ public:
     }
     void compileQuadRenderShader()
     {
-        std::cout << "---> Compiling quadRenderShader for scene"<< std::endl;
+        std::cout << "---> Compiling quadRender Shader"<< std::endl;
 
         const char* vertex_shader =
             "#version 330 core\n"
@@ -107,7 +107,7 @@ public:
     }
     void compileSSAOShader()
     {
-        std::cout << "---> Compiling SSAOShader for scene" << std::endl;
+        std::cout << "---> Compiling SSAO Shader" << std::endl;
 
         const char* vertex_shader =
             "#version 330 core\n"
@@ -193,7 +193,7 @@ public:
     }
     void compileDefaultShader() //For now handles directionnal, spot and point lights
     {
-        std::cout << "---> Compiling PBR shader ID=" << id << std::endl;
+        std::cout << "---> Compiling PBR Shader" << std::endl;
 
         const char* vertex_shader =
         "#version 330 core\n"
@@ -444,7 +444,7 @@ public:
 
     void compileGShaderShader() 
     {
-        std::cout << "---> Compiling GShader for shader ID=" << id << std::endl;
+        std::cout << "---> Compiling GShader" << std::endl;
 
         const char* vertex_shader =
             "#version 330 core\n"
@@ -539,7 +539,7 @@ public:
 
      void compileDepthShader()
     {
-        std::cout << "---> Compiling depthShader for shader ID=" << id << std::endl;
+        std::cout << "---> Compiling depthShader" << std::endl;
         const char* geometry_shader =
             "#version 330 core\n"
             "layout(triangles) in;"

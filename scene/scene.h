@@ -607,7 +607,7 @@ private:
             glBindTexture(GL_TEXTURE_2D, noiseTexture);
             textureCount++;
         }
-        for (int i = 0; i < 64; i++)
+        for (int i = 0; i < ssaoKernel.size(); i++)
         {
             string name = "samples[";
             name.append(to_string(i));

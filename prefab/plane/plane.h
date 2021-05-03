@@ -19,6 +19,15 @@ public:
             {
                 planeNormals[i] = planeNormals[i] * (-1);
             }
+            for (int i = 0; i < 18; i+=3)
+            {
+                float a = planeVertices[i];
+                float b = planeVertices[i+1];
+                float c = planeVertices[i+2];
+                planeVertices[i] = c;
+                planeVertices[i + 1] = b;
+                planeVertices[i + 2] = a;
+            }
         }
         float texcoord[] = { 0,0,    1,0,   1,1,  1,1,  0,1, 0,0};
 
