@@ -482,6 +482,8 @@ public:
             "in vec3 finalColor;"
             "uniform int howManyTex;"
             "uniform mat4 model;"
+            "uniform mat4 view;"
+            "uniform mat4 projection;"
             "uniform mat4 inversedModel;"
             "in mat3 TBN;"
             "uniform float metallic;"

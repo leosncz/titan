@@ -43,7 +43,7 @@ public:
 			}
 			if (m_showRenderingDebug)
 			{
-				showRenderingDebug(scene_->getExposure(),scene_->getGamma(),scene_->getGPosition(), scene_->getGNormals(), scene_->getGAlbedo(), scene_->getGRoughness(), scene_->getGMetallic(),scene_->getGAmbient());
+				showRenderingDebug(scene_->getExposure(),scene_->getGamma(),scene_->getGPosition(), scene_->getGNormals(), scene_->getGAlbedo(), scene_->getGRoughness(), scene_->getGMetallic(),scene_->getGAmbient(),scene_->getSSAO());
 			}
 			if (m_showSceneEditor)
 			{
@@ -222,7 +222,7 @@ private:
 		ImGui::End();
 	}
 
-	void showRenderingDebug(float* exposure, float* gamma, GLuint positionTexture, GLuint normalTexture, GLuint albedoSpecTexture, GLuint roughnessTexture, GLuint metallicTexture, GLuint ambientTexture)
+	void showRenderingDebug(float* exposure, float* gamma, GLuint positionTexture, GLuint normalTexture, GLuint albedoSpecTexture, GLuint roughnessTexture, GLuint metallicTexture, GLuint ambientTexture, GLuint ssaoTexture)
 	{
 		ImGui::Begin("Deferred rendering debug", &m_showRenderingDebug);
 		ImGui::SetWindowFontScale(1.1);
@@ -237,6 +237,13 @@ private:
 		ImGui::SliderFloat("Exposure", exposure, 0.0, 12.0);
 
 		ImGui::Separator();
+
+		ImGui::TextWrapped("SSAO : ");
+		IM_ASSERT(ssaoTexture);
+		ImGui::Image((void*)(intptr_t)ssaoTexture, ImVec2(400, 300), ImVec2(0, 1), ImVec2(1, 0));
+
+		ImGui::Separator();
+
 		ImGui::TextWrapped("Position: ");
 		IM_ASSERT(positionTexture);
 		ImGui::Image((void*)(intptr_t)positionTexture, ImVec2(400, 300), ImVec2(0, 1), ImVec2(1, 0));
