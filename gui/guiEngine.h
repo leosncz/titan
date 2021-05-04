@@ -235,7 +235,7 @@ private:
 
 		ImGui::SliderFloat("Gamma", gamma, 0.0, 5.0);
 		ImGui::SliderFloat("Exposure", exposure, 0.0, 12.0);
-		ImGui::SliderFloat("SSAO Bias", ssaoBias, 0.0, 0.5);
+		ImGui::SliderFloat("SSAO Bias", ssaoBias, 0.0, 0.9);
 
 
 		ImGui::Separator();
