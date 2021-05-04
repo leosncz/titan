@@ -13,23 +13,57 @@ public:
         };
 
         float planeNormals[] = {0,1,0,     0,1,0,      0,1,0,     0,1,0,     0,1,0,     0,1,0};
+
+        float texcoord[] = { 0,0,    1,0,   1,1,  1,1,  0,1, 0,0 };
+
         if (inverseNormals)
         {
-            for (int i = 0; i < 18; i++)
+            float badVertices[6][3];
+            float badNormals[6][3];
+            float badTexCoord[6][2];
+
+            int indice = 0;
+            int indiceTex = 0;
+
+            for (int i = 0; i < 6; i++)
             {
-                planeNormals[i] = planeNormals[i] * (-1);
+                badVertices[i][0] = planeVertices[indice];
+                badVertices[i][1] = planeVertices[indice + 1];
+                badVertices[i][2] = planeVertices[indice + 2];
+
+                badNormals[i][0] = planeNormals[indice];
+                badNormals[i][1] = planeNormals[indice + 1];
+                badNormals[i][2] = planeNormals[indice + 2];
+
+                badTexCoord[i][0] = texcoord[indiceTex];
+                badTexCoord[i][1] = texcoord[indiceTex + 1];
+
+                indice += 3;
+                indiceTex += 2;
             }
-            for (int i = 0; i < 18; i+=3)
+
+            //Now assign values
+            indice = 5;
+            for (int i = 0; i < 18; i += 3) // Assign normals and vertex
             {
-                float a = planeVertices[i];
-                float b = planeVertices[i+1];
-                float c = planeVertices[i+2];
-                planeVertices[i] = c;
-                planeVertices[i + 1] = b;
-                planeVertices[i + 2] = a;
+                planeVertices[i] = badVertices[indice][0];
+                planeVertices[i + 1] = badVertices[indice][1];
+                planeVertices[i + 2] = badVertices[indice][2];
+
+                planeNormals[i] = badNormals[indice][0];
+                planeNormals[i + 1] = badNormals[indice][1];
+                planeNormals[i + 2] = badNormals[indice][2];
+
+                indice--;
+            }
+            indice = 5;
+            for (int i = 0; i < 12; i += 2) // Assign texcoord
+            {
+                texcoord[i] = badTexCoord[indice][0];
+                texcoord[i + 1] = badTexCoord[indice][1];
+                indice--;
             }
         }
-        float texcoord[] = { 0,0,    1,0,   1,1,  1,1,  0,1, 0,0};
 
         if (colors == 0)
         {

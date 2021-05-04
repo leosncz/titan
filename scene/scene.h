@@ -35,6 +35,7 @@ public:
         m_farShadow = 25.0f;
 
         m_gamma = 2.2;
+        m_ssaoBias = 0.25;
 
         //Create HDR stuff
         m_exposure = 1.0f;
@@ -352,7 +353,9 @@ public:
     float* getExposure() { return &m_exposure; }
     float* getGamma() { return &m_gamma; }
     float* getFarShadow() { return &m_farShadow; }
+    float* getSSAOBias() { return &m_ssaoBias; }
     void setFarShadow(float value = 25.0f) { m_farShadow = value; }
+    void setSSAOBias(float value = 0.25f) { m_ssaoBias = value; }
 
     void deleteLight(int i)
     {
@@ -436,6 +439,7 @@ private:
     std::vector<glm::vec3> ssaoKernel;
     GLuint noiseTexture, ssaoFBO, ssaoColorBuffer;
     shader m_ssaoShader;
+    float m_ssaoBias;
 
 
     void freeTexturesSlot() // Free all texture stuff related to binded texture or slot
@@ -616,6 +620,7 @@ private:
         }
         glUniformMatrix4fv(glGetUniformLocation(m_ssaoShader.getShaderID(),"projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glUniformMatrix4fv(glGetUniformLocation(m_ssaoShader.getShaderID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
+        glUniform1f(glGetUniformLocation(m_ssaoShader.getShaderID(), "bias"), m_ssaoBias);
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 

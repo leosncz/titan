@@ -134,7 +134,7 @@ public:
 
             "int kernelSize = 64;"
             "float radius = 1.5;"
-            "float bias = 0.025;"
+            "uniform float bias;"
             "const vec2 noiseScale = vec2(1620 / 4.0, 880 / 4.0);"
 
             "uniform mat4 projection;"
@@ -417,8 +417,8 @@ public:
             "    else if(lightsType[i] == 0){float shadowval = ShadowCalculationPL(FragPos, lightsPosition[i], textureDepthCubemap[i]); final *= (1-shadowval);}}"
             "    Lo += final;"
             "}"
-
             "vec3 ambient_ = vec3(ambient) * albedo * texture(ssao,texCoord).r;" 
+            "if(ambient == 1.0){ambient_ /= texture(ssao,texCoord).r;}"
             "vec3 color = ambient_ + Lo;"
             "frag_colour = vec4(color, 1.0);"
             "}";

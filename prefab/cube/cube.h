@@ -33,18 +33,50 @@ public:
 
         if (inverseNormals)
         {
-            for (int i = 0; i < 108; i++)
+            float badVertices[36][3];
+            float badNormals[36][3];
+            float badTexCoord[36][2];
+
+            int indice = 0;
+            int indiceTex = 0;
+
+            for (int i = 0; i < 36; i++)
             {
-                cubeNormals[i] = cubeNormals[i] * (-1);
+                badVertices[i][0] = cubeVertices[indice];
+                badVertices[i][1] = cubeVertices[indice + 1];
+                badVertices[i][2] = cubeVertices[indice + 2];
+
+                badNormals[i][0] = cubeNormals[indice];
+                badNormals[i][1] = cubeNormals[indice + 1];
+                badNormals[i][2] = cubeNormals[indice + 2];
+
+                badTexCoord[i][0] = texCoords[indiceTex];
+                badTexCoord[i][1] = texCoords[indiceTex + 1];
+
+                indice += 3;
+                indiceTex += 2;
             }
-            for (int i = 0; i < 108; i += 3)
+
+            //Now assign values
+            indice = 35;
+            for (int i = 0; i < 108; i+=3) // Assign normals and vertex
             {
-                float a = cubeVertices[i];
-                float b = cubeVertices[i + 1];
-                float c = cubeVertices[i + 2];
-                cubeVertices[i] = c;
-                cubeVertices[i + 1] = b;
-                cubeVertices[i + 2] = a;
+                cubeVertices[i] = badVertices[indice][0];
+                cubeVertices[i+1] = badVertices[indice][1];
+                cubeVertices[i+2] = badVertices[indice][2];
+
+                cubeNormals[i] = badNormals[indice][0];
+                cubeNormals[i + 1] = badNormals[indice][1];
+                cubeNormals[i + 2] = badNormals[indice][2];
+
+                indice--;
+            }
+            indice = 35;
+            for (int i = 0; i < 72; i += 2) // Assign texcoord
+            {
+                texCoords[i] = badTexCoord[indice][0];
+                texCoords[i + 1] = badTexCoord[indice][1];
+                indice--;
             }
         }
 
