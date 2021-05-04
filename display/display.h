@@ -13,7 +13,7 @@ Handles window and ogl context creation
 class display
 {
 public:
-    display(int x, int y, int aa, bool fullscreen = false);
+    display(int x, int y, int aa, bool fullscreen = false, bool minorDisplay=false);
     void exitEngine();
     bool shouldExit()
     {
@@ -22,6 +22,16 @@ public:
             return true;
         }
         return false;
+    }
+    void setRenderFlag()
+    {
+        glfwMakeContextCurrent(m_window);
+    }
+    void updateWindow()
+    {
+        // Update window content & user interaction
+        glfwSwapBuffers(m_window);
+        glfwPollEvents();
     }
     int getDisHeight(){return m_disHeight;}
     int getDisWidth(){return m_disWidth;}

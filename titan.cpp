@@ -13,6 +13,9 @@ int main()
 {
     display mainDisplay(1620, 880, 4, false);
 
+    display mainDisplay2(500, 500, 4, false, true);
+
+
     cameraFPS cam;
     cam.init(&mainDisplay);
 
@@ -35,23 +38,6 @@ int main()
     myplane.addTexture("graphicData/texture.jpg");
     myplane.setTextureResolution(100);
     myplane.setNormalMap("graphicData/normalmap.jpg");
-
-    /*light mylight3 = light();
-    mylight3.setData(glm::vec3(0.5,1,4), glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, -1, -1), 1000.0f);
-    mylight3.type = DIRECTIONNAL_LIGHT;
-    myscene.addLight(&mylight3);
-
-    /*light mylight4 = light();
-    mylight4.setData(glm::vec3(-2, 2, 0), glm::vec3(1,1,1), glm::vec3(0, -1, -1), 1000.0f);
-    mylight4.type = DIRECTIONNAL_LIGHT;
-    myscene.addLight(&mylight4);
-    /*mylight4.linear = 0.09;
-    mylight4.quadratic = 0.032;*/
-
-    /*renderObjectScene objScene = renderObjectScene(&myscene);
-    objScene.loadOBJFromFile("graphicData/tree.obj");
-    objScene.scaleRenderObjectScene(glm::vec3(0.08, 0.08, 0.08));
-    objScene.moveRenderObjectScene(glm::vec3(-3.0, -5.5, -2));*/
 
     cube triangle3(myscene.getTexturePool());
     myscene.addDrawableObject(&triangle3);
@@ -77,18 +63,19 @@ int main()
         i2++;
     }
 
-    /*light mylight4 = light(DIRECTIONNAL_LIGHT,vec3(6.0,0.5,2),vec3(10,10,10),vec3(0,-0.3,-1),true);
-    myscene.addLight(&mylight4);*/
-
     float i = 0.0f;
 
     while (!mainDisplay.shouldExit()) {
+
+        glfwMakeContextCurrent(mainDisplay.getGLFWWindow());
         myscene.renderScene();
         cam.update(myscene.getViewMatrix());
         gui_.update(&myscene);
-        myscene.updateWindow();
-        triangle4.rotateObject(i, vec3(0, 1, 0));
-        i += 0.001;
+
+        mainDisplay.updateWindow();
+
+        glfwMakeContextCurrent(mainDisplay2.getGLFWWindow());
+        mainDisplay2.updateWindow();
     } 
 
     return 0;

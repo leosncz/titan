@@ -1,5 +1,5 @@
 #include "display.h"
-display::display(int x, int y, int aa, bool fullscreen)
+display::display(int x, int y, int aa, bool fullscreen, bool minorDisplay)
 {
     std::cout << "--> Titan Engine " << "dev 0.1" << " is warming up !" << std::endl;
     if( !glfwInit() )
@@ -27,11 +27,14 @@ display::display(int x, int y, int aa, bool fullscreen)
         std::cout << "--> CRITICAL ERROR : OPENGL 3.X IS PROBABLY NOT SUPPORTED BY YOUR GRAPHIC CARD ! (-2)" << std::endl;
         glfwTerminate();
     }
-    glfwMakeContextCurrent(m_window); // setup GLEW
-    glewExperimental=true; // Nécessaire dans le profil de base
-    if (glewInit() != GLEW_OK) {
-        std::cout << "--> CRITICAL ERROR : OPENGL 3.X IS PROBABLY NOT SUPPORTED BY YOUR GRAPHIC CARD ! (-3)" << std::endl;
-        glfwTerminate();
+    if (!minorDisplay)
+    {
+        glfwMakeContextCurrent(m_window); // setup GLEW
+        glewExperimental = true; // Nécessaire dans le profil de base
+        if (glewInit() != GLEW_OK) {
+            std::cout << "--> CRITICAL ERROR : OPENGL 3.X IS PROBABLY NOT SUPPORTED BY YOUR GRAPHIC CARD ! (-3)" << std::endl;
+            glfwTerminate();
+        }
     }
     glfwSetInputMode(m_window, GLFW_STICKY_KEYS, GL_TRUE); // Ensure we will be able to capture all our keys
     glClearColor(0.0, 0.0, 0.0, 1.0);
