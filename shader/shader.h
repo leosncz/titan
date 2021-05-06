@@ -417,8 +417,7 @@ public:
             "    else if(lightsType[i] == 0){float shadowval = ShadowCalculationPL(FragPos, lightsPosition[i], textureDepthCubemap[i]); final *= (1-shadowval);}}"
             "    Lo += final;"
             "}"
-            "vec3 ambient_ = vec3(ambient) * albedo * texture(ssao,texCoord).r;" 
-            "if(ambient == 1.0){ambient_ /= texture(ssao,texCoord).r;}"
+            "vec3 ambient_ = vec3(ambient) * albedo * ((1-ambient)*texture(ssao,texCoord).r);" 
             "vec3 color = ambient_ + Lo;"
             "frag_colour = vec4(color, 1.0);"
             "}";

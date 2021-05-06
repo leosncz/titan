@@ -50,9 +50,9 @@ public:
                 planeVertices[i + 1] = badVertices[indice][1];
                 planeVertices[i + 2] = badVertices[indice][2];
 
-                planeNormals[i] = badNormals[indice][0];
-                planeNormals[i + 1] = badNormals[indice][1];
-                planeNormals[i + 2] = badNormals[indice][2];
+                planeNormals[i] = badNormals[indice][0] * (-1);
+                planeNormals[i + 1] = badNormals[indice][1] * (-1);
+                planeNormals[i + 2] = badNormals[indice][2] * (-1);
 
                 indice--;
             }

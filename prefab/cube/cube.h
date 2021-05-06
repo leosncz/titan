@@ -65,9 +65,9 @@ public:
                 cubeVertices[i+1] = badVertices[indice][1];
                 cubeVertices[i+2] = badVertices[indice][2];
 
-                cubeNormals[i] = badNormals[indice][0];
-                cubeNormals[i + 1] = badNormals[indice][1];
-                cubeNormals[i + 2] = badNormals[indice][2];
+                cubeNormals[i] = badNormals[indice][0] * (-1);
+                cubeNormals[i + 1] = badNormals[indice][1] * (-1);
+                cubeNormals[i + 2] = badNormals[indice][2] * (-1);
 
                 indice--;
             }
