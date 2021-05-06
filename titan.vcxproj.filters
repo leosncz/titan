@@ -17,6 +17,39 @@
     <Filter Include="scene">
       <UniqueIdentifier>{a9b2894a-42a8-47ab-a4df-4ee68828b7b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="camera">
+      <UniqueIdentifier>{c8439a20-20da-4bbf-bfa5-0662bd2aaefe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cameraFPS">
+      <UniqueIdentifier>{20762ddb-6e6e-4469-96e7-002f88f79076}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cameraEngine">
+      <UniqueIdentifier>{26be5ead-d108-4a6a-9fac-f0ce96893cc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="light">
+      <UniqueIdentifier>{7cd9fa95-9d2e-4418-b48c-c4975ae63a61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="prefab">
+      <UniqueIdentifier>{1ef67163-60b3-4a14-b12d-75635d7e09c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="prefab\cube">
+      <UniqueIdentifier>{d9845cf3-9c71-437c-a0d7-fccc89d45be8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="prefab\plane">
+      <UniqueIdentifier>{0e210dbf-b159-4eb2-a975-b82b853d8b56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="modelLoaders">
+      <UniqueIdentifier>{74748799-b18d-47a1-b105-771758c11df8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="modelLoaders\objLoader">
+      <UniqueIdentifier>{f960dd42-00b3-40dd-b32b-5148c0942bbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderObjectScene">
+      <UniqueIdentifier>{24e12b2b-4832-403b-9f42-480e2f4fbf4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shader">
+      <UniqueIdentifier>{b7f2fd53-c8be-4a89-9ebf-383e106b1975}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="titan.cpp">
@@ -51,21 +84,6 @@
     <ClInclude Include="renderObject\renderObject.h">
       <Filter>renderObject</Filter>
     </ClInclude>
-    <ClInclude Include="renderObjectScene\renderObjectScene.h">
-      <Filter>renderObject</Filter>
-    </ClInclude>
-    <ClInclude Include="modelLoaders\objLoader\objLoader.h">
-      <Filter>renderObject</Filter>
-    </ClInclude>
-    <ClInclude Include="prefab\cube\cube.h">
-      <Filter>renderObject</Filter>
-    </ClInclude>
-    <ClInclude Include="prefab\plane\plane.h">
-      <Filter>renderObject</Filter>
-    </ClInclude>
-    <ClInclude Include="shader\shader.h">
-      <Filter>renderObject</Filter>
-    </ClInclude>
     <ClInclude Include="stb_image\stb_image.h">
       <Filter>renderObject</Filter>
     </ClInclude>
@@ -79,15 +97,6 @@
       <Filter>display</Filter>
     </ClInclude>
     <ClInclude Include="scene\scene.h">
-      <Filter>scene</Filter>
-    </ClInclude>
-    <ClInclude Include="light\light.h">
-      <Filter>scene</Filter>
-    </ClInclude>
-    <ClInclude Include="cameraFPS\cameraFPS.h">
-      <Filter>scene</Filter>
-    </ClInclude>
-    <ClInclude Include="camera\camera.h">
       <Filter>scene</Filter>
     </ClInclude>
     <ClInclude Include="gui\imgui\imconfig.h">
@@ -117,14 +126,38 @@
     <ClInclude Include="gui\gui.h">
       <Filter>gui</Filter>
     </ClInclude>
-    <ClInclude Include="cameraEngine\cameraEngine.h">
-      <Filter>scene</Filter>
-    </ClInclude>
     <ClInclude Include="gui\guiEngine.h">
       <Filter>gui</Filter>
     </ClInclude>
     <ClInclude Include="gui\imfilebrowser.h">
       <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="camera\camera.h">
+      <Filter>camera</Filter>
+    </ClInclude>
+    <ClInclude Include="cameraFPS\cameraFPS.h">
+      <Filter>cameraFPS</Filter>
+    </ClInclude>
+    <ClInclude Include="cameraEngine\cameraEngine.h">
+      <Filter>cameraEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="light\light.h">
+      <Filter>light</Filter>
+    </ClInclude>
+    <ClInclude Include="prefab\plane\plane.h">
+      <Filter>prefab\plane</Filter>
+    </ClInclude>
+    <ClInclude Include="prefab\cube\cube.h">
+      <Filter>prefab\cube</Filter>
+    </ClInclude>
+    <ClInclude Include="modelLoaders\objLoader\objLoader.h">
+      <Filter>modelLoaders\objLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="renderObjectScene\renderObjectScene.h">
+      <Filter>renderObjectScene</Filter>
+    </ClInclude>
+    <ClInclude Include="shader\shader.h">
+      <Filter>shader</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

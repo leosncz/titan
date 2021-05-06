@@ -33,12 +33,6 @@ public:
     {
         glfwMakeContextCurrent(m_window);
     }
-    void updateWindow()
-    {
-        // Update window content & user interaction
-        glfwSwapBuffers(m_window);
-        glfwPollEvents();
-    }
     int getDisHeight(){return m_disHeight;}
     int getDisWidth(){return m_disWidth;}
     GLFWwindow *getGLFWWindow(){return m_window;}

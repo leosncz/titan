@@ -64,7 +64,7 @@ int main()
 
     while (!mainDisplay.shouldExit()) {
         myscene.renderScene();
-        cam.update(myscene.getViewMatrix());
+        cam.update(true,myscene.getViewMatrix());
         gui_.update(&myscene);
 
         mainDisplay.updateWindow();

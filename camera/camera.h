@@ -21,7 +21,7 @@ public:
 
     glm::vec3 getCameraPos() { return cameraPos; }
 
-    virtual void update(glm::mat4* viewMatrix, bool isAzerty = true) = 0;
+    virtual void update(bool isAzerty = true, glm::mat4* viewMatrix=0) = 0;
     virtual void init(display* display_) = 0;
     void pauseControls()
     {
@@ -42,6 +42,7 @@ protected:
     bool isPaused;
 
     display* m_display;
+    glm::mat4 *m_viewMatrix;
 
     int id;
 

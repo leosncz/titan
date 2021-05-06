@@ -16,7 +16,7 @@ public:
         firstMouse = true;
         yaw = -90.0f;
     }
-    void update(glm::mat4* viewMatrix, bool isAzerty = true)
+    void update(bool isAzerty = true, glm::mat4* viewMatrix=0)
     {
         if (glfwGetMouseButton(m_display->getGLFWWindow(), GLFW_MOUSE_BUTTON_1) && !isPaused)
         {
