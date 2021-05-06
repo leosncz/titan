@@ -50,6 +50,9 @@
     <Filter Include="shader">
       <UniqueIdentifier>{b7f2fd53-c8be-4a89-9ebf-383e106b1975}</UniqueIdentifier>
     </Filter>
+    <Filter Include="texturePool">
+      <UniqueIdentifier>{c254951a-4dfc-4ae8-a829-0668aa5c1814}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="titan.cpp">
@@ -79,18 +82,21 @@
     <ClCompile Include="gui\imgui\imgui_impl_opengl3.cpp">
       <Filter>gui</Filter>
     </ClCompile>
+    <ClCompile Include="texturePool\texturePool.cpp">
+      <Filter>texturePool</Filter>
+    </ClCompile>
+    <ClCompile Include="light\light.cpp">
+      <Filter>light</Filter>
+    </ClCompile>
+    <ClCompile Include="renderObjectScene\renderObjectScene.cpp">
+      <Filter>renderObjectScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="renderObject\renderObject.h">
       <Filter>renderObject</Filter>
     </ClInclude>
-    <ClInclude Include="stb_image\stb_image.h">
-      <Filter>renderObject</Filter>
-    </ClInclude>
     <ClInclude Include="display\display.h">
-      <Filter>display</Filter>
-    </ClInclude>
-    <ClInclude Include="texturePool\texturePool.h">
       <Filter>display</Filter>
     </ClInclude>
     <ClInclude Include="version\version.h">
@@ -158,6 +164,12 @@
     </ClInclude>
     <ClInclude Include="shader\shader.h">
       <Filter>shader</Filter>
+    </ClInclude>
+    <ClInclude Include="texturePool\texturePool.h">
+      <Filter>texturePool</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image\stb_image.h">
+      <Filter>texturePool</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

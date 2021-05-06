@@ -1,10 +1,18 @@
 #ifndef VERSION_H_INCLUDED
 #define VERSION_H_INCLUDED
 #include <string>
-static class version
+#include <iostream>
+class version
 {
   public:
-      float titanVersion = 0.1; // Titan Engine version - Do not touch
-      float userAppVersion = 0.1; // Your app version
+      static std::string getTitanVersion() // TiTan internal version - Do NOT touch
+      {
+          return "0.8.1";
+      }
+
+      static std::string getUserAppVersion() // Your App version - U can edit
+      {
+          return "WIP";
+      }
 };
 #endif // VERSION_H_INCLUDED

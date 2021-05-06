@@ -1,7 +1,7 @@
 #include "display.h"
 display::display(int x, int y, int aa, bool fullscreen, bool minorDisplay)
 {
-    std::cout << "--> Titan Engine " << "dev 0.1" << " is warming up !" << std::endl;
+    std::cout << "--> Titan Engine "  << version::getTitanVersion() << " is warming up !" << std::endl;
     if( !glfwInit() )
     {
         std::cout << "---> CRITICAL ERROR -1 (display)" << std::endl;
@@ -56,4 +56,44 @@ void display::exitEngine()
 {
     glfwTerminate();
 }
+
+bool display::shouldExit()
+{
+    if (glfwWindowShouldClose(m_window) || m_shouldExit == true)
+    {
+        return true;
+    }
+    return false;
+}
+
+void display::updateWindow()
+{
+    // Update window content & user interaction
+    glfwSwapBuffers(m_window);
+    glfwPollEvents();
+}
+
+void display::setRenderFlag()
+{
+    glfwMakeContextCurrent(m_window);
+}
+
+int display::getDisHeight() { return m_disHeight; }
+
+int display::getDisWidth() { return m_disWidth; }
+
+GLFWwindow* display::getGLFWWindow() { return m_window; }
+
+void display::hideCursor() { glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); }
+
+void display::showCursor() { glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); }
+
+void display::setExitStatus(bool shouldQuit) { m_shouldExit = shouldQuit; }
+
+display::~display()
+{
+    std::cout << "--> Exiting Engine";
+    glfwTerminate();
+}
+
 

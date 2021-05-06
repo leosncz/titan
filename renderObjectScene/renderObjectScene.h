@@ -1,8 +1,6 @@
 #pragma once
 #include <iostream>
 #include <string>
-#include "../renderObject/renderObject.h"
-#include "../scene/scene.h"
 #include <vector>
 #include "../modelLoaders/objLoader/objLoader.h"
 #include <glm.hpp>
@@ -66,9 +64,9 @@ public:
                 cout << "--> Error while loading obj mesh !" << endl;
                 delete newObject;
             }
-            
+
         }
-    
+
     }
 
     void moveRenderObjectScene(glm::vec3 transation) {
@@ -199,6 +197,7 @@ public:
             }
         }
     }
+
 private:
     vector<renderObject*> objects;
     int id;

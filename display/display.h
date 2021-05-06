@@ -15,35 +15,16 @@ class display
 public:
     display(int x, int y, int aa, bool fullscreen = false, bool minorDisplay=false);
     void exitEngine();
-    bool shouldExit()
-    {
-        if(glfwWindowShouldClose(m_window) || m_shouldExit == true)
-        {
-            return true;
-        }
-        return false;
-    }
-    void updateWindow()
-    {
-        // Update window content & user interaction
-        glfwSwapBuffers(m_window);
-        glfwPollEvents();
-    }
-    void setRenderFlag()
-    {
-        glfwMakeContextCurrent(m_window);
-    }
-    int getDisHeight(){return m_disHeight;}
-    int getDisWidth(){return m_disWidth;}
-    GLFWwindow *getGLFWWindow(){return m_window;}
-    void hideCursor(){ glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); }
-    void showCursor() { glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); }
-    void setExitStatus(bool shouldQuit) { m_shouldExit = shouldQuit; }
-    ~display()
-    {
-        std::cout << "--> Exiting Engine";
-        glfwTerminate();
-    }
+    bool shouldExit();
+    void updateWindow();
+    void setRenderFlag();
+    int getDisHeight();
+    int getDisWidth();
+    GLFWwindow* getGLFWWindow();
+    void hideCursor();
+    void showCursor();
+    void setExitStatus(bool shouldQuit);
+    ~display();
 private:
     GLFWwindow* m_window;
     int m_disWidth;
