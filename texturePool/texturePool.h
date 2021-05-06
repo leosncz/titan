@@ -84,7 +84,14 @@ public:
 
 		cout << "--> Texture " << path << " (texID " << textureID << ") has been added to tex cache" << endl;
 	}
-
+	vector<GLuint> *getTextureIDs()
+	{
+		return &textureIDs;
+	}
+	vector<string> *getTexturePaths()
+	{
+		return &texturePaths;
+	}
 	~texturePool()
 	{
 		cout << "--> Destroying textures" << endl;

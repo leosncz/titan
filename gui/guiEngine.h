@@ -1,6 +1,7 @@
 #pragma once
 #include "gui.h"
 #include "imfilebrowser.h"
+#include "../texturePool/texturePool.h"
 class guiEngine : public gui
 {
 public:
@@ -11,6 +12,7 @@ public:
 		m_showSceneEditor = false;
 		m_showHelloMessage = true;
 		m_showExportMenu = false;
+		m_showTexturePool = false;
 		m_textureLogo = scene_->getTexturePool()->getCacheTextureID("graphicData/logo.jpg",false);
 	}
 
@@ -57,6 +59,10 @@ public:
 			{
 				showExportMenu();
 			}
+			if (m_showTexturePool)
+			{
+				showTexturePool(scene_);
+			}
 
 			if (ImGui::BeginMainMenuBar())
 			{
@@ -73,6 +79,11 @@ public:
 				if (ImGui::BeginMenu("Scene editor"))
 				{
 					m_showSceneEditor = true;
+					ImGui::EndMenu();
+				}
+				if (ImGui::BeginMenu("View texture cache"))
+				{
+					m_showTexturePool = true;
 					ImGui::EndMenu();
 				}
 				if (ImGui::BeginMenu("Export this project"))
@@ -93,7 +104,7 @@ public:
 		}
 	}
 private:
-	bool m_showRenderingDebug, m_showSceneEditor, m_showLightingEditor, m_showHelloMessage, m_showExportMenu;
+	bool m_showRenderingDebug, m_showSceneEditor, m_showLightingEditor, m_showHelloMessage, m_showExportMenu, m_showTexturePool;
 
 	// These variables are used to save data in dialogs
 	bool m_texturePathEditing = false, m_normalMapPathEditing = false, m_roughnessMapPathEditing = false, m_metallicMapPathEditing = false;
@@ -198,6 +209,24 @@ private:
 				ImGui::Separator();
 			}
 		}
+		ImGui::End();
+	}
+
+	void showTexturePool(scene* scene_)
+	{
+		ImGui::Begin("Export your project", &m_showTexturePool);
+		ImGui::SetWindowFontScale(1.1);
+
+		ImGui::TextColored(ImVec4(1,0,0,1),"Texture Pool: ");
+
+		texturePool* texPool = scene_->getTexturePool();
+		vector<string>* texPoolNames = texPool->getTexturePaths();
+
+		for (int i = 0; i < texPoolNames->size(); i++)
+		{
+			ImGui::TextWrapped(texPoolNames->at(i).c_str());
+		}
+		
 		ImGui::End();
 	}
 
