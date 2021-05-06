@@ -23,6 +23,12 @@ public:
         }
         return false;
     }
+    void updateWindow()
+    {
+        // Update window content & user interaction
+        glfwSwapBuffers(m_window);
+        glfwPollEvents();
+    }
     void setRenderFlag()
     {
         glfwMakeContextCurrent(m_window);

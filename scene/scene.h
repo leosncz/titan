@@ -247,13 +247,6 @@ public:
         }
     }
 
-    void updateWindow()
-    {
-        // Update window content & user interaction
-        glfwSwapBuffers(m_display->getGLFWWindow());
-        glfwPollEvents();
-    }
-
     void setGamma(float gamma) { m_gamma = gamma; }
     void setExposure(float exposure) { m_exposure = exposure; }
 
