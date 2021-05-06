@@ -155,6 +155,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cameraEngine\cameraEngine.cpp" />
+    <ClCompile Include="cameraFPS\cameraFPS.cpp" />
+    <ClCompile Include="camera\camera.cpp" />
     <ClCompile Include="display\display.cpp" />
     <ClCompile Include="gui\imgui\imgui.cpp" />
     <ClCompile Include="gui\imgui\imgui_demo.cpp" />
@@ -165,6 +168,9 @@
     <ClCompile Include="gui\imgui\imgui_widgets.cpp" />
     <ClCompile Include="light\light.cpp" />
     <ClCompile Include="renderObjectScene\renderObjectScene.cpp" />
+    <ClCompile Include="renderObject\renderObject.cpp" />
+    <ClCompile Include="scene\scene.cpp" />
+    <ClCompile Include="shader\shader.cpp" />
     <ClCompile Include="texturePool\texturePool.cpp" />
     <ClCompile Include="titan.cpp" />
   </ItemGroup>

@@ -1,38 +1,18 @@
 #pragma once
-#pragma once
-#include <iostream>
-#include <glm.hpp>
-#include <GLFW/glfw3.h>
-#include <gtc/matrix_transform.hpp>
 #include "../display/display.h"
+#include <glm.hpp>
 
 class camera
 {
 public:
-    camera()
-    {
-        id = rand();
-        cameraPos = glm::vec3(0.0f, 0.0f, 0.0f);
-        cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-        cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-        cameraSpeed = 0.1f;
-        isPaused = false;
-    }
-
-    glm::vec3 getCameraPos() { return cameraPos; }
-
+    camera();
+    glm::vec3 getCameraPos();
     virtual void update(bool isAzerty = true, glm::mat4* viewMatrix=0) = 0;
     virtual void init(display* display_) = 0;
-    void pauseControls()
-    {
-        isPaused = true;
-    }
-    void resumeControls()
-    {
-        isPaused = false;
-    }
+    void pauseControls();
+    void resumeControls();
 
-    bool getIsPaused() { return isPaused; }
+    bool getIsPaused();
 
 protected:
     glm::vec3 cameraPos;

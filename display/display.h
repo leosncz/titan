@@ -1,14 +1,9 @@
 /* Author: leosncz
 Handles window and ogl context creation
 */
-#ifndef DISPLAY_H_INCLUDED
-#define DISPLAY_H_INCLUDED
-
-#include <string>
+#pragma once
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <iostream>
-#include "../version/version.h"
 
 class display
 {
@@ -31,4 +26,3 @@ private:
     int m_disHeight;
     bool m_shouldExit;
 };
-#endif // DISPLAY_H_INCLUDED

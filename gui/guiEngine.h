@@ -243,7 +243,7 @@ private:
 
 		ImGui::Separator();
 
-		char output[] = "C:\\Users\...";
+		char output[] = "C:\\Users\\...";
 		ImGui::TextWrapped("Select output path: ");
 		ImGui::InputText("Output path",output,10);
 

@@ -1,4 +1,7 @@
 #include "display.h"
+#include <string>
+#include <iostream>
+#include "../version/version.h"
 display::display(int x, int y, int aa, bool fullscreen, bool minorDisplay)
 {
     std::cout << "--> Titan Engine "  << version::getTitanVersion() << " is warming up !" << std::endl;

@@ -53,6 +53,9 @@
     <Filter Include="texturePool">
       <UniqueIdentifier>{c254951a-4dfc-4ae8-a829-0668aa5c1814}</UniqueIdentifier>
     </Filter>
+    <Filter Include="version">
+      <UniqueIdentifier>{cf4ac5a6-ffb8-40c3-ba55-d7de80a2f4ac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="titan.cpp">
@@ -91,15 +94,30 @@
     <ClCompile Include="renderObjectScene\renderObjectScene.cpp">
       <Filter>renderObjectScene</Filter>
     </ClCompile>
+    <ClCompile Include="scene\scene.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="renderObject\renderObject.cpp">
+      <Filter>renderObject</Filter>
+    </ClCompile>
+    <ClCompile Include="cameraFPS\cameraFPS.cpp">
+      <Filter>cameraFPS</Filter>
+    </ClCompile>
+    <ClCompile Include="camera\camera.cpp">
+      <Filter>camera</Filter>
+    </ClCompile>
+    <ClCompile Include="cameraEngine\cameraEngine.cpp">
+      <Filter>cameraEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="shader\shader.cpp">
+      <Filter>shader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="renderObject\renderObject.h">
       <Filter>renderObject</Filter>
     </ClInclude>
     <ClInclude Include="display\display.h">
-      <Filter>display</Filter>
-    </ClInclude>
-    <ClInclude Include="version\version.h">
       <Filter>display</Filter>
     </ClInclude>
     <ClInclude Include="scene\scene.h">
@@ -170,6 +188,9 @@
     </ClInclude>
     <ClInclude Include="stb_image\stb_image.h">
       <Filter>texturePool</Filter>
+    </ClInclude>
+    <ClInclude Include="version\version.h">
+      <Filter>version</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
