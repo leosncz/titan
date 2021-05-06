@@ -13,9 +13,6 @@ int main()
 {
     display mainDisplay(1620, 880, 4, false);
 
-    display mainDisplay2(500, 500, 4, false, true);
-
-
     cameraFPS cam;
     cam.init(&mainDisplay);
 
@@ -66,16 +63,11 @@ int main()
     float i = 0.0f;
 
     while (!mainDisplay.shouldExit()) {
-
-        glfwMakeContextCurrent(mainDisplay.getGLFWWindow());
         myscene.renderScene();
         cam.update(myscene.getViewMatrix());
         gui_.update(&myscene);
 
         mainDisplay.updateWindow();
-
-        glfwMakeContextCurrent(mainDisplay2.getGLFWWindow());
-        mainDisplay2.updateWindow();
     } 
 
     return 0;

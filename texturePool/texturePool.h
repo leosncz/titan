@@ -10,9 +10,23 @@ class texturePool
 {
 public:
 	GLuint getCacheTextureID(string path, bool isDiffuseTexture=false) {
+
+		//First identify filename
+		int lastSlashPosition = -1;
+		string fileName = path;
+		for (int i = 0; i < path.length(); i++)
+		{
+			if (path[i] == '/' || path[i] == '\\')
+			{
+				lastSlashPosition = i;
+			}
+		}
+		fileName.erase(0,lastSlashPosition+1);
+
 		if (textureIDs.size() != 0) {
+		    //Check if the texture exists
 			for(int i=0;i<textureIDs.size();i++){
-				if (path == texturePaths[i]) { cout << "--> Texture " << path << " has been found in tex cache" << endl; return textureIDs[i]; }
+				if (fileName == texturePaths[i]) { cout << "--> Texture " << fileName << " has been found in tex cache" << endl; return textureIDs[i]; }
 			}
 		}
 		//If not in cache
@@ -58,7 +72,7 @@ public:
         }
         stbi_image_free(data);
 
-        addTextureToCache(texture,path);
+        addTextureToCache(texture,fileName);
 
         glBindTexture(GL_TEXTURE_2D, 0);
 		return texture;
@@ -68,7 +82,7 @@ public:
 		textureIDs.push_back(textureID);
 		texturePaths.push_back(path);
 
-		cout << "--> Texture " << path << " (" << textureID << ") has been added to tex cache" << endl;
+		cout << "--> Texture " << path << " (texID " << textureID << ") has been added to tex cache" << endl;
 	}
 
 	~texturePool()
