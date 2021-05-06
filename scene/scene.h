@@ -7,7 +7,6 @@ Handles everything related to scenes and object rendering loop in scenes
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm.hpp>
-#include <gtc/matrix_transform.hpp>
 #include <vector>
 #include "../display/display.h"
 #include "../renderObject/renderObject.h"

@@ -159,6 +159,8 @@
     <ClCompile Include="cameraFPS\cameraFPS.cpp" />
     <ClCompile Include="camera\camera.cpp" />
     <ClCompile Include="display\display.cpp" />
+    <ClCompile Include="gui\gui.cpp" />
+    <ClCompile Include="gui\guiEngine.cpp" />
     <ClCompile Include="gui\imgui\imgui.cpp" />
     <ClCompile Include="gui\imgui\imgui_demo.cpp" />
     <ClCompile Include="gui\imgui\imgui_draw.cpp" />

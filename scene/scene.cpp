@@ -1,5 +1,5 @@
 #include "scene.h"
-
+#include <gtc/matrix_transform.hpp>
 scene::scene(display* customDisplay, camera* cam) // Set the display that will be used to render the scene
 {
     std::cout << "--> Creating new scene ID=" << id << std::endl;

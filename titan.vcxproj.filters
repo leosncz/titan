@@ -56,6 +56,12 @@
     <Filter Include="version">
       <UniqueIdentifier>{cf4ac5a6-ffb8-40c3-ba55-d7de80a2f4ac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="gui\gui">
+      <UniqueIdentifier>{6cedd7fe-978c-4a71-b5d9-4c1968889253}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gui\guiEngine">
+      <UniqueIdentifier>{b98cf5d4-bd2e-436c-b419-e0d1304421c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="titan.cpp">
@@ -112,6 +118,12 @@
     <ClCompile Include="shader\shader.cpp">
       <Filter>shader</Filter>
     </ClCompile>
+    <ClCompile Include="gui\gui.cpp">
+      <Filter>gui\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\guiEngine.cpp">
+      <Filter>gui\guiEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="renderObject\renderObject.h">
@@ -145,12 +157,6 @@
       <Filter>gui</Filter>
     </ClInclude>
     <ClInclude Include="gui\imgui\imgui_impl_opengl3.h">
-      <Filter>gui</Filter>
-    </ClInclude>
-    <ClInclude Include="gui\gui.h">
-      <Filter>gui</Filter>
-    </ClInclude>
-    <ClInclude Include="gui\guiEngine.h">
       <Filter>gui</Filter>
     </ClInclude>
     <ClInclude Include="gui\imfilebrowser.h">
@@ -191,6 +197,12 @@
     </ClInclude>
     <ClInclude Include="version\version.h">
       <Filter>version</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\gui.h">
+      <Filter>gui\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\guiEngine.h">
+      <Filter>gui\guiEngine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
