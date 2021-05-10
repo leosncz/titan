@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Fichiers sources">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="gui">
       <UniqueIdentifier>{7c2a4182-20ba-46eb-b372-e23c5a219fd9}</UniqueIdentifier>
     </Filter>
@@ -62,10 +58,14 @@
     <Filter Include="gui\guiEngine">
       <UniqueIdentifier>{b98cf5d4-bd2e-436c-b419-e0d1304421c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="main">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="titan.cpp">
-      <Filter>Fichiers sources</Filter>
+      <Filter>main</Filter>
     </ClCompile>
     <ClCompile Include="display\display.cpp">
       <Filter>display</Filter>

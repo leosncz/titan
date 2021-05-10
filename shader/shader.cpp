@@ -407,8 +407,8 @@ void shader::compileDefaultShader() //For now handles directionnal, spot and poi
         "    Lo += final;"
         "}"
         "vec3 ambient_ = vec3(ambient) * albedo * texture(ssao,texCoord).r;"
-        "if(ambient == 1.0){ambient_ /= texture(ssao,texCoord).r;}"
         "vec3 color = ambient_ + Lo;"
+        "if(ambient == 1.0){color -= Lo;}"
         "frag_colour = vec4(color, 1.0);"
         "}";
 
