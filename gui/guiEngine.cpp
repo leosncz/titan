@@ -1,4 +1,5 @@
 #include "guiEngine.h"
+#include "../version/version.h"
 #include "../renderObjectScene/renderObjectScene.h"
 #include "../prefab/cube/cube.h"
 #include "../prefab/plane/plane.h"
@@ -347,13 +348,14 @@ void guiEngine::showWelcome()
 {
 	//Welcome
 	ImGui::Begin("Hello", &m_showHelloMessage);
-	ImGui::SetWindowSize(ImVec2(470, 500));
+	ImGui::SetWindowSize(ImVec2(360, 450));
 	ImGui::SetWindowFontScale(1.1);
 	IM_ASSERT(m_textureLogo);
-	ImGui::Image((void*)(intptr_t)m_textureLogo, ImVec2(450, 300), ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::Image((void*)(intptr_t)m_textureLogo, ImVec2(350, 300), ImVec2(0, 1), ImVec2(1, 0));
 	ImGui::TextColored(ImVec4(0, 1, 0, 1), "Welcome to TITAN Engine !");
-	ImGui::TextWrapped("Keep in mind : This engine is still in early development !");
-	ImGui::TextWrapped("The 'scene informations' panel only prints active objects");
+	string textVersion = "TiTan ";
+	textVersion.append(version::getTitanVersion());
+	ImGui::TextWrapped(textVersion.c_str());
 	ImGui::TextWrapped("Press ESCAPE key to show/hide this interface");
 	ImGui::TextColored(ImVec4(1, 0, 0, 1), "From github.com/leosncz/titan");
 	ImGui::End();
