@@ -7,7 +7,7 @@ class version
   public:
       static std::string getTitanVersion() // TiTan internal version - Do NOT touch
       {
-          return "0.8.1";
+          return "0.9 Alpha";
       }
 
       static std::string getUserAppVersion() // Your App version - U can edit

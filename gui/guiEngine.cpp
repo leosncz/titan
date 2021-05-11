@@ -217,7 +217,7 @@ void guiEngine::showLightingEditor(float* farShadow, vector<light*>* lights, sce
 
 void guiEngine::showTexturePool(scene* scene_)
 {
-	ImGui::Begin("Export your project", &m_showTexturePool);
+	ImGui::Begin("Show texture cache", &m_showTexturePool);
 	ImGui::SetWindowFontScale(1.1);
 
 	ImGui::TextColored(ImVec4(1, 0, 0, 1), "Texture Pool: ");
@@ -348,10 +348,10 @@ void guiEngine::showWelcome()
 {
 	//Welcome
 	ImGui::Begin("Hello", &m_showHelloMessage);
-	ImGui::SetWindowSize(ImVec2(360, 450));
+	ImGui::SetWindowSize(ImVec2(460, 550));
 	ImGui::SetWindowFontScale(1.1);
 	IM_ASSERT(m_textureLogo);
-	ImGui::Image((void*)(intptr_t)m_textureLogo, ImVec2(350, 300), ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::Image((void*)(intptr_t)m_textureLogo, ImVec2(450, 370), ImVec2(0, 1), ImVec2(1, 0));
 	ImGui::TextColored(ImVec4(0, 1, 0, 1), "Welcome to TITAN Engine !");
 	string textVersion = "TiTan ";
 	textVersion.append(version::getTitanVersion());
