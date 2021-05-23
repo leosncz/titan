@@ -1,10 +1,9 @@
 #include "renderObject.h"
 
-renderObject::renderObject()
+renderObject::renderObject(string tag)
 {
-    id = rand();
-    std::cout << "--> Creating new renderObject ID=" << id << std::endl;
-    tag = "Custom Object";
+    m_tag = tag;
+    std::cout << "--> Creating new renderObject \"" << m_tag << "\"" << std::endl;
     mustBeDeleted = false;
     texture1 = 0;
     texture2 = 0;
@@ -23,8 +22,8 @@ renderObject::renderObject()
     hasMetallicMap = false;
     isInitialized = true;
 }
-string renderObject::getTag() { return tag; }
-void renderObject::setTag(string tag_) { tag = tag_; }
+string renderObject::getTag() { return m_tag; }
+void renderObject::setTag(string tag) { m_tag = tag; }
 shader* renderObject::getShader() { return &m_gShader; }
 bool renderObject::setData(float* vertices, float* colors, float* texCoord, int nbOfPointToDraw, float* normals, texturePool* texturePool_) // Use this methode to define the mesh by hand
 {
@@ -89,7 +88,7 @@ bool renderObject::setData(float* vertices, float* colors, float* texCoord, int 
     }
     else
     {
-        std::cout << "--> Error : The mesh ID=" << id << " is probably not triangulated !" << std::endl;
+        std::cout << "--> Error : The mesh \"" << m_tag << "\" is probably not triangulated !" << std::endl;
         return false;
     }
 
@@ -322,7 +321,7 @@ renderObject::~renderObject()
 {
     if (isInitialized)
     {
-        std::cout << "--> Destroying renderObject (id=" << id << ") : " << tag << std::endl;
+        std::cout << "--> Destroying renderObject \"" << m_tag << "\"" << std::endl;
         glDeleteBuffers(1, &vbo);
         glDeleteBuffers(1, &vbo_colors);
         glDeleteBuffers(1, &vbo_texCoords);
@@ -410,7 +409,6 @@ GLuint* renderObject::getTextures() { GLuint textures[2] = { texture1,texture2 }
 int renderObject::getNbOfTextures() { return m_nbOfTexture; }
 void renderObject::setDeleteStatus(bool status) { mustBeDeleted = status; }
 bool renderObject::getDeleteStatus() { return mustBeDeleted; }
-int renderObject::getID() { return id; }
 
 // Used to compute tangent and bitangent for normal mapping
 void renderObject::computeTangent(std::vector<glm::vec3>& vertices, std::vector<glm::vec2>& uvs, std::vector<glm::vec3>& normals, std::vector<glm::vec3>& tangents, std::vector<glm::vec3>& bitangents)

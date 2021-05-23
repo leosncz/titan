@@ -1,8 +1,10 @@
 #include "scene.h"
 #include <gtc/matrix_transform.hpp>
-scene::scene(display* customDisplay, camera* cam) // Set the display that will be used to render the scene
+scene::scene(string tag, display* customDisplay, camera* cam) // Set the display that will be used to render the scene
 {
-    std::cout << "--> Creating new scene ID=" << id << std::endl;
+    m_tag = tag;
+
+    std::cout << "--> Creating new scene \"" << m_tag << "\"" << std::endl;
 
     m_display = customDisplay;
 
@@ -11,13 +13,11 @@ scene::scene(display* customDisplay, camera* cam) // Set the display that will b
     view = glm::mat4(1.0);
     model = glm::mat4(1.0);
 
-    id = rand();
-
     m_actualCamera = cam;
     m_farShadow = 25.0f;
 
-    m_gamma = 2.2;
-    m_ssaoBias = 0.25;
+    m_gamma = 2.2f;
+    m_ssaoBias = 0.25f;
 
     //Create HDR stuff
     m_exposure = 1.0f;
@@ -120,17 +120,17 @@ scene::scene(display* customDisplay, camera* cam) // Set the display that will b
     glBindTexture(GL_TEXTURE_2D, 0);
 
     //SSAO
-    std::uniform_real_distribution<GLfloat> randomFloats(0.0, 1.0); // generates random floats between 0.0 and 1.0
+    std::uniform_real_distribution<GLfloat> randomFloats(0.0f, 1.0f); // generates random floats between 0.0 and 1.0
     std::default_random_engine generator;
     for (unsigned int i = 0; i < 64; ++i)
     {
-        glm::vec3 sample(randomFloats(generator) * 2.0 - 1.0, randomFloats(generator) * 2.0 - 1.0, randomFloats(generator));
+        glm::vec3 sample(randomFloats(generator) * 2.0f - 1.0f, randomFloats(generator) * 2.0f - 1.0f, randomFloats(generator));
         sample = glm::normalize(sample);
         sample *= randomFloats(generator);
-        float scale = float(i) / 64.0;
+        float scale = float(i) / 64.0f;
 
         // scale samples s.t. they're more aligned to center of kernel
-        scale = 0.1 + ((scale * scale) * (1.0 - 0.1));
+        scale = 0.1f + ((scale * scale) * (1.0f - 0.1f));
         sample *= scale;
         ssaoKernel.push_back(sample);
     }
@@ -234,7 +234,7 @@ void scene::setExposure(float exposure) { m_exposure = exposure; }
 
 void scene::addDrawableObject(renderObject* object)
 {
-    std::cout << "---> Adding new renderObject (ID=" << object->getID() << ") to scene ID=" << id << std::endl;
+    std::cout << "---> Adding new renderObject \"" << object->getTag() << "\" to scene \"" << m_tag << "\"" << std::endl;
     m_objectHolder.push_back(object);
 }
 
@@ -378,7 +378,7 @@ scene::~scene()
         }
     }
 
-    std::cout << "--> Destroying scene ID=" << id << std::endl;
+    std::cout << "--> Destroying scene \"" << m_tag << "\"" << std::endl;
 }
 
 void scene::freeTexturesSlot() // Free all texture stuff related to binded texture or slot

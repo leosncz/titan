@@ -10,12 +10,12 @@ using namespace std;
 class gui
 {
 public:
-	gui(display* display_);
+	gui(string tag, display* display_);
 	void setVisibility(bool isVisible_);
 	virtual void update(scene* scene_) = 0;
 	~gui();
 protected:
-	int m_id;
+	string m_tag;
 	display* m_display;
 	bool isVisible;
 

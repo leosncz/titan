@@ -7,6 +7,7 @@ Handles everything related to scenes and object rendering loop in scenes
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm.hpp>
+#include <string>
 #include <vector>
 #include "../display/display.h"
 #include "../renderObject/renderObject.h"
@@ -17,7 +18,7 @@ Handles everything related to scenes and object rendering loop in scenes
 class scene
 {
 public:
-    scene(display* customDisplay, camera* cam);
+    scene(string tag, display* customDisplay, camera* cam);
     void renderScene();
 
     void setGamma(float gamma);
@@ -61,7 +62,7 @@ public:
 
 private:
 
-    int id;
+    string m_tag;
 
     display* m_display;
     vector<renderObject*> m_objectHolder;

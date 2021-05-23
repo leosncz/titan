@@ -2,9 +2,9 @@
 #include <iostream>
 #include <gtc/matrix_transform.hpp>
 
-cameraFPS::cameraFPS()
+cameraFPS::cameraFPS(string tag) : camera(tag)
 {
-    std::cout << "--> Creating camera FPS id=" << id << std::endl;
+    std::cout << "--> Creating camera FPS \"" << m_tag << "\"" << std::endl;
     firstMouse = true;
     yaw = -90.0f;
 }

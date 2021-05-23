@@ -13,7 +13,7 @@ Handles everything related to drawable nodes
 class renderObject
 {
 public:
-    renderObject();
+    renderObject(string tag="new object");
     string getTag();
     void setTag(string tag_);
     shader* getShader();
@@ -64,12 +64,10 @@ public:
     int getNbOfTextures();
     void setDeleteStatus(bool status);
     bool getDeleteStatus();
-    int getID();
 
 protected:
 
-    int id;
-    string tag;
+    string m_tag;
 
     float m_position[3];
     float m_scale[3];

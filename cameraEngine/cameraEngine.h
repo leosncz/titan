@@ -5,7 +5,7 @@
 class cameraEngine : public camera
 {
 public:
-    cameraEngine();
+    cameraEngine(string tag);
     void update(bool isAzerty = true, glm::mat4* viewMatrix = 0);
     static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
     void init(display* display_);

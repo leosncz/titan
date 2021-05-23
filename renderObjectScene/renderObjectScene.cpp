@@ -38,7 +38,7 @@ void renderObjectScene::loadOBJFromFile(const char* path)
             colors.push_back(curMesh.MeshMaterial.Kd.Y); //g
             colors.push_back(curMesh.MeshMaterial.Kd.Z); //b  
         }
-        renderObject* newObject = new renderObject();
+        renderObject* newObject = new renderObject(curMesh.MeshName);
         if (newObject->setData(&vertices[0], &colors[0], &uv[0], curMesh.Vertices.size(), &normals[0], m_scene->getTexturePool()))
         {
             objects.push_back(newObject);

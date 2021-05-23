@@ -1,9 +1,9 @@
 #include "cameraEngine.h"
 #include <iostream>
 #include <gtc/matrix_transform.hpp>
-cameraEngine::cameraEngine()
+cameraEngine::cameraEngine(string tag) : camera(tag)
 {
-    std::cout << "--> Creating camera Engine id=" << id << std::endl;
+    std::cout << "--> Creating camera Engine \"" << m_tag << "\"" << std::endl;
     firstMouse = true;
     yaw = -90.0f;
 }

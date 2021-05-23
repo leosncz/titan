@@ -5,7 +5,7 @@
 class guiEngine : public gui
 {
 public:
-	guiEngine(display* display_, scene* scene_);
+	guiEngine(string tag, display* display_, scene* scene_);
 	void update(scene* scene_);
 private:
 	bool m_showRenderingDebug, m_showSceneEditor, m_showLightingEditor, m_showHelloMessage, m_showExportMenu, m_showTexturePool;
@@ -22,7 +22,7 @@ private:
 	bool m_chosenMeshInverseNormals;
 
 	ImGui::FileBrowser m_fileDialog;
-	int m_currentObjectEdit; // Tell which object we are currently editinh in the filebrowsing window
+	string m_currentObjectEdit; // Tell which object we are currently editinh in the filebrowsing window
 	bool m_editingImportMesh; // Tell if we are currently looking for importing an obj file
 
 	GLuint m_textureLogo;

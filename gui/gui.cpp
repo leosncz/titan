@@ -1,8 +1,8 @@
 #include "gui.h"
 
-gui::gui(display* display_)
+gui::gui(string tag, display* display_)
 {
-	m_id = rand();
+	m_tag = tag;
 	m_display = display_;
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -13,7 +13,7 @@ gui::gui(display* display_)
 	setupUIStyle();
 	isVisible = false;
 
-	std::cout << "--> GUI ID=" << m_id << " created !" << std::endl;
+	std::cout << "--> GUI \"" << m_tag << "\" created !" << std::endl;
 }
 void gui::setVisibility(bool isVisible_) { isVisible = isVisible_; }
 gui::~gui()
@@ -21,7 +21,7 @@ gui::~gui()
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
-	std::cout << "--> GUI ID=" << m_id << " destroyed !" << std::endl;
+	std::cout << "--> GUI \"" << m_tag << "\" destroyed !" << std::endl;
 }
 
 void gui::setupUIStyle()

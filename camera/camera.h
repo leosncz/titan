@@ -1,11 +1,12 @@
 #pragma once
 #include "../display/display.h"
 #include <glm.hpp>
-
+#include <string>
+using namespace std;
 class camera
 {
 public:
-    camera();
+    camera(string tag);
     glm::vec3 getCameraPos();
     virtual void update(bool isAzerty = true, glm::mat4* viewMatrix=0) = 0;
     virtual void init(display* display_) = 0;
@@ -24,6 +25,5 @@ protected:
     display* m_display;
     glm::mat4 *m_viewMatrix;
 
-    int id;
-
+    string m_tag;
 };

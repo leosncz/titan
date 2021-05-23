@@ -4,9 +4,8 @@
 class plane : public renderObject
 {
 public:
-    plane(texturePool* texturePool, float* colors = 0, bool inverseNormals=false, string tag_="Plane")
+    plane(string tag, texturePool* texturePool, float* colors = 0, bool inverseNormals=false) : renderObject(tag)
     {
-        tag = tag_;
         float planeVertices[] = {
             -0.5,0.0,0.5,  0.5,0.0,0.5,  0.5,0.0,-0.5,
             0.5,0.0,-0.5,   -0.5,0.0,-0.5,   -0.5,0.0,0.5

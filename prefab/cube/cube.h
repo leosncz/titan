@@ -4,9 +4,8 @@
 class cube : public renderObject
 {
 public:
-    cube(texturePool* texturePool, float* colors = 0, bool inverseNormals=false, string tag_="Cube" )
+    cube(string tag , texturePool* texturePool, float* colors = 0, bool inverseNormals=false) : renderObject(tag)
     {
-        tag = tag_;
         float cubeVertices[] = {
           -0.5,-0.5,0.5,    0.5,-0.5,0.5,    0.5,0.5,0.5,   0.5,0.5,0.5,  -0.5,0.5,0.5,    -0.5,-0.5,0.5,  //front
           -0.5,0.5,0.5,    0.5,0.5,0.5,    0.5,0.5,-0.5,    0.5,0.5,-0.5,   -0.5,0.5,-0.5,   -0.5,0.5,0.5,//top

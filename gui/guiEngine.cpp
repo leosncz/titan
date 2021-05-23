@@ -4,7 +4,7 @@
 #include "../prefab/cube/cube.h"
 #include "../prefab/plane/plane.h"
 
-guiEngine::guiEngine(display* display_, scene* scene_) : gui(display_)
+guiEngine::guiEngine(string tag, display* display_, scene* scene_) : gui(tag, display_)
 {
 	m_showLightingEditor = false;
 	m_showRenderingDebug = false;
@@ -393,11 +393,11 @@ void guiEngine::showSceneEditor(vector<renderObject*>* objectHolder, scene* scen
 		cube* cube_ = 0;
 		if (m_chosenMeshInverseNormals)
 		{
-			cube_ = new cube(scene_->getTexturePool(), 0, true, m_chosenMeshName);
+			cube_ = new cube(m_chosenMeshName, scene_->getTexturePool(), 0, true);
 		}
 		else
 		{
-			cube_ = new cube(scene_->getTexturePool(), 0, false, m_chosenMeshName);
+			cube_ = new cube(m_chosenMeshName, scene_->getTexturePool(), 0, false);
 		}
 		cube_->setDeleteStatus(true);
 		scene_->addDrawableObject(cube_);
@@ -407,11 +407,11 @@ void guiEngine::showSceneEditor(vector<renderObject*>* objectHolder, scene* scen
 		plane* plane_ = 0;
 		if (m_chosenMeshInverseNormals)
 		{
-			plane_ = new plane(scene_->getTexturePool(), 0, true, m_chosenMeshName);
+			plane_ = new plane(m_chosenMeshName,scene_->getTexturePool(), 0, true);
 		}
 		else
 		{
-			plane_ = new plane(scene_->getTexturePool(), 0, false, m_chosenMeshName);
+			plane_ = new plane(m_chosenMeshName,scene_->getTexturePool(), 0, false);
 		}
 		plane_->setDeleteStatus(true);
 		scene_->addDrawableObject(plane_);
@@ -423,16 +423,13 @@ void guiEngine::showSceneEditor(vector<renderObject*>* objectHolder, scene* scen
 	for (int i = 0; i < objectHolder->size(); i++)
 	{
 		renderObject* object = objs->at(i);
-		string name = "ID : ";
-		name.append(to_string(object->getID()));
-		ImGui::Text(name.c_str());
 
-		name = "Tag : ";
+		string name = "Tag : ";
 		name.append(object->getTag());
 		ImGui::Text(name.c_str());
 
 		name = "Position ##";
-		name.append(to_string(object->getID()));
+		name.append(object->getTag());
 		float* objPosition = object->getPosition();
 		if (ImGui::InputFloat3(name.c_str(), objPosition))
 		{
@@ -440,7 +437,7 @@ void guiEngine::showSceneEditor(vector<renderObject*>* objectHolder, scene* scen
 		}
 
 		name = "Scale ##";
-		name.append(to_string(object->getID()));
+		name.append(object->getTag());
 		float* objScale = object->getScale();
 		if (ImGui::InputFloat3(name.c_str(), objScale))
 		{
@@ -448,23 +445,23 @@ void guiEngine::showSceneEditor(vector<renderObject*>* objectHolder, scene* scen
 		}
 
 		name = "Metallic ##";
-		name.append(to_string(object->getID()));
+		name.append(object->getTag());
 		ImGui::SliderFloat(name.c_str(), &object->getShader()->metallic, 0.0, 1.0);
 
 		name = "Roughness ##";
-		name.append(to_string(object->getID()));
+		name.append(object->getTag());
 		ImGui::SliderFloat(name.c_str(), &object->getShader()->roughness, 0.0, 1.0);
 
 		name = "Ambient ##";
-		name.append(to_string(object->getID()));
+		name.append(object->getTag());
 		ImGui::SliderFloat(name.c_str(), &object->getShader()->ambient, 0.0, 1.0);
 
 		if (object->getNbOfTextures() < 2)
 		{
 			name = "Import texture ##";
-			name.append(to_string(object->getID()));
-			if (ImGui::Button(name.c_str())) { m_currentObjectEdit = object->getID(); m_fileDialog.SetTitle("Choose texture file"); m_fileDialog.SetTypeFilters({ ".jpg", ".jpeg", ".png" }); m_fileDialog.Open(); m_texturePathEditing = true; }
-			if (m_texturePathEditing && m_currentObjectEdit == object->getID())
+			name.append(object->getTag());
+			if (ImGui::Button(name.c_str())) { m_currentObjectEdit = object->getTag(); m_fileDialog.SetTitle("Choose texture file"); m_fileDialog.SetTypeFilters({ ".jpg", ".jpeg", ".png" }); m_fileDialog.Open(); m_texturePathEditing = true; }
+			if (m_texturePathEditing && m_currentObjectEdit == object->getTag())
 			{
 				m_fileDialog.Display();
 				if (m_fileDialog.HasSelected())
@@ -480,11 +477,11 @@ void guiEngine::showSceneEditor(vector<renderObject*>* objectHolder, scene* scen
 		else
 		{
 			IM_ASSERT(object->getTextures()[0]); ImGui::Image((void*)(intptr_t)object->getTextures()[0], ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
-			string name_ = "Delete texture 1";
-			name_.append(" ##");
-			name_.append(to_string(object->getID()));
+			name = "Delete texture 1";
+			name.append(" ##");
+			name.append(object->getTag());
 			ImGui::SameLine();
-			if (ImGui::Button(name_.c_str())) { object->removeTexture1(); }
+			if (ImGui::Button(name.c_str())) { object->removeTexture1(); }
 		}
 
 		if (object->getNbOfTextures() == 2)
@@ -494,11 +491,11 @@ void guiEngine::showSceneEditor(vector<renderObject*>* objectHolder, scene* scen
 			else
 			{
 				IM_ASSERT(object->getTextures()[1]); ImGui::Image((void*)(intptr_t)object->getTextures()[1], ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
-				string name_ = "Delete texture 2";
-				name_.append(" ##");
-				name_.append(to_string(object->getID()));
+				name = "Delete texture 2";
+				name.append(" ##");
+				name.append(object->getTag());
 				ImGui::SameLine();
-				if (ImGui::Button(name_.c_str())) { object->removeTexture2(); }
+				if (ImGui::Button(name.c_str())) { object->removeTexture2(); }
 			}
 		}
 
@@ -510,18 +507,18 @@ void guiEngine::showSceneEditor(vector<renderObject*>* objectHolder, scene* scen
 		}
 
 		name = "Import normal map ##";
-		name.append(to_string(object->getID()));
+		name.append(object->getTag());
 		ImGui::SameLine();
-		if (ImGui::Button(name.c_str())) { m_currentObjectEdit = object->getID(); m_fileDialog.SetTitle("Choose normal map file"); m_fileDialog.SetTypeFilters({ ".jpg", ".jpeg", ".png" }); m_fileDialog.Open(); m_normalMapPathEditing = true; }
+		if (ImGui::Button(name.c_str())) { m_currentObjectEdit = object->getTag(); m_fileDialog.SetTitle("Choose normal map file"); m_fileDialog.SetTypeFilters({ ".jpg", ".jpeg", ".png" }); m_fileDialog.Open(); m_normalMapPathEditing = true; }
 		if (object->doesMeshHasNormalMap())
 		{
-			string name_ = "Delete normal map";
-			name_.append(" ##");
-			name_.append(to_string(object->getID()));
+			name = "Delete normal map";
+			name.append(" ##");
+			name.append(object->getTag());
 			ImGui::SameLine();
-			if (ImGui::Button(name_.c_str())) { object->removeNormalMap(); }
+			if (ImGui::Button(name.c_str())) { object->removeNormalMap(); }
 		}
-		if (m_normalMapPathEditing && m_currentObjectEdit == object->getID())
+		if (m_normalMapPathEditing && m_currentObjectEdit == object->getTag())
 		{
 			m_fileDialog.Display();
 			if (m_fileDialog.HasSelected())
@@ -541,18 +538,18 @@ void guiEngine::showSceneEditor(vector<renderObject*>* objectHolder, scene* scen
 		}
 
 		name = "Import roughness map ##";
-		name.append(to_string(object->getID()));
+		name.append(object->getTag());
 		ImGui::SameLine();
-		if (ImGui::Button(name.c_str())) { m_currentObjectEdit = object->getID(); m_fileDialog.SetTitle("Choose roughness map file"); m_fileDialog.SetTypeFilters({ ".jpg", ".jpeg", ".png" }); m_fileDialog.Open();  m_roughnessMapPathEditing = true; }
+		if (ImGui::Button(name.c_str())) { m_currentObjectEdit = object->getTag(); m_fileDialog.SetTitle("Choose roughness map file"); m_fileDialog.SetTypeFilters({ ".jpg", ".jpeg", ".png" }); m_fileDialog.Open();  m_roughnessMapPathEditing = true; }
 		if (object->doesMeshHasRoughnessMap())
 		{
-			string name_ = "Delete roughness map";
-			name_.append(" ##");
-			name_.append(to_string(object->getID()));
+			name = "Delete roughness map";
+			name.append(" ##");
+			name.append(object->getTag());
 			ImGui::SameLine();
-			if (ImGui::Button(name_.c_str())) { object->removeRoughnessMap(); }
+			if (ImGui::Button(name.c_str())) { object->removeRoughnessMap(); }
 		}
-		if (m_roughnessMapPathEditing && m_currentObjectEdit == object->getID())
+		if (m_roughnessMapPathEditing && m_currentObjectEdit == object->getTag())
 		{
 			m_fileDialog.Display();
 			if (m_fileDialog.HasSelected())
@@ -571,18 +568,18 @@ void guiEngine::showSceneEditor(vector<renderObject*>* objectHolder, scene* scen
 		}
 
 		name = "Import metallic map ##";
-		name.append(to_string(object->getID()));
+		name.append(object->getTag());
 		ImGui::SameLine();
-		if (ImGui::Button(name.c_str())) { m_currentObjectEdit = object->getID(); m_fileDialog.SetTitle("Choose metallic map file"); m_fileDialog.SetTypeFilters({ ".jpg", ".jpeg", ".png" }); m_fileDialog.Open(); m_metallicMapPathEditing = true; }
+		if (ImGui::Button(name.c_str())) { m_currentObjectEdit = object->getTag(); m_fileDialog.SetTitle("Choose metallic map file"); m_fileDialog.SetTypeFilters({ ".jpg", ".jpeg", ".png" }); m_fileDialog.Open(); m_metallicMapPathEditing = true; }
 		if (object->doesMeshHasMetallicMap())
 		{
-			string name_ = "Delete metallic map";
-			name_.append(" ##");
-			name_.append(to_string(object->getID()));
+			name = "Delete metallic map";
+			name.append(" ##");
+			name.append(object->getTag());
 			ImGui::SameLine();
-			if (ImGui::Button(name_.c_str())) { object->removeMetallicMap(); }
+			if (ImGui::Button(name.c_str())) { object->removeMetallicMap(); }
 		}
-		if (m_metallicMapPathEditing && m_currentObjectEdit == object->getID())
+		if (m_metallicMapPathEditing && m_currentObjectEdit == object->getTag())
 		{
 			m_fileDialog.Display();
 			if (m_fileDialog.HasSelected())
@@ -594,7 +591,7 @@ void guiEngine::showSceneEditor(vector<renderObject*>* objectHolder, scene* scen
 		}
 
 		string buttonName = "Delete object ##";
-		buttonName.append(to_string(object->getID()));
+		buttonName.append(object->getTag());
 		if (ImGui::Button(buttonName.c_str())) { scene_->deleteRenderObject(i); }
 
 		ImGui::Separator();

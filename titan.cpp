@@ -13,22 +13,22 @@ int main()
 {
     display mainDisplay(1620, 880, 4, false);
 
-    cameraFPS cam;
+    cameraFPS cam("camFPS");
     cam.init(&mainDisplay);
 
 
-    scene myscene(&mainDisplay, &cam);
+    scene myscene("firstScene", &mainDisplay, &cam);
 
-    guiEngine gui_(&mainDisplay, &myscene);
+    guiEngine gui_("guiEngine",&mainDisplay, &myscene);
 
 
-    cube triangle2(myscene.getTexturePool());
+    cube triangle2("tr2",myscene.getTexturePool());
     myscene.addDrawableObject(&triangle2);
     triangle2.moveObject(glm::vec3(5, 0.0, 2));
     triangle2.addTexture("graphicData/texture.jpg");
     triangle2.setNormalMap("graphicData/normalmap.jpg");
 
-    plane myplane(myscene.getTexturePool());
+    plane myplane("bigplane",myscene.getTexturePool());
     myscene.addDrawableObject(&myplane);
     myplane.moveObject(glm::vec3(0, -0.5, -2));
     myplane.scaleObject(glm::vec3(100, 1, 100));
@@ -36,7 +36,7 @@ int main()
     myplane.setTextureResolution(100);
     myplane.setNormalMap("graphicData/normalmap.jpg");
 
-    cube triangle3(myscene.getTexturePool());
+    cube triangle3("tr3",myscene.getTexturePool());
     myscene.addDrawableObject(&triangle3);
     triangle3.moveObject(glm::vec3(0,0,-2)); // 0 0 1
     triangle3.addTexture("graphicData/PaintedMetal007_1K_Color.jpg");
@@ -45,7 +45,7 @@ int main()
     triangle3.setMetallicMap("graphicData/PaintedMetal007_1K_Metalness-min.jpg");
 
 
-    cube triangle4(myscene.getTexturePool());
+    cube triangle4("tr4",myscene.getTexturePool());
     myscene.addDrawableObject(&triangle4);
     triangle4.moveObject(glm::vec3(1.2, 0.0, -2));
     triangle4.addTexture("graphicData/texturemetal.jpg");
@@ -59,8 +59,6 @@ int main()
         myscene.addLight(&light_[i2]);
         i2++;
     }
-
-    float i = 0.0f;
 
     while (!mainDisplay.shouldExit()) {
         myscene.renderScene();
