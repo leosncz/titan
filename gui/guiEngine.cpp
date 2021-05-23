@@ -202,6 +202,16 @@ void guiEngine::showLightingEditor(float* farShadow, vector<light*>* lights, sce
 			content.append(to_string(i));
 			ImGui::SliderFloat(content.c_str(), &lights->at(i)->quadratic, 0.0, 4.0);
 
+			if (glIsFramebuffer(lights->at(i)->depthMapFBO))
+			{
+				content = "Toggle Shadow ##";
+				content.append(to_string(i));
+				if (ImGui::Button(content.c_str()))
+				{
+					lights->at(i)->setComputeShadows(!lights->at(i)->doesComputeShadows());
+				}
+			}
+
 			content = "Delete ";
 			content.append(to_string(i));
 			if (ImGui::Button(content.c_str()))
