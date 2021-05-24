@@ -27,6 +27,7 @@ Shadow example :
 - Gamma correction
 - HDR
 - Deferred Shading
+- Deferred Transparency
 - Dynamic shadows
 - OBJ Model loader
 - Automatic texture cache
