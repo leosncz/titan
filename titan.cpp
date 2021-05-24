@@ -21,20 +21,21 @@ int main()
 
     guiEngine gui_("guiEngine",&mainDisplay, &myscene);
 
-
-    cube triangle2("tr2",myscene.getTexturePool());
-    myscene.addDrawableObject(&triangle2);
-    triangle2.moveObject(glm::vec3(5, 0.0, 2));
-    triangle2.addTexture("graphicData/texture.jpg");
-    triangle2.setNormalMap("graphicData/normalmap.jpg");
-
-    plane myplane("bigplane",myscene.getTexturePool());
+    plane myplane("bigplane", myscene.getTexturePool());
     myscene.addDrawableObject(&myplane);
     myplane.moveObject(glm::vec3(0, -0.5, -2));
     myplane.scaleObject(glm::vec3(100, 1, 100));
     myplane.addTexture("graphicData/texture.jpg");
     myplane.setTextureResolution(100);
     myplane.setNormalMap("graphicData/normalmap.jpg");
+
+    cube triangle2("tr2",myscene.getTexturePool());
+    myscene.addDrawableObject(&triangle2);
+    triangle2.moveObject(glm::vec3(-1.5, 0.0, -2));
+    triangle2.addTexture("graphicData/texture.jpg");
+    triangle2.setNormalMap("graphicData/normalmap.jpg");
+
+    
 
     cube triangle3("tr3",myscene.getTexturePool());
     myscene.addDrawableObject(&triangle3);

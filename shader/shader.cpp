@@ -113,7 +113,7 @@ void shader::compileSSAOShader()
 
     const char* fragment_shader =
         "#version 330 core\n"
-        "out float frag_colour;"
+        "out vec4 frag_colour;"
         "in vec2 texCoord;"
         "uniform sampler2D gPosition;"
         "uniform sampler2D gNormals;"
@@ -161,7 +161,7 @@ void shader::compileSSAOShader()
         "occlusion += (sampleDepth >= samplePos.z + bias ? 1.0 : 0.0) * rangeCheck;"
         "}"
         "occlusion = 1.0 - (occlusion / kernelSize);"
-        "frag_colour = occlusion;"
+        "frag_colour = vec4(occlusion,occlusion,occlusion,1.0);"
         "}";
 
     GLuint vs = glCreateShader(GL_VERTEX_SHADER);
@@ -464,12 +464,12 @@ void shader::compileGShaderShader()
 
     const char* fragment_shader =
         "#version 330 core\n"
-        "layout(location = 0) out vec3 gPosition;"
-        "layout(location = 1) out vec3 gNormal;"
+        "layout(location = 0) out vec4 gPosition;"
+        "layout(location = 1) out vec4 gNormal;"
         "layout(location = 2) out vec4 gAlbedoSpec;"
-        "layout(location = 3) out vec3 gRoughness;"
-        "layout(location = 4) out vec3 gMetallic;"
-        "layout(location = 5) out vec3 gAmbient;"
+        "layout(location = 3) out vec4 gRoughness;"
+        "layout(location = 4) out vec4 gMetallic;"
+        "layout(location = 5) out vec4 gAmbient;"
         "in vec3 aNormals;"
         "in vec3 fragPos;"
         "in vec2 texCoord;"
@@ -496,16 +496,15 @@ void shader::compileGShaderShader()
         //""
         "void main() {"
         " if(useNormalMap == 0){"
-        " gNormal = normalize(mat3(transpose(inversedModel)) * aNormals);}"
-        " else{vec3 normal = texture(normalMap, texCoord).rgb; normal = normalize(normal * 2.0 - 1.0); normal = normalize(TBN * normal); gNormal = normal;}"
+        " gNormal = vec4(normalize(mat3(transpose(inversedModel)) * aNormals),1.0);}"
+        " else{vec3 normal = texture(normalMap, texCoord).rgb; normal = normalize(normal * 2.0 - 1.0); normal = normalize(TBN * normal); gNormal = vec4(normal,1.0);}"
         " gAlbedoSpec = vec4(finalColor,1.0);"
         " if(howManyTex == 1){gAlbedoSpec = gAlbedoSpec * vec4(vec3(texture(texture1, texCoord)),1.0);}"
-        " if(howManyTex == 2){gAlbedoSpec = gAlbedoSpec * vec4(vec3(texture(texture1, texCoord)),1.0) * vec4(vec3(texture(texture2, texCoord)),1.0);}"
-        " if(howManyTex == 3){gAlbedoSpec = gAlbedoSpec * vec4(vec3(texture(texture1, texCoord)),1.0) * vec4(vec3(texture(texture2, texCoord)),1.0) * vec4(vec3(texture(texture3, texCoord)),1.0);}"
-        " gPosition = fragPos;"
-        " if(useMetallicMap == 0){gMetallic = vec3(metallic,metallic,metallic);}else{gMetallic = vec3(texture(metallicMap,texCoord));}"
-        " if(useRoughnessMap == 0){gRoughness = vec3(roughness,roughness,roughness);}else{gRoughness = vec3(texture(roughnessMap,texCoord));}"
-        " gAmbient = vec3(ambient,ambient,ambient);"
+        " else if(howManyTex == 2){gAlbedoSpec = gAlbedoSpec * vec4(vec3(texture(texture1, texCoord)),1.0) * vec4(vec3(texture(texture2, texCoord)),1.0);}"
+        " gPosition = vec4(fragPos,1.0);"
+        " if(useMetallicMap == 0){gMetallic = vec4(vec3(metallic,metallic,metallic),1.0);}else{gMetallic = vec4(vec3(texture(metallicMap,texCoord)),1.0);}"
+        " if(useRoughnessMap == 0){gRoughness = vec4(vec3(roughness,roughness,roughness),1.0);}else{gRoughness = vec4(vec3(texture(roughnessMap,texCoord)),1.0);}"
+        " gAmbient = vec4(vec3(ambient,ambient,ambient),1.0);"
         " "
         "}";
 

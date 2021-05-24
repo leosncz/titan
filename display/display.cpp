@@ -49,6 +49,10 @@ display::display(int x, int y, int aa, bool fullscreen, bool minorDisplay)
     glEnable(GL_CULL_FACE);
     glFrontFace(GL_CCW);
 
+    //Blend
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     m_disHeight = y;
     m_disWidth = x;
     m_shouldExit = false;
